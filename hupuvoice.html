@@ -35,10 +35,19 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var create_time = dom.byId("pubtime_baidu").innerText;
-        item.created_at = Bee.convertTime(create_time);
+        var create_time = dom.byId("pubtime_baidu");
+        if (create_time) { } else {
+            Bee.passItem(item);
+            return;
+        }
+        item.created_at = Bee.convertTime(create_time.innerText);
 
-        var source = dom.byId("source_baidu").innerText;
+        var source = dom.byId("source_baidu");
+        if (source) { } else {
+            Bee.passItem(item);
+            return;
+        }
+        source = source.innerText;
         item.source = source.substring(source.indexOf("来源：") + "来源：".length).trim();
         if (item.source.indexOf("虎扑") < 0) {
             if (Bee.existSource(item.source)) {
