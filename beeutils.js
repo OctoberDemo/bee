@@ -415,6 +415,9 @@ function _BeeUtils() {
                     var image = {};
                     if (imgConverter) {
                         image = imgConverter.call(this, node);
+                        if (image == null || image == undefined) {
+                            continue;
+                        }
                     } else {
                         image.src = node.src;
                         image.width = node.clientWidth;
