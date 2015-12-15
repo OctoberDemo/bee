@@ -60,7 +60,11 @@
             var sourceString = attrib[0].innerText.split(" ")[0];
             console.log(sourceString);
             if (sourceString.indexOf("澎湃") >= 0) {
-                item.source = sourceString;
+                if (sourceString == "澎湃新闻记者") {
+                    item.source = "澎湃新闻";
+                } else {
+                    item.source = sourceString;
+                }
             } else {
                 Bee.passItem(item);
                 return;
