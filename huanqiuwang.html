@@ -32,6 +32,9 @@
                 var a = lis[i].byTag("a");
                 var item = {};
                 item.url = a.href;
+                if (item.url.endsWith("&v=9")) {
+                    continue;
+                }
                 item.title = a.innerText;
                 item.key = Bee.hashCode(item.url);
                 items.push(item);

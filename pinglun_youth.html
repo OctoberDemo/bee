@@ -57,6 +57,13 @@
         var source = dom.byId("source_baidu").innerText;
         source = source.substring(source.indexOf("：")+1).trim();
         item.source = source;
+        if (item.source == "中国青年网" || Bee.knownSource.indexOf(item.source) < 0) {
+            item.status = 3;
+            item.category = Bee.getCurCategory();
+            Bee.finishExtractItem(item);
+        } else {
+            Bee.passItem(item);
+        }
         var create_time = dom.byId("pubtime_baidu").innerText;
         create_time = create_time.substring(create_time.indexOf("：")+1).trim();
         item.created_at = Bee.convertTime(create_time);
