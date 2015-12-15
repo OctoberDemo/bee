@@ -28,7 +28,7 @@
             var lis = contList.byClasses("txt_t");
             for (var i = 0; i < lis.length; i++) {
                 var li = lis[i];
-                if (li.byClass("t_label")) {
+                if (li.byClass("t_label", true)) {
                     continue;
                 }
                 var item = {};
@@ -60,7 +60,11 @@
             var sourceString = attrib[0].innerText.split(" ")[0];
             console.log(sourceString);
             if (sourceString.indexOf("澎湃") >= 0) {
-                item.source = sourceString;
+                if (sourceString == "澎湃新闻记者") {
+                    item.source = "澎湃新闻";
+                } else {
+                    item.source = sourceString;
+                }
             } else {
                 Bee.passItem(item);
                 return;
