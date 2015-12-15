@@ -42,7 +42,7 @@
     Bee.onItemLoaded = function(dom, item) {
 
         setTimeout(function() {
-            var article = dom.byClass("wenzhangblock");
+            var article = dom.byClass("wenzhangblock", true);
             if (article == undefined) {
                 console.log("article == undefined");
                 Bee.finishExtractItem();

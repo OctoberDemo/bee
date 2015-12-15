@@ -28,7 +28,7 @@
             var lis = contList.byClasses("txt_t");
             for (var i = 0; i < lis.length; i++) {
                 var li = lis[i];
-                if (li.byClass("t_label")) {
+                if (li.byClass("t_label", true)) {
                     continue;
                 }
                 var item = {};
