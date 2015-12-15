@@ -60,7 +60,7 @@
         item.source = s;
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
         var content = Bee.htmlToJson(dom.byClass("baohanP"));
-        item.content = JSON.stringify(content);
+        item.content = content;
         item.tag = Bee.getCurCategory();
         item.class = "news";
         item.status = 3;
