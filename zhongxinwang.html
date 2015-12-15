@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>中新网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("国际", "http://www.chinanews.com/m/gj/gj-zxsjg/");
+    Bee.addChannel("", "华人", "http://www.chinanews.com/m/channel/hr/");
+    Bee.setType("www.chinanews.com");
+    Bee.setImgReferer("www.chinanews.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("load_more1", true);
+        if (pageButton) {
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byId("ent0");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var right = lis[i].byClass("righttext");
+                var item = {};
+
+                if (right) {
+                    item.url = right.byTag("a").href;
+                    item.title = right.byTag("a").innerText;
+                } else {
+                    item.url = a.href;
+                    item.title = a.innerText;
+                }
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("content_context");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("subtitle").byTag("time").innerText.split(" ");
+            var sourceString = attrib[2];
+            console.log(attrib);
+            if (sourceString.indexOf("中国新闻网") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib[0] + attrib[1];
+            item.created_at = Bee.convertTime(timeString);
+            item.category = Bee.getCurCategory();
+            article.removeClass("spss");
+            article.removeClass("fenx_box");
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

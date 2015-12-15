@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>绿茶浏览器蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("lvchaliulanqi");
+    Bee.setImgReferer("qq.com");
+
+    start();
+
+    function start() {
+        if (window.BeeWebView) {
+            var searchWebView = new BeeWebView();
+            Bee.addWebView(searchWebView);
+            searchWebView.setOnPageFinishListener(function() {
+                var dom = searchWebView.getDom();
+                var item = dom.getElementsByClassName("_item")[0];
+                var href = item.getAttribute("href");
+                var url = "http://weixin.sogou.com" + href;
+                Bee.addChannel("", url);
+                Bee.removeView(searchWebView);
+                Bee.start();
+
+            });
+            searchWebView.loadUrl("http://weixin.sogou.com/weixin?type=1&query=绿茶浏览器&ie=utf8");
+        } else {
+            setTimeout(start, 100);
+        }
+    }
+
+
+
+    Bee.onListLoaded = function(dom) {
+        setTimeout(function() {
+            var wxbox = dom.byId("wxbox");
+            var items = [];
+            var txt_boxes = wxbox.byClasses("txt-box");
+            for (var i = 0; i < txt_boxes.length; i++) {
+                var txt_box = txt_boxes[i];
+                var item = {};
+                item.source = "绿茶浏览器";
+                item.title = txt_box.byTag("h4").innerText;
+                item.url = txt_box.byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                var s_p = txt_box.byClass("s-p");
+
+                s_p.removeTags("span");
+                s_p.removeTag("bb");
+                item.created_at = convertWeixinTimeString(s_p.innerText);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }, 1000);
+
+    };
+
+    function convertWeixinTimeString(string) {
+        var unit = 0;
+        if (string.indexOf("分钟") > 0) {
+            unit = 1000 * 60;
+        } else if (string.indexOf("小时") > 0) {
+            unit = 1000 * 60 * 60;
+        } else if (string.indexOf("天") > 0) {
+            unit = 1000 * 60 * 60 * 24;
+        }
+        var num = parseInt(string);
+        var now = new Date();
+        var time = new Date(now.getTime() - parseInt((num + Math.random()) * unit));
+        return parseInt(time.getTime() / 1000);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var content = dom.byId("js_content");
+        item.content = Bee.htmlToJson(content, "", "", imgConverter);
+        item.status = 3;
+        Bee.finishExtractItem(item, true, true);
+
+        function imgConverter(node) {
+            var image = {};
+            image.src = node.attr("data-src");
+            image.width = parseInt(node.attr("data-w"));
+            var ratio = parseFloat(node.attr("data-ratio"));
+            image.height = image.width * ratio;
+            return image;
+        }
+    };
+
+//    Bee.start();
+</script>
+</body>
+</html>

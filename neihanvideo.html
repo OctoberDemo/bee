@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>内涵视频蜜蜂</title>
+
+    <script src="../jndroid/jndroid.core.js"></script>
+    <script src="../jndroid/jndroid.layout.js"></script>
+    <script src="../jndroid/jndroid.widget.js"></script>
+    <script src="beeutils.js"></script>
+</head>
+<body>
+<script>
+    var mRefreshGap = 1000 * 60 * 60;
+    setTimeout(function() {
+        location.reload();
+    }, mRefreshGap)
+</script>
+<script>
+    /** view **/
+
+    var mLinearLayout = new LinearLayout();
+    mLinearLayout.setBackgroundColor(0xffcccccc);
+    mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+    var mLinearLayoutLp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+    mLinearLayout.setLayoutParams(mLinearLayoutLp);
+
+    setContentView(mLinearLayout);
+
+    var mWebViewLp = new LayoutParams(0, LayoutParams.FILL_PARENT);
+    mWebViewLp.weight = 0.5;
+    mWebViewLp.setMargins(6);
+    var mListWebView = new WebView();
+    mLinearLayout.addView(mListWebView, mWebViewLp);
+</script>
+<script>
+    var TYPE = "neihevideo";
+    var DEBUG = false;
+
+    var mDetailItems = [];
+    var mStarted = false;
+
+    mListWebView.setOnPageFinishListener(function() {
+        var dom = mListWebView.getDom();
+        var sleepTime = 0;
+        var gotoPage = dom.getElementById("gotoPage");
+        if (gotoPage) {
+            sleepTime = 1000;
+            try {
+                gotoPage.click();
+            } catch(e) {
+
+            }
+        }
+        var refreshBtn = frames[0].document.getElementById("pageletRefreshBtn");
+        if (refreshBtn) {
+            sleepTime = 1000;
+            refreshBtn.children[0].click();
+        }
+
+        setTimeout(function() {
+            if (mStarted) {
+                return;
+            }
+            mStarted = true;
+
+            BeeUtils.log("开始爬取");
+
+            dom = mListWebView.getDom();
+            var itemDivs = dom.getElementsByClassName("item");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var itemDiv = itemDivs[i];
+                var playerContainerDiv = itemDiv.getElementsByClassName("player-container")[0];
+
+                var item = {};
+                item.source = "内涵段子";
+                item.category = "搞笑";
+                item.class = "video";
+                item.status = 3;
+                item.url = "http://m.neihanshequ.com/video/";
+                item.created_at = Math.floor(((new Date()).getTime() - Math.random() * mRefreshGap) / 1000);
+
+                var title = "";
+                var titleDiv = itemDiv.getElementsByClassName("J-keyword")[0];
+                if (titleDiv) {
+                    title = titleDiv.innerText;
+                }
+                if (title == "") {
+                    continue;
+                }
+                item.title = title;
+
+                var video = {};
+                var dataSrc = playerContainerDiv.attributes["data-src"].nodeValue;
+                if (BeeUtils.exist(TYPE, BeeUtils.hashCode(dataSrc)) && !DEBUG) {
+                    continue;
+                }
+                video.src = dataSrc;
+                if (!DEBUG) {
+                    BeeUtils.addKey(TYPE, BeeUtils.hashCode(dataSrc));
+                }
+
+                var durationDiv = itemDiv.getElementsByClassName("duration")[0];
+                video.duration = durationDiv.innerText;
+
+                var playCountDiv = itemDiv.getElementsByClassName("play-count")[0];
+                video.playcount = parseInt(playCountDiv.innerText);
+
+                var commentWrapper = itemDiv.getElementsByClassName("god-comments-wrapper")[0];
+                if (commentWrapper) {
+                    var comments = commentWrapper.getElementsByTagName("p")[0];
+                    video.comment = comments.innerText;
+                }
+
+                var posterDiv = itemDiv.getElementsByClassName("poster")[0];
+                var img = {};
+                img.src = posterDiv.src;
+                img.width = posterDiv.clientWidth;
+                img.height = posterDiv.clientHeight;
+                video.poster = img;
+                item.cover_img = img;
+
+                var shareDiv = itemDiv.getElementsByClassName("share")[0];
+                if (shareDiv.innerText.indexOf("万") < 0) {
+                    var shareCount = parseInt(shareDiv.innerText);
+                    if (shareCount < 2000) {
+                        continue;
+                    }
+                }
+                item.content = JSON.stringify(video);
+                mDetailItems.push(item);
+                console.log(item);
+            }
+
+            if (!DEBUG) {
+                var result = BeeUtils.putModel(mDetailItems);
+                if (result) {
+                    BeeUtils.log("已成功爬取：" + mDetailItems.length + "段视频");
+                }
+            }
+        }, sleepTime);
+    });
+    mListWebView.loadUrl("http://m.neihanshequ.com/video/");
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>百度百家蜜蜂</title>
+
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    var adText = ["不得转载"];
+
+    Bee.addChannel("热点", "http://baijia.baidu.com/?tn=listarticle&labelid=1");
+    Bee.addChannel("互联网", "http://baijia.baidu.com/?tn=listarticle&labelid=2");
+    Bee.addChannel("文化", "http://baijia.baidu.com/?tn=listarticle&labelid=3");
+    Bee.addChannel("娱乐", "http://baijia.baidu.com/?tn=listarticle&labelid=4");
+    Bee.addChannel("体育", "http://baijia.baidu.com/?tn=listarticle&labelid=5");
+    Bee.addChannel("财经", "http://baijia.baidu.com/?tn=listarticle&labelid=6");
+    Bee.addChannel("巨头", "http://baijia.baidu.com/?tn=listarticle&labelid=100");
+    Bee.addChannel("人物", "http://baijia.baidu.com/?tn=listarticle&labelid=101");
+    Bee.addChannel("电商", "http://baijia.baidu.com/?tn=listarticle&labelid=102");
+    Bee.addChannel("创投", "http://baijia.baidu.com/?tn=listarticle&labelid=103");
+    Bee.addChannel("智能硬件", "http://baijia.baidu.com/?tn=listarticle&labelid=104");
+    Bee.addChannel("互联网+", "http://baijia.baidu.com/?tn=listarticle&labelid=105");
+    Bee.addChannel("P2P", "http://baijia.baidu.com/?tn=listarticle&labelid=106");
+    Bee.addChannel("前沿技术", "http://baijia.baidu.com/?tn=listarticle&labelid=107");
+    Bee.addChannel("游戏", "http://baijia.baidu.com/?tn=listarticle&labelid=108");
+
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.setType("baidubaijia");
+    Bee.setImgReferer("http://hi.baidu.com");
+    Bee.onListLoaded = function(dom) {
+        try {
+            var moreButton = dom.byId("rendermore");
+            if (moreButton != undefined) {
+                moreButton.click();
+                moreButton.click();
+                moreButton.click();
+            }
+        } catch(e) {
+
+        }
+
+        setTimeout(function() {
+            var items = [];
+            var itemDivs = dom.byClasses("feeds-item");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var div = itemDivs[i];
+                var key = div.attr("id");
+                var item = {};
+                item.key = key;
+                item.category = Bee.getCurChannel().category;
+
+                var titleDiv = div.byTag("h3");
+                item.url = titleDiv.children[0].href;
+                item.title = titleDiv.innerText;
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }, 1000);
+
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        dom.removeTags("iframe");
+        var titleAuthorDiv = dom.byClass("article-info");
+        item.source = titleAuthorDiv.children[0].innerText;
+        var timeString = titleAuthorDiv.children[1].innerText;
+        item.created_at = Bee.convertTime(timeString);
+
+        var contentDiv = dom.byClass("article-detail");
+        var content = Bee.htmlToJson(contentDiv, adText);
+        var desc = {};
+        desc.desc = dom.byTag("blockquote").innerText;
+        content.add(0, desc);
+        item.content = content;
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

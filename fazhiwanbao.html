@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>法制网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var addText = ["本站文章谢绝转载", "如果您有更多新闻线索，请拨打法制晚报热线电话"];
+
+    function isRightItem(tag, width, height) {
+        var heightPx = height + "px";
+        var widthPx = width + "px";
+        if (tag.style != undefined && tag.style.width == widthPx && tag.style.height == heightPx) {
+            return true;
+        }
+        return false;
+    }
+
+    function getLis(tags, width, height) {
+        var lis = [];
+        for (var i = 0; i < tags.length; i++) {
+            if (isRightItem(tags[i], width, height)) {
+                var div = tags[i];
+                lis.push(div);
+            }
+        }
+        return lis;
+    }
+
+    Bee.addChannel("", "今日要闻", "http://www.fawan.com/tegao/");
+    Bee.addChannel("", "法网快讯", "http://www.fawan.com/Article/fwkx/index.html");
+    Bee.addChannel("国际", "http://www.fawan.com/politic/");
+    Bee.addChannel("国内", "http://www.fawan.com/society/");
+    Bee.addChannel("", "法制焦点", "http://www.fawan.com/fz/");
+    Bee.addChannel("军事", "http://www.fawan.com/mil/");
+    Bee.addChannel("", "辟谣", "http://www.fawan.com/Article/zxbk/");
+    Bee.addChannel("", "漫评", "http://www.fawan.com/comic/");
+    Bee.addChannel("国内","北京", "http://www.fawan.com/bjxw/");
+    Bee.addChannel("", "即时快评", "http://www.fawan.com/jskp/");
+    Bee.addChannel("财经", "http://www.fawan.com/finance/");
+    Bee.addChannel("娱乐", "http://www.fawan.com/ent/");
+    Bee.addChannel("体育", "http://www.fawan.com/sports/");
+    Bee.addChannel("教育", "http://www.fawan.com/Article/Youthszk/");
+    Bee.setType("www.fawan.com");
+    Bee.setImgReferer("www.fawan.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byId("left");
+            var divs = contList.byTags("div");
+            var lis = getLis(divs, 660, 189);
+
+
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var title = getLis(lis[i].byTags("div"), 660, 46)[0];
+                    if (title) {
+                        item.url = title.byTag("a").href;
+                        item.title = title.byTag("a").innerText;
+                        item.key = Bee.hashCode(item.url + "test1");
+                    }
+                    var sourceItem = getLis(lis[i].byTags("div"), 495, 30)[0];
+                if (sourceItem) {
+                    var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
+                    if (sourceString.indexOf("法制") >= 0) {
+                        item.source = sourceString;
+                    } else {
+                            Bee.passItem(item);
+                            continue;
+                        }
+                        var timeString = sourceItem.byTags("div")[1].innerText;
+                        item.created_at = Bee.convertTime(timeString);
+                    }
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byId("articleContnet");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var content = Bee.htmlToJson(article, addText);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>环球网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "环球今日评", "http://m.huanqiu.com/lm.html?id=138&v=9");
+    Bee.addChannel("国际", "评论", "http://m.huanqiu.com/lm.html?id=18&v=9");
+    Bee.addChannel("", "时政社会", "http://m.huanqiu.com/lm.html?id=20&v=9");
+    Bee.addChannel("国际", "http://m.huanqiu.com/lm.html?id=33&v=9");
+    Bee.setType("m.huanqiu.com");
+    Bee.setImgReferer("m.huanqiu.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("more", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("vis_listas");
+            console.log(contList);
+            var lis = contList.byClasses("lanmu_line_title");
+            console.log("lis " + lis);
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var item = {};
+                item.url = a.href;
+                item.title = a.innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var pageButton = dom.byClass("show_more");
+        if (pageButton && pageButton.style.display != "none") {
+            pageButton.click();
+        }
+
+        setTimeout(function() {
+            var article = dom.byClass("article_content");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("article_date_l fl").innerHTML;
+            var reCat = /[\u4e00-\u9fa5]{1,20}/gi;
+            var sourceString = attrib.match(reCat);
+            if (sourceString != null && sourceString[0].indexOf("环球") >= 0) {
+                item.source = sourceString[0];
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib.replace(sourceString[0], "");
+            item.created_at = Bee.convertTime(timeString);
+            item.category = Bee.getCurCategory();
+            article.removeClass("clear");
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

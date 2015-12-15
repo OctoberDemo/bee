@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>信网</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.qdxin.cn/");
+    Bee.addChannel("青岛", "http://www.qdxin.cn/qingdao/");
+    Bee.addChannel("汽车", "http://www.qdxin.cn/Car/");
+    Bee.addChannel("经济", "http://www.qdxin.cn/Finance/");
+    Bee.addChannel("民生", "http://www.qdxin.cn/qingdao/szms-index.html");
+    Bee.addChannel("原创", "http://www.qdxin.cn/xin/");
+    Bee.addChannel("房产", "http://www.qdxin.cn/House/");
+    Bee.addChannel("财富", "http://www.qdxin.cn/Fortune/");
+    Bee.addChannel("八卦", "http://www.qdxin.cn/fashion/mxbg-index.html");
+    Bee.addChannel("美食", "http://www.qdxin.cn/food/");
+    Bee.addChannel("教育", "http://www.qdxin.cn/edu/");
+    Bee.addChannel("时尚", "http://www.qdxin.cn/fashion/");
+    Bee.addChannel("婚假", "http://www.qdxin.cn/marry/");
+    Bee.addChannel("健康", "http://www.qdxin.cn/Health/");
+    Bee.setImgReferer("www.qdxin.cn");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses("hoverQk clear");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var src = itemDivs[i].byClass("dataR").innerText;
+            if (src.search("信网") > 0) {
+                var item = {};
+                var detail = itemDivs[i].byClass("biaoTiLink").byTag("a");
+                item.title = detail.innerText;
+                item.url = detail.href;
+                item.key = Bee.hashCode(item.url);
+                var img = itemDivs[i].byTag("img");
+                if (img != null) {
+                    var image = {};
+                    image.src = img.src;
+                    image.height = img.clientHeight;
+                    image.width = img.clientWidth;
+                    item.cover_img = img;
+                }
+                items.push(item);
+            } else {
+                console.log("非来自信网");
+            }
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var src = dom.byId("source_baidu").byTag("a");
+        if (src == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var s = src.innerText;
+        item.source = s;
+        item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
+        var content = Bee.htmlToJson(dom.byClass("baohanP"));
+        item.content = JSON.stringify(content);
+        item.tag = Bee.getCurCategory();
+        item.class = "news";
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

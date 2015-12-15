@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>中国新闻周刊</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("inewsweek.cn");
+    Bee.addChannel("新闻", "http://news.inewsweek.cn/");
+    Bee.addChannel("人物", "http://people.inewsweek.cn/");
+    Bee.addChannel("往事", "http://story.inewsweek.cn/");
+    Bee.setImgReferer("inewsweek.cn");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses("r_list_div");
+        var items = [];
+        console.log(itemDivs[0]);
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            var t = itemDivs[i].byTag("h3").innerText;
+            item.title = t;
+            var detail = itemDivs[i].byTag("a");
+            item.url = detail.href;
+            item.key = Bee.hashCode(item.url+"0");
+            var image = {};
+            var img;
+            if (Bee.getCurCategory() == "新闻") {
+                img = itemDivs[i].byTag("img");
+            } else {
+                img = detail.byTag("img");
+            }
+            image.src = img.src;
+            image.width = img.clientWidth;
+            image.height = img.clientHeight;
+            item.cover_img = image;
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.byId("source_baidu") == null) {
+            Bee.passItem(item);
+            return;
+        }
+        item.source = dom.byId("source_baidu").innerText + " " +dom.byId("author_baidu").innerText;
+        item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
+        var content = Bee.htmlToJson(dom.byClass("text_f"));
+        item.content = JSON.stringify(content);
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

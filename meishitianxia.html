@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>美食天下蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.meishichina.com");
+    Bee.setImgReferer("www.meishichina.com");
+    Bee.addChannel("健康", "http://www.meishichina.com/Health/CommonSense/");
+    Bee.addChannel("健康", "http://www.meishichina.com/Health/Pulchritude/");
+    Bee.addChannel("母婴", "http://www.meishichina.com/Health/Baby/");
+    Bee.addChannel("健康", "http://www.meishichina.com/Health/Virtue/");
+    Bee.addChannel("健康", "http://www.meishichina.com/Health/Food/");
+    Bee.requestNoScript();
+
+    Bee.setRefreshTime(1000 * 60 * 60);
+
+    Bee.onListLoaded = function(dom) {
+        var J_list = dom.byId("J_list");
+        var details = J_list.byClasses("detail");
+        var items = [];
+        for (var i = 0; i < details.length; i++) {
+            var detail = details[i];
+            var item = {};
+            item.title = detail.byTag("a").innerText;
+            item.url = detail.byTag("a").href;
+            item.created_at = Bee.convertTime(detail.byClass("subline").innerText);
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        dom.removeTags("iframe");
+
+        item.status = 3;
+        item.source = "美食天下";
+        item.category = Bee.getCurCategory();
+        item.tag = "美食";
+
+        var content = dom.byClass("content");
+
+        var hasNext = false;
+        var ps = content.byTags("p");
+        var nextP;
+        for (var i = 0; i < ps.length; i++) {
+            var p = ps[i];
+            if ((p.innerText.indexOf("下一页") >= 0 || p.innerText.indexOf("上一页") >= 0) && p.innerText.indexOf("[1]") >= 0) {
+                nextP = p;
+                hasNext = true;
+                break;
+            }
+        }
+        if (hasNext) {
+            var as = nextP.byTags("a");
+            var urls = [];
+            for (var i = 0; i < as.length - 1; i++) {
+                urls.push(as[i].href);
+            }
+            content.removeChild(nextP);
+            item.content = Bee.htmlToJson(content);
+
+            Bee.finishExtractSubUrls(urls, item);
+        } else {
+            item.content = Bee.htmlToJson(content);
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        dom.removeTags("iframe");
+        var content = dom.byClass("content");
+        var ps = content.byTags("p");
+        for (var i = 0; i < ps.length; i++) {
+            var p = ps[i];
+            if ((p.innerText.indexOf("下一页") >= 0 || p.innerText.indexOf("上一页") >= 0) && p.innerText.indexOf("[1]") >= 0) {
+                content.removeChild(p);
+                break;
+            }
+        }
+        var subContent = Bee.htmlToJson(content);
+        item.content = item.content.concat(subContent);
+
+        var result = Bee.continueSubItem(item);
+        if (result == false) {
+            Bee.finishExtractItem(item);
+        }
+    };
+
+
+    Bee.start();
+</script>
+</body>
+</html>

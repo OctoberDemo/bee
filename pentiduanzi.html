@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>喷嚏网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("dapenti");
+    Bee.addChannel("", "http://www.dapenti.com/blog/index.asp");
+    Bee.requestNoScript();
+    Bee.setImgReferer("http://www.dapenti.com");
+    Bee.setRefreshTime(1000 * 60 * 60);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var titles = dom.byClasses("title");
+        for (var i = 0; i < titles.length; i++) {
+            console.log(titles[i].innerText);
+            if (titles[i].innerText.trim() == "喷嚏一下") {
+                var cntNode = titles[i].nextElementSibling;
+                var lis = cntNode.byTags("li");
+                for (var i = 0; i < lis.length; i++) {
+                    var item = {};
+                    item.title = "";
+                    item.source = "喷嚏网";
+                    item.url = "http://www.dapenti.com/blog/index.asp";
+                    item.key = Bee.hashCode(lis[i].innerText);
+                    item.class = "duanzi";
+                    item.tag = "喷嚏网";
+                    item.status = 3;
+                    item.content = Bee.htmlToJson(lis[i]);
+                    var now = new Date();
+                    item.created_at = Bee.convertTime(now.toLocaleDateString());
+                    items.push(item);
+                }
+            }
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>深圳商报</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.iszed.com/");
+    Bee.addChannel("深圳", "http://shenzhen.iszed.com/");
+    Bee.addChannel("财经", "http://finance.iszed.com/");
+    Bee.addChannel("时事", "http://news.iszed.com/");
+    Bee.addChannel("文娱", "http://culture.iszed.com/");
+    Bee.addChannel("消费", "http://life.iszed.com/");
+    Bee.setImgReferer("iszed.com");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses("picArticle");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            var t = itemDivs[i].byClass("title");
+            item.title = t.byTag("a").innerText;
+            item.url = t.byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            var img = itemDivs[i].byClass("picture").byTag("img");
+            var image = {};
+            if (img != null) {
+                image.src = img.src;
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                item.cover_img = image;
+            }
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.byClass("date") == null) {
+            Bee.passItem(item);
+            return;
+        }
+        item.created_at = Bee.convertTime(dom.byClass("date").innerText);
+        item.source = dom.byClass("source").innerText;
+        var content = Bee.htmlToJson(dom.byClass("content"));
+        item.class = "news";
+        item.tag = Bee.getCurCategory();
+        item.content = JSON.stringify(content);
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

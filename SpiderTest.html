@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    var gap = 1000 * 60 * 60;
+
+    Bee.addChannel("热点", "http://www.yinews.cn/");
+    Bee.addChannel("热点", "http://www.yinews.cn/1");
+    Bee.addChannel("热点", "http://www.yinews.cn/2");
+
+    Bee.addChannel("时尚", "http://www.yinews.cn/article/1/");
+    Bee.addChannel("时尚", "http://www.yinews.cn/article/1/1");
+    Bee.addChannel("时尚", "http://www.yinews.cn/article/1/2");
+
+    Bee.addChannel("热点", "http://www.yinews.cn/article/2/");
+    Bee.addChannel("热点", "http://www.yinews.cn/article/2/1");
+    Bee.addChannel("热点", "http://www.yinews.cn/article/2/2");
+
+    Bee.addChannel("健康", "http://www.yinews.cn/article/3/");
+    Bee.addChannel("健康", "http://www.yinews.cn/article/3/1");
+    Bee.addChannel("健康", "http://www.yinews.cn/article/3/2");
+
+    Bee.addChannel("百科", "http://www.yinews.cn/article/5/");
+    Bee.addChannel("百科", "http://www.yinews.cn/article/5/1");
+    Bee.addChannel("百科", "http://www.yinews.cn/article/5/2");
+
+    Bee.addChannel("搞笑", "http://www.yinews.cn/article/11/");
+    Bee.addChannel("搞笑", "http://www.yinews.cn/article/11/1");
+    Bee.addChannel("搞笑", "http://www.yinews.cn/article/11/2");
+
+    Bee.addChannel("互联网", "http://www.yinews.cn/article/13/");
+    Bee.addChannel("互联网", "http://www.yinews.cn/article/13/1");
+    Bee.addChannel("互联网", "http://www.yinews.cn/article/13/2");
+
+    Bee.addChannel("历史", "http://www.yinews.cn/article/14/");
+    Bee.addChannel("历史", "http://www.yinews.cn/article/14/1");
+    Bee.addChannel("历史", "http://www.yinews.cn/article/14/2");
+
+    Bee.addChannel("财经", "http://www.yinews.cn/article/15/");
+    Bee.addChannel("财经", "http://www.yinews.cn/article/15/1");
+    Bee.addChannel("财经", "http://www.yinews.cn/article/15/2");
+
+    Bee.addChannel("女性", "http://www.yinews.cn/article/20/");
+    Bee.addChannel("女性", "http://www.yinews.cn/article/20/1");
+    Bee.addChannel("女性", "http://www.yinews.cn/article/20/2");
+
+    Bee.addChannel("美食", "http://www.yinews.cn/article/27/");
+    Bee.addChannel("美食", "http://www.yinews.cn/article/27/1");
+    Bee.addChannel("美食", "http://www.yinews.cn/article/27/2");
+
+    Bee.setType("yinews");
+    Bee.setRefreshTime(gap);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var itemDivs = dom.byClasses("item");
+        for (var i = 0; i < itemDivs.length; i++) {
+            var itemDiv = itemDivs[i];
+            var titleDiv = itemDiv.byClass("title");
+            if (titleDiv == undefined) {
+                continue;
+            }
+            var link = titleDiv.children[0];
+            var item = {};
+            item.category = Bee.getCurChannel().category;
+            item.key = itemDiv.attr("articleid");
+            item.url = link.href;
+
+            var time = itemDiv.byClass("time");
+            item.created_at = Bee.convertTime(time.innerText);
+
+            var metaDiv = itemDiv.byClass("meta");
+            item.source = metaDiv.children[0].innerText;
+
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var titleDiv = dom.byClass("article-title");
+        var title = titleDiv.innerText;
+        var check = "✅";
+        if (title.indexOf(check) >= 0) {
+            title = title.substring(title.indexOf(check) + 1);
+        }
+        item.title = title.trim();
+        var cntDiv = dom.byClass("article-content");
+        if (cntDiv.byClasses("rich_media_inner").length > 0) {
+            cntDiv = cntDiv.byClass("rich_media_inner");
+        } else if (cntDiv.byClasses("rich_media_content").length > 0) {
+            cntDiv = cntDiv.byClass("rich_media_content");
+        }
+
+        var content = Bee.htmlToJson(cntDiv, adText, adImgs);
+        item.content = JSON.stringify(content);
+        item.status = 2;
+        for (var i = 0; i < content.length; i++) {
+            if (content[i].img) {
+                item.cover_img = content[i].img;
+                break;
+            }
+        }
+
+        var metaDiv = dom.byClass("meta");
+        var links = metaDiv.byTag("a");
+        for (var i = 0; i < links.length; i++) {
+            if (links[i].innerText == "查看原文") {
+                item.url = links[i].href;
+            }
+        }
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+    var adImgs = ["http://filedl.gao7.com/g1/M00/91/81/wKgKxlXb5haAVP53AACW_rX6NwQ330.gif?",
+        "http://filedl.gao7.com/g1/M00/91/F1/CikzRVXcESKAOo_DAAH1Lt8AYE4722.gif?",
+        "http://filedl.gao7.com/g1/M00/92/31/CikzRVXcIEaAMHC5AAChMep-TD4490.jpg?",
+        "http://file.gao7.com/g1/M00/92/0C/CikzRVXcGBeAZ4x9AACb09VCirI117.jpg?",
+        "http://filelx.gao7.com/g1/M00/92/00/CikzRVXcFJaASZ-fAADDqCotRHs940.jpg?",
+        "http://file.gao7.com/g1/M00/91/DD/CikzRVXcDQ-AIaNWAAM20Bl9bkg033.jpg?",
+        "http://file.gao7.com/g1/M00/91/AA/wKgKxlXb7-mAXZDLAADjMTDJ5_E420.png?",
+        "http://filedl.gao7.com/g1/M00/91/BF/wKgKxlXb9P6Abk1DAAD1ZKWyJuM919.gif?",
+        "http://filedl.gao7.com/g1/M00/92/0C/CikzRVXcGCOAWJKQAABBmfbR8OE784.jpg?",
+        "http://wx.qlogo.cn/mmhead/FNfzwweVBCdHLx02N3NT0w83nc2BvQibtiaO3zdjrpQsY/0",
+        "http://filelx.gao7.com/g1/M00/91/FE/wKgKxlXcBSuAJHzCAAQgF-xDt3k951.png?",
+        "http://filelx.gao7.com/g1/M00/91/7E/CikzRVXb9H2AA3SBAAEgtuxD3Vg845.png?",
+        "http://filedl.gao7.com/g1/M00/93/0B/wKgKxlXcbbaAWjLRAACMWuFQ1VM921.jpg?",
+        "http://file.gao7.com/g1/M00/93/06/wKgKxlXcXhCAL_-qAADI67HT4BA280.jpg?",
+        "http://filelx.gao7.com/g1/M00/92/C6/CikzRVXcXYuAc28jAADDqCotRHs879.jpg?",   // 新闻晨报
+        "http://file.gao7.com/g1/M00/92/D0/CikzRVXcgKiADb1tAAGN27wB6FI802.png?",     // 今日亚洲
+        "http://filedl.gao7.com/g1/M00/9E/9A/CikzRVXj0qWAKWH3AAD6VvH2i6I483.png?"   // 创见
+    ];
+
+
+    var adText = ["免费订阅", "免费订阅", "点击阅读", "阅读原文", "微信公众", "↓↓", "未经许可", "分享本页面",
+        "一键关注", "↑↑", ["点击上方", "加入"], ["点击上方", "关注"], ["关注", "微信"], ["长按", "二维码"],
+        ["点击", "更多"], ["这篇文章", "分享"], ["点赞", "↓"], ["订阅", "关注"], ["订阅", "官方账号"],
+        ["分享", "朋友圈"], ["点击", "订阅"], "版权说明"];
+
+</script>
+</body>
+</html>

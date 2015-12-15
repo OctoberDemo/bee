@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>南都周刊蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.nbweekly.com");
+    Bee.setImgReferer("http://www.nbweekly.com");
+    Bee.addChannel("专题", "http://www.nbweekly.com/news/special/");
+    Bee.addChannel("国内", "http://www.nbweekly.com/news/china/");
+    Bee.addChannel("国际", "http://www.nbweekly.com/news/world/");
+    Bee.addChannel("财智", "http://www.nbweekly.com/news/business/");
+    Bee.addChannel("发现", "http://www.nbweekly.com/news/tech/");
+    Bee.addChannel("人物", "http://www.nbweekly.com/news/people/");
+    Bee.addChannel("观察", "http://www.nbweekly.com/news/observe/");
+    Bee.addChannel("阅读", "http://www.nbweekly.com/culture/books/");
+    Bee.addChannel("艺术", "http://www.nbweekly.com/culture/arts/");
+    Bee.addChannel("前沿", "http://www.nbweekly.com/culture/frontier/");
+    Bee.addChannel("时尚", "http://www.nbweekly.com/culture/fashion/");
+    Bee.addChannel("旅游", "http://www.nbweekly.com/culture/travel/");
+    Bee.addChannel("美食", "http://www.nbweekly.com/culture/food/");
+    Bee.addChannel("健康", "http://www.nbweekly.com/culture/health/");
+    Bee.addChannel("文化", "http://www.nbweekly.com/culture/Culture/");
+    Bee.setRefreshTime(1000 * 60 * 60 * 4);
+    Bee.onListLoaded = function(dom) {
+        var list = dom.byClass("list");
+        var lis = list.byTags("li");
+        var items = [];
+        for (var i = 0; i < lis.length; i++) {
+            var item = {};
+            var li = lis[i];
+            li.removeTag("strong");
+            item.title = li.byTag("h3").innerText;
+            item.url = li.byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            item.source = "南都周刊 " + li.byClass("author").innerText;
+            item.created_at = Bee.convertTime(li.byClass("data").innerText);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var cont = dom.byClass("cont");
+        var content = Bee.htmlToJson(cont);
+        var desc = {};
+        desc.desc = dom.byClass("desc").innerText;
+        console.log(desc);
+        content.add(0, desc);
+        item.content = content;
+        item.status = 3;
+        item.tag = "人文 资讯 生活";
+        item.category = Bee.getCurCategory();
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

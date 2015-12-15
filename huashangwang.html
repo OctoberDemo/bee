@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>华商网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "http://m.hsw.cn/");
+    Bee.setType("m.hsw.cn");
+    Bee.setImgReferer("m.hsw.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("morebtnm slideright", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("content");
+            var lis = contList.byTags("a");
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                item.url = lis[i].href;
+                item.title = lis[i].byTag("p").innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byId("artibody");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("details").byTag("h5").innerText.split("@");
+            var sourceString = attrib[0];
+            console.log(sourceString);
+            if (sourceString.indexOf("华商网") >= 0 || sourceString.indexOf("华商报") >= 0) {
+                item.source = "华商网";
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib[1];
+            item.created_at = Bee.convertTime(timeString);
+            item.category = Bee.getCurCategory();
+            var allButton = dom.byClass("morebtnm slideright", true);
+            if (allButton) {
+                allButton.click();
+            }
+            setTimeout(function() {
+                var content = Bee.htmlToJson(article);
+                item.content = content;
+                item.status = 3;
+                item.class = "";
+
+                Bee.finishExtractItem(item);
+            }, 500);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

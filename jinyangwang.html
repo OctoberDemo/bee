@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>金羊网</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.ycwb.com/");
+    Bee.addChannel("体育", "http://sports.ycwb.com/");
+    Bee.addChannel("原创", "http://news.ycwb.com/node_69952.htm");
+    Bee.addChannel("广东", "http://news.ycwb.com/n_gd_jd.htm");
+    Bee.addChannel("广州", "http://news.ycwb.com/n_bd_gz.htm");
+    Bee.addChannel("新闻", "http://news.ycwb.com/gundong.htm");
+    Bee.setImgReferer("www.ycwb.com");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var head = dom.byClass("headline");
+        var items = [];
+        if (head != null) {
+            var item1 = {};
+            var item2 = {};
+            var tags = head.byTags("h2");
+            item1.title = tags[0].byTag("a").innerText;
+            item2.title = tags[1].byTag("a").innerText;
+            item1.url = tags[0].byTag("a").href;
+            item2.url = tags[1].byTag("a").href;
+            item1.key = Bee.hashCode(item1.url);
+            item2.key = Bee.hashCode(item2.url);
+            items.push(item1);
+            items.push(item2);
+        }
+
+        var itemDivs = dom.byClass("news_list").byTags("li");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var tag = itemDivs[i].byTag("a");
+            if (tag != null) {
+                var item = {};
+                item.title = tag.innerText;
+                item.url = tag.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var src = dom.byId("source_baidu");
+        if (src == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var s = src.innerText;
+        if (s.search("金羊网") >= 0 || s.search("羊城晚报") >= 0) {
+            var time = dom.byId("pubtime_baidu").innerText;
+            time = time.replace("发表时间：","");
+            item.source = "金羊网";
+            item.created_at = Bee.convertTime(time);
+            item.tag = Bee.getCurCategory();
+            var content = Bee.htmlToJson(dom.byClass("main_article"));
+            item.content = JSON.stringify(content);
+            item.class = "news";
+            item.status = 3;
+            Bee.finishExtractItem(item);
+        } else {
+            console.log("来源不正确");
+            Bee.passItem(item);
+            return;
+        }
+    }
+    Bee.start();
+</script>
+</body>
+</html>

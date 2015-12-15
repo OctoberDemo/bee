@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>163新闻蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var adText = ["图集", "点击阅读"];
+
+    Bee.addChannel("社会", "http://3g.163.com/ntes/special/00340D52/3gtouchlist.html?docid=9ARM0ILIbjwangjian&title=%E7%A4%BE%E4%BC%9A");
+    Bee.addChannel("国内", "http://3g.163.com/ntes/special/00340D52/3gtouchlist.html?docid=9ARH4MJQbjwangjian&title=%E5%9B%BD%E5%86%85");
+    Bee.addChannel("国际", "http://3g.163.com/ntes/special/00340D52/3gtouchlist.html?docid=9ARM0BSPbjwangjian&title=%E5%9B%BD%E9%99%85");
+    Bee.setType("3g.163.com");
+    Bee.setImgReferer("3g.163.com");
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("pageBtn", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var lis = dom.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var item = {};
+                item.url = a.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var showAllBtn = dom.byId("showAllArticle");
+        if (showAllBtn) {
+            showAllBtn.click();
+        } else {
+            console.log("showall undefined");
+        }
+
+        setTimeout(function() {
+            item.title = dom.byClass("article-title").innerText;
+
+            var article = dom.byClass("articleList");
+            if (article == undefined) {
+                Bee.finishExtractItem();
+                return;
+            }
+            var timeString = article.byClass("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            item.source = article.byClass("source").innerText;
+            item.category = Bee.getCurCategory();
+
+            var cnt = article.byClass("text1");
+            var ad = cnt.byClass("fix-break-word");
+            cnt.removeChild(ad);
+            var ad2 = cnt.byClass("more-client");
+            ad2.parentNode.removeChild(ad2);
+            var content = Bee.htmlToJson(cnt, adText);
+            item.content = JSON.stringify(content);
+            item.status = 3;
+            item.class = "news";
+
+            if (Bee.getCurChannel().url.indexOf("nba") > 0) {
+                item.tag = "nba";
+            }
+
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].img) {
+                    item.cover_img = content[i].img;
+                    break;
+                }
+            }
+
+            Bee.finishExtractItem(item);
+            console.log(item);
+        });
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>光明网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("gmw.cn");
+    Bee.setImgReferer("gmw.cn");
+    Bee.requestNoScript();
+    Bee.setRefreshTime(1000 * 60 * 10);
+
+    Bee.addChannel("时政", "http://politics.gmw.cn/node_9844.htm");
+    Bee.addChannel("国内", "http://politics.gmw.cn/node_9840.htm");
+    Bee.addChannel("国际", "http://world.gmw.cn/node_4485.htm");
+    Bee.addChannel("国际", "http://world.gmw.cn/node_24177.htm");
+    Bee.addChannel("国际", "http://world.gmw.cn/node_22316.htm");
+
+    Bee.onListLoaded = function(dom) {
+        var news_list = dom.byClass("channelLeftPart");
+        var lis = news_list.byTags("li");
+        var items = [];
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var item = {};
+            item.title = li.byTag("a").innerText;
+            var link = li.byTag("a").attr("href");
+            if (link.indexOf("http") < 0) {
+                if (Bee.getCurCategory() == "时政" || Bee.getCurCategory() == "国内") {
+                    link = "http://politics.gmw.cn/" + link;
+                } else if (Bee.getCurCategory() == "国际") {
+                    link = "http://world.gmw.cn/" + link;
+                }
+            }
+            item.url = link;
+            item.category = Bee.getCurCategory();
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.title == "页面没有找到") {
+            Bee.passItem(item);
+            return;
+        }
+        var source = dom.byId("source").innerText;
+        if (source.indexOf("光明") < 0) {
+            console.log(source + " 非光明网内容");
+            Bee.passItem(item);
+            return;
+        }
+        if (source.indexOf("来源") == 0) {
+            source = source.substring(3);
+        }
+        item.source = source;
+
+        var pubTime = dom.byId("pubTime");
+        item.created_at = Bee.convertTime(pubTime.innerText);
+
+        var imgs = dom.byId("contentMain").byTags("img");
+        for (var i = 0; i < imgs.length; i++) {
+            if (imgs[i].src == "http://img.gmw.cn/pic/content_logo.png") {
+                imgs[i].parentNode.removeChild(imgs[i]);
+                break;
+            }
+        }
+
+        var contentMain = dom.byId("contentMain");
+        item.content = Bee.htmlToJson(contentMain);
+
+        item.status = 3;
+        item.class = "news";
+        item.tag = "人大 政协 要闻";
+
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

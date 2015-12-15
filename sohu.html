@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>搜狐蜜蜂</title>
+
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("sohu");
+    Bee.setRefreshTime(1000 * 60 * 5);
+
+//    Bee.addChannel("军事", "http://m.sohu.com/c/8/?_once_=000025_top_junshi_v3");
+    Bee.addChannel("国际", "http://m.sohu.com/c/57/");
+//    Bee.addChannel("社会", "http://m.sohu.com/c/53/");
+//    Bee.addChannel("时政", "http://m.sohu.com/c/32/");
+//    Bee.addChannel("财经", "http://m.sohu.com/c/5/?_once_=000025_top_caijing_v3");
+//    Bee.addChannel("娱乐", "http://m.sohu.com/c/4/?_once_=000025_top_yule_v3");
+
+    Bee.onListLoaded = function(dom) {
+        var cnts = dom.byClasses("cnl", true);
+        for (var i = 0; i < cnts.length; i++) {
+            if (cnts[i].innerText.indexOf("图鉴") >= 0 || cnts[i].innerText.indexOf("图库") >= 0
+            || cnts[i].innerText.indexOf("视觉") >= 0 || cnts[i].innerText.indexOf("图集") >= 0) {
+                cnts[i].parentNode.removeChild(cnts[i]);
+            }
+        }
+        var pics = dom.byClasses("pl", true);
+        for (var i = 0; i < pics.length; i++) {
+            pics[i].parentNode.removeChild(pics[i]);
+        }
+
+        var itemLinks = dom.byClasses("h4");
+        var items = [];
+        for (var i = 0; i < itemLinks.length; i++) {
+            var itemLink = itemLinks[i];
+            console.log(itemLink.innerText);
+            if (itemLink.innerText.indexOf("直播") == 0
+            || itemLink.innerText.indexOf("致创客") == 0
+            || itemLink.innerText.indexOf("互动") == 0) {
+                continue;
+            }
+            var url = itemLink.href;
+            if (url == undefined) {
+                continue;
+            }
+            var item = {};
+            item.url = url;
+            item.key = Bee.hashCode(item.url);
+            item.category = Bee.getCurChannel().category;
+            item.class = "news";
+
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var sleepTime = 0;
+        var btn = dom.byClass("btnsW3", true);
+        if (btn && btn.children[0]) {
+            btn.children[0].click();
+            sleepTime = 1000;
+        }
+
+        setTimeout(function() {
+            Bee.scrollToBottom(dom);
+
+            setTimeout(function() {
+                var picDiv = dom.byClass("picFin", true);
+                if (picDiv && picDiv.style.display != "none") {
+                    Bee.passItem();
+                    return;
+                }
+                var articleDiv = dom.byClass("fin", true);
+                if (articleDiv == undefined) {
+                    Bee.passItem();
+                    return;
+                }
+                var titleDiv = articleDiv.byClass("finTit");
+                var infoDiv = articleDiv.byClass("finInf");
+                var inf = infoDiv.byClass("inf");
+                var em = inf.children[0];
+                item.title = titleDiv.innerText;
+                item.created_at = Bee.convertTime("2015-" + em.innerText);
+                item.source = inf.children[1].innerText;
+                item.class = "news";
+
+                var contentDiv = articleDiv.byClass("finCnt");
+                var shareDiv = contentDiv.byClass("toShare");
+                contentDiv.removeChild(shareDiv);
+                var playDiv = contentDiv.byClass("player", true);
+                if (playDiv) {
+                    playDiv.parentNode.removeChild(playDiv);
+                }
+
+                var json = Bee.htmlToJson(contentDiv);
+                item.content = JSON.stringify(json);
+
+                for (var i = 0; i < json.length; i++) {
+                    if (item.cover_img == undefined) {
+                        item.cover_img = json[i].img;
+                    }
+                }
+                item.status = 3;
+
+//                console.log(item);
+                Bee.finishExtractItem(item);
+            }, 1000);
+
+        }, sleepTime);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

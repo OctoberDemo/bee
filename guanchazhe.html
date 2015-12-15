@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>观察者蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var adText = ["来源：观察者网", "本文系观察者网独家稿件"];
+
+    Bee.addChannel("要闻", "http://m.guancha.cn/home-news");
+    Bee.addChannel("时评", "http://m.guancha.cn/home-comment");
+    Bee.setType("m.guancha.cn");
+    Bee.setImgReferer("m.guancha.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("more", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("info_list");
+            var lis = contList.byTags("section");
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var item = {};
+                item.url = a.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            item.title = dom.byClass("detail").byTag("h1").innerText;
+
+            var article = dom.byClass("detail");
+            if (article == undefined) {
+                Bee.finishExtractItem();
+                return;
+            }
+            item.title = article.byTag("h1").innerText;
+            var timeString = article.byTag("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            var section = article.byTag("section");
+            var source = section.byClass("author").innerText.split("|");
+            var author = source[0].replace("来源：", "");
+            if (author.indexOf("观察者") >= 0) {
+                item.source = author;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            item.category = Bee.getCurCategory();
+            section.removeClass("bdsharebuttonbox m_share bdshare-button-style0-16");
+            section.removeClass("details-author");
+            item.content = Bee.htmlToJson(section, adText);
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+            console.log(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

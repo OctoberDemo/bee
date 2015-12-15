@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>华夏时报</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.chinatimes.cc/");
+    Bee.addChannel("人物", "http://www.chinatimes.cc/finance/renwu");
+    Bee.addChannel("政策", "http://www.chinatimes.cc/finance/zhengce");
+    Bee.addChannel("金融", "http://www.chinatimes.cc/finance/jinrong");
+    Bee.addChannel("证券", "http://www.chinatimes.cc/finance/zhengquan");
+    Bee.addChannel("公司", "http://www.chinatimes.cc/finance/gongsi");
+    Bee.addChannel("汽车", "http://www.chinatimes.cc/finance/qiche");
+    Bee.addChannel("地产", "http://www.chinatimes.cc/finance/dichan");
+    Bee.addChannel("天下", "http://www.chinatimes.cc/finance/tianxia");
+    Bee.addChannel("专栏", "http://www.chinatimes.cc/finance/zhuanlan");
+    Bee.addChannel("观点", "http://www.chinatimes.cc/finance/guandian");
+    Bee.setImgReferer("chinatimes.cc");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        Bee.scrollToBottom(dom);
+        setTimeout(function() {
+            var itemDiv = dom.byClass("column-top");
+            var items = [];
+            var item = [];
+            if (itemDiv != null) {
+                var img = itemDiv.byTag("img");
+                item.title = img.title;
+                item.url = itemDiv.byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                var image = {};
+                image.src = img.src;
+                image.height = img.clientHeight;
+                image.width = img.clientWidth;
+                item.cover_img = img;
+                items.push(item);
+            }
+
+            var itemDivs = dom.byClass("list_news").byClasses("item");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                var t = itemDivs[i].byTag("h2").byTag("a");
+                item.title = t.innerText;
+                item.url = t.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        },1000);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var src = dom.byId("source_baidu");
+        if (src = null || src.innerText != "来源：华夏时报") {
+            Bee.passItem(item);
+            return;
+        }
+        var author = dom.byId("author_baidu");
+        item.source = "华夏时报 " + author.innerText;
+        var pubT = dom.byId("pubtime_baidu").innerText;
+        pubT = pubT.replace("发布时间：","");
+        var date = new Date();
+        pubT = pubT.replace("今天", date.toLocaleDateString());
+        item.created_at = Bee.convertTime(pubT);
+        var content = Bee.htmlToJson(dom.byClass("infoMain"));
+        item.content = JSON.stringify(content);
+        var img = dom.byClass("infoMain").byTag("img");
+        if (img != null) {
+            var image = {};
+            image.src = img.src;
+            image.width = img.clientWidth;
+            image.height = img.clientHeight;
+            item.cover_img = img;
+        }
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

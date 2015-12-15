@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>财新图片蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("caixin.com");
+    Bee.setImgReferer("caixin.com");
+
+//    Bee.addChannel("", "图片 滚动新闻", "http://photos.caixin.com/dailynews/");
+    Bee.addChannel("", "图片 专题报道", "http://photos.caixin.com/cxtj/");
+
+    Bee.requestNoScript();
+    Bee.onListLoaded = function(dom) {
+        var picList = dom.byClass("picList");
+        var dls = picList.byTags("dl");
+        var items = [];
+        for (var i = 0; i < dls.length; i++) {
+            var item = {};
+            item.url = dls[i].byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        item.title = dom.byClass("crumbsTit").innerText;
+        item.created_at = Bee.convertTime(dom.byClass("date").innerText);
+
+        var imgBox = dom.byClass("imgBox");
+        var img = Bee.convertImg(imgBox.byTag("img"));
+
+        var bigPicTxt2 = dom.byClass("bigPicTxt2");
+        img.desc = bigPicTxt2.byTag("dt").innerText;
+
+        item.imgs = [];
+        item.imgs.push(img);
+
+        var slidepics = dom.byClass("slidepics");
+        slidepics.removeClass("cur");
+        var lis = slidepics.byTags("li");
+        var urls = [];
+        for (var i = 0; i < lis.length; i++) {
+            urls.push(lis[i].byTag("a").href);
+        }
+        Bee.finishExtractSubUrls(urls, item);
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        var imgBox = dom.byClass("imgBox");
+        var img = Bee.convertImg(imgBox.byTag("img"));
+
+        var bigPicTxt2 = dom.byClass("bigPicTxt2");
+        img.desc = bigPicTxt2.byTag("dt").innerText;
+
+        item.imgs.push(img);
+
+        var result = Bee.continueSubItem(item);
+        if (result == false) {
+            item.content = {};
+            item.cover_img = {};
+            item.cover_img.src = item.imgs[0].src;
+            item.cover_img.width = item.imgs[0].width;
+            item.cover_img.height = item.imgs[0].height;
+
+            item.content.imgs = item.imgs;
+            delete item.imgs;
+
+            item.status = 5;
+            item.source = "财新网";
+            item.class = "image";
+            Bee.finishExtractItem(item, true);
+        }
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

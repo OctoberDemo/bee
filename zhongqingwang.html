@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>中青网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "http://m.youth.cn/category/3");
+    Bee.setType("m.youth.cn");
+    Bee.setImgReferer("m.youth.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("ui-more", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("ui-mod-lists ui-cate-list ui-category-list ui-model-left");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var li = lis[i];
+                var item = {};
+                var head = li.byTag("a");
+                item.url = head.href;
+                item.title = head.byClass("ui-title").innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("ui-article-detail");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("ui-article-infos");
+            var sourceString = attrib.byClass("source").innerText;
+            if (sourceString.indexOf("中国青年") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib.byTag("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            item.category = Bee.getCurCategory();
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

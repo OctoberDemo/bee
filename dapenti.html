@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>喷嚏网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("dapenti");
+    Bee.addChannel("", "http://www.dapenti.com/blog/index.asp");
+    Bee.addChannel("", "http://widget.wumii.cn/ext/widget/hot?prefix=http://www.dapenti.com/&num=50&t=1");
+    Bee.requestNoScript();
+    Bee.setImgReferer("http://www.dapenti.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var center_title_down = dom.byClass("center_title_down", true);
+        if (center_title_down) {
+            var links = center_title_down.byTags("a");
+            for (var i = 0; i < links.length; i++) {
+                var item = {};
+                item.title = links[i].innerText;
+                item.url = links[i].href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        var hots = dom.byClass("hots", true);
+        if (hots) {
+            var textItems = dom.byClasses("textItem");
+            for (var i = 0; i < textItems.length; i++) {
+                var item = {};
+                var itemTitle = textItems[i].byClass("itemTitle");
+                itemTitle.removeTag("span");
+                item.title = itemTitle.innerText;
+                item.url = itemTitle.byTag("a").attr("original");
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+
+//        console.log(items);
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.body.innerText.length < 100) {
+            Bee.passItem();
+            return;
+        }
+        var embed = dom.byTags("embed");
+        if (embed.length > 0) {
+            Bee.passItem();
+            return;
+        }
+
+        var tables = dom.byTags("table");
+        var tableRemove = [];
+        for (var i = 0; i < tables.length; i++) {
+            var table = tables[i];
+            if (table.clientHeight != 22 && (table.clientWidth < 300 || table.clientHeight < 500)) {
+                tableRemove.push(table);
+            }
+        }
+        while (tableRemove.length > 0) {
+            var table = tableRemove.shift();
+            table.parentNode.removeChild(table);
+        }
+
+        var ke_zeroborder = dom.byTag("table").byClass("ke-zeroborder");
+
+        console.log(ke_zeroborder);
+
+        if (item.title && item.title.indexOf("...") > 0) {
+            var style1 = ke_zeroborder.byClass("style1");
+            var title = style1.innerText;
+            if (title.indexOf("[") >= 0 && title.indexOf("]") > 0) {
+                title = title.substring(title.indexOf("]") + 1);
+            }
+            item.title = title;
+        }
+        item.tag = "喷嚏网";
+
+        var divs = ke_zeroborder.byTags("div");
+        for (var i = 0; i < divs.length; i++) {
+            var div = divs[i];
+            if (div.align == "right") {
+                if (div.innerText.indexOf("发布于") >= 0) {
+                    var publish = div.byTag("span").innerText;
+                    publish = publish.substring(publish.indexOf("发布于") + 3);
+                    item.created_at = Bee.convertTime(publish);
+                }
+            }
+        }
+
+//        ke_zeroborder.removeTags("table");
+        console.log(ke_zeroborder.byTag("div"));
+        var divs = ke_zeroborder.byTags("div");
+        var cntDiv;
+        var maxHeight = 0;
+        for (var i = 0; i < divs.length; i++) {
+            var div = divs[i];
+            if (div.clientHeight > maxHeight) {
+                cntDiv = div;
+                maxHeight = div.clientHeight;
+            }
+        }
+        cnt = Bee.htmlToJson(cntDiv);
+        item.source = "喷嚏网";
+        item.status = 3;
+        item.content = cnt;
+
+        for (var i = 0; i < cnt.length; i++) {
+            if (cnt[i].img) {
+                item.cover_img = cnt[i].img;
+                break;
+            } else if (cnt[i].iframe) {
+                var src = cnt[i].iframe.src;
+                if (src.indexOf("acfun.tv") >= 0) {
+                    var start = src.indexOf("vid=") + 4;
+                    src = src.substring(start);
+                    var end = src.indexOf(";");
+                    src = src.substring(0, end);
+                    cnt[i].iframe.src = "http://m.acfun.tv/player?#vid=" + src;
+                }
+            }
+        }
+        console.log(item);
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

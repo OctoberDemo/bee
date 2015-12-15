@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>新华网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "http://m.news.cn/html/channel-27.html");
+    Bee.addChannel("", "时政", "http://m.news.cn/html/channel-43.html");
+    Bee.addChannel("财经", "http://m.news.cn/html/channel-29.html");
+    Bee.addChannel("", "炫观点", "http://m.news.cn/html/channel-48.html");
+    Bee.setType("m.news.cn");
+    Bee.setImgReferer("m.news.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("ChmoreBtn", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("newlist");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var item = {};
+                item.url = a.href;
+                item.title = a.innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("wenzhangblock");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = article.byClass("news_source").innerHTML.split(/&nbsp;&nbsp;/);
+            var sourceString = attrib[0];
+            console.log(attrib);
+            if (sourceString.indexOf("新华") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = (new Date()).getFullYear() +　"-" + attrib[1];
+            item.created_at = Bee.convertTime(timeString);
+            item.category = Bee.getCurCategory();
+            article.removeClass("news_my");
+            article.removeClass("news_source");
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

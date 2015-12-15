@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>腾讯视频蜜蜂</title>
+
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("m.v.qq.com");
+    Bee.addChannel("1", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("8", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("3", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("256", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("4", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("64", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("5", "http://m.v.qq.com/list/53.html");
+    Bee.addChannel("6", "http://m.v.qq.com/list/53.html");
+
+    Bee.onListLoaded = function(dom) {
+        var window = Bee.getListWebView().getFrame().contentWindow;
+        console.log(window.txmv.list.conf);
+        window.txmv.list.conf.type = 53;
+        window.txmv.list.conf.sort = 1;
+        window.txmv.list.conf.itype = Bee.getCurCategory();
+
+        window.txmv.list.goList();
+        setTimeout(function() {
+            var items = [];
+            var covers = window.QZOutputJson.cover;
+            console.log(covers);
+            for (var i = 0; i < covers.length; i++) {
+                var cover = covers[i];
+                var id = cover.c_cover_id;
+                var item = {};
+                item.url = "http://m.v.qq.com/cover/" + id[0] + "/" + id + ".html";
+                item.title = cover.c_title;
+                item.key = Bee.hashCode(item.url);
+                if (cover.c_second_title) {
+                    item.title += "：" + cover.c_second_title;
+                }
+                item.created_at = Bee.convertTime(cover.c_checkup_time);
+                if (Bee.getCurCategory() == "1") {
+                    item.category = "NBA";
+                } else if (Bee.getCurCategory() == "8") {
+                    item.category = "国际足球";
+                } else if (Bee.getCurCategory() == "3") {
+                    item.category = "国内足球";
+                } else if (Bee.getCurCategory() == "256") {
+                    item.category = "国内篮球";
+                } else if (Bee.getCurCategory() == "4") {
+                    item.category = "综合体育";
+                } else if (Bee.getCurCategory() == "64") {
+                    item.category = "趣闻花边";
+                } else if (Bee.getCurCategory() == "5") {
+                    item.category = "功夫搏击";
+                } else if (Bee.getCurCategory() == "6") {
+                    item.category = "极限";
+                }
+
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var itemCurrent = dom.byClass("item current", true);
+        if (itemCurrent == undefined) {
+            Bee.passItem(item);
+        }
+        item.title = itemCurrent.byTag("a").attr("title");
+
+        var imgW = 0;
+        var imgH = 0;
+        var poster = dom.byClass("tvp_poster_img", true);
+        if (poster) {
+            imgW = poster.naturalWidth;
+            imgH = poster.naturalHeight;
+        }
+        var iframe = {};
+        iframe.width = imgW;
+        iframe.height = imgH;
+        iframe.src = "http://v.qq.com/iframe/player.html?vid=" + itemCurrent.attr("vid") + "&tiny=0&auto=0";
+        var cnt = [];
+        var cntItem = {};
+        cntItem.iframe = iframe;
+        cnt.push(cntItem);
+        item.content = cnt;
+        item.source = "腾讯视频";
+        item.status = 3;
+        item.tag = "视频";
+
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

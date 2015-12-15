@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>京华网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("jinghua");
+    Bee.setImgReferer("epaper.jinghua.cn");
+
+    Bee.addChannel("", "http://epaper.jinghua.cn/");
+    Bee.setRefreshTime(1000 * 60 * 60 * 4);
+
+    Bee.onListDomLoaded = function(dom) {
+        var info_col = dom.byClass("info-col");
+        var dds = info_col.byTags("dd");
+        var dts = info_col.byTags("dt");
+        var items = [];
+        for (var i = 1; i < dds.length; i++) {
+            var title = dts[i].byTag("a").innerText;
+            if (title.indexOf("周评") >= 0 || title.indexOf("民生") >= 0
+                || title.indexOf("胡同") >= 0 || title.indexOf("北京·时事") >= 0
+                    || title.indexOf("北京·热线") >= 0) {
+                continue;
+            }
+            var as = dds[i].byTags("a");
+            for (var j = 0; j < as.length; j++) {
+                var item = {};
+                item.title = as[j].innerText;
+                item.url = as[j].href;
+                var tag = title;
+                item.tag = tag.substring(tag.indexOf("版：") + 2).trim();
+                item.tag = item.tag.replace("·", " ");
+                if (item.tag.indexOf("要闻") >= 0) {
+                    item.category = "国内";
+                } else if (item.tag.indexOf("国际") >= 0) {
+                    item.category = "国际";
+                } else if (item.tag.indexOf("文娱") >= 0 && item.tag.indexOf("体育") < 0) {
+                    item.category = "文化";
+                } else if (item.tag.indexOf("体育") >= 0 && item.tag.indexOf("文娱") < 0) {
+                    item.category = "体育";
+                } else if (item.tag.indexOf("财经") >= 0) {
+                    item.category = "财经";
+                }
+                item.key = Bee.hashCode(item.url);
+                item.source = "京华网";
+                items.push(item);
+            }
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        dom.removeTags("script");
+        dom.removeTags("iframe");
+
+        if (item.title.indexOf("彩票开奖") >= 0 || item.title.indexOf("jhad") >= 0
+                || item.title.indexOf("上期答案") >= 0 || item.title.indexOf("简讯") >= 0) {
+            Bee.passItem(item);
+            return;
+        }
+
+        var title_di = dom.byId("title_di");
+        var timeDiv = title_di.byClass("time");
+        var timeStr = timeDiv.innerText;
+        item.created_at = Bee.convertTime(timeStr);
+
+        if (item.title == "燕山快笔" || item.title == "牛股点评") {
+            item.title += " " + timeStr;
+        }
+
+        var container = dom.byId("container");
+        container.removeId("thks");
+        container.removeClass("banner_content");
+        container.removeId("bdshare");
+        item.content = Bee.htmlToJson(container);
+        item.class = "news";
+        item.status = 5;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

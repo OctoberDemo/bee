@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script>
+    var timeString = "2015-11-29 10:55:09";
+
+    function formatTime(timeString) {
+        if (!timeString) {
+            console.log("Error:" + timeString);
+            return;
+        }
+        timeString = timeString.trim();
+        console.log("1:" + timeString);
+        if (timeString.indexOf("日") > 0 && timeString.indexOf("月") > 0 && timeString.indexOf("年") < 0) {
+            timeString = (new Date()).getFullYear() + "年" +timeString;
+        }
+        if (timeString.indexOf("日") > 0) {
+            var timeFrames = timeString.split("日");
+            timeFrames[0] = timeFrames[0].replace("年", "-");
+            timeFrames[0] = timeFrames[0].replace("月", "-");
+            timeString = timeFrames[0].trim() + " " + timeFrames[1].trim();
+        }
+
+        var colonCount = timeString.split(":").length - 1;
+        var now = new Date();
+        if (colonCount == 1) {
+            var sec = Math.floor(Math.random() * 59);
+            timeString += ":" + sec;
+        } else if (colonCount == 0) {
+            var h = Math.floor(Math.random() * now.getHours());
+            var m = Math.floor(Math.random() * now.getMinutes());
+            var s = Math.floor(Math.random() * now.getSeconds());
+            timeString += " " + h + ":" + m + ":" + s;
+        }
+        timeString = timeString.replace(/-/g, "/");
+        d = new Date(timeString);
+        console.log("2:" + d.toLocaleString());
+        if (d != "Invalid Date") {
+            return d;
+        } else {
+            console.log("Error:" + timeString);
+            return new Date();
+        }
+    }
+
+    formatTime(timeString);
+    console.log("2015/11/29 10:55:09");
+    formatTime("2015/11/29 10:55:09")
+</script>
+</body>
+</html>

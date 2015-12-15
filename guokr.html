@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>果壳网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.guokr.com");
+    Bee.setImgReferer("www.guokr.com");
+    Bee.addChannel("", "http://www.guokr.com/scientific/");
+    Bee.setRefreshTime(1000 * 60 * 60);
+
+    Bee.onListLoaded = function(dom) {
+        dom.removeClasses("article-hot");
+        var articles = dom.byClasses("article");
+        var items = [];
+        for (var i = 0; i < articles.length; i++) {
+            var item = {};
+            var article = articles[i];
+            item.title = article.byClass("article-title").innerText;
+            item.url = article.byClass("article-title").href;
+            item.key = Bee.hashCode(item.url);
+            item.desc = article.byClass("article-summary").innerText;
+            item.tag = article.byClass("label-common").innerText;
+
+            var info = article.byClass("article-info");
+            info.removeClass("article-comments");
+            var infos = info.innerText.split("|");
+            item.source = "果壳网 " + infos[0];
+            item.created_at = Bee.convertTime(infos[1]);
+            items.push(item);
+
+            var img = article.byTag("img");
+            var cover_img = {};
+            cover_img.width = img.naturalWidth;
+            cover_img.height = img.naturalHeight;
+            cover_img.src = Bee.makeImgJumpUrl(img.src, "www.guokr.com");
+            item.cover_img = cover_img;
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var content = Bee.htmlToJson(dom.byClass("document"));
+        var desc = {};
+        desc.desc = item.desc;
+        content.add(0, desc);
+        delete item.desc;
+        item.content = content;
+        item.status = 3;
+        item.category = "科技";
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

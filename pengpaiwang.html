@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>澎湃网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "时事", "http://m.thepaper.cn/channel_25950");
+    Bee.addChannel("财经", "http://m.thepaper.cn/channel_25951");
+    Bee.addChannel("", "思想", "http://m.thepaper.cn/channel_25952");
+    Bee.addChannel("", "生活", "http://m.thepaper.cn/channel_25953");
+    Bee.setType("m.thepaper.cn");
+    Bee.setImgReferer("m.thepaper.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("more_bt", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("list_hp");
+            var lis = contList.byClasses("txt_t");
+            for (var i = 0; i < lis.length; i++) {
+                var li = lis[i];
+                if (li.byClass("t_label")) {
+                    continue;
+                }
+                var item = {};
+                var head = li.byClass("news_tit02").byTag("a");
+                item.url = head.href;
+                item.title = head.innerText;
+                item.key = Bee.hashCode(item.url +"test12");
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("news_part");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            if (dom.byTag("video")) {
+                Bee.passItem(item);
+                return;
+            }
+            var attrib = dom.byClasses("about_news");
+            var sourceString = attrib[0].innerText.split(" ")[0];
+            console.log(sourceString);
+            if (sourceString.indexOf("澎湃") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib[1].innerText;
+            item.created_at = Bee.convertTime(timeString);
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

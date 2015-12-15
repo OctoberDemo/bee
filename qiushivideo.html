@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>糗百视频蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+//    Bee.setRefreshTime(1000 * 60 * 60);
+    Bee.setType("qiubaivideo");
+    Bee.addChannel("搞笑视频", "http://www.qiushibaike.com/videorank");
+    Bee.onListLoaded = function(dom) {
+        dom.removeTags("iframe")
+        var nextPage = dom.byId("nextPage");
+        if (nextPage != undefined) {
+            nextPage.click();
+        }
+        console.log(nextPage.href);
+        var items = [];
+        var articles = dom.getElementsByTagName("article");
+        for(var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            var id = article.id;
+            var item = {};
+            item.class = "video";
+            item.tag = "糗百视频";
+            item.status = 3;
+            item.category = Bee.getCurCategory();
+            item.key = id;
+            var now = new Date();
+            item.created_at = Bee.convertTime(now.toLocaleDateString());
+            var a = article.byTag("a");
+            item.source = "糗百视频--" + a.byClass("touch-user-name").innerText;
+            var title = a.children[1].innerText;
+            item.title = title;
+            item.url = a.href;
+
+            var img = {};
+            var imgDiv = a.byClass("video_cover");
+            img.src = imgDiv.src;
+            img.height = imgDiv.height;
+            img.width = imgDiv.width;
+
+            var video = {};
+            var videoDiv = a.byClass("vjs-tech");
+            video.poster = img;
+            video.src = videoDiv.attributes["data-src"].nodeValue;
+
+//            var durationDiv = article.byClass("vjs-duration-display");
+//            video.duration = durationDiv.innerText;
+
+//            console.log(durationDiv);
+            var playCountDiv = article.byClass("playloops");
+            video.playcount = playCountDiv.innerText.split(" " , 1).toString();
+            item.cover_img = img;
+
+            item.content = JSON.stringify(video);
+            items.push(item);
+            console.log(item);
+        }
+
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>中青评论蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("pinglun.youth.cn");
+    Bee.setImgReferer("http://pinglun.youth.cn/");
+    Bee.addChannel("热点", "http://pinglun.youth.cn/wztt/");
+    Bee.addChannel("时事", "http://pinglun.youth.cn/shsz/");
+    Bee.addChannel("国际", "http://pinglun.youth.cn/cjkj/");
+    Bee.addChannel("财经", "http://pinglun.youth.cn/cjkd/");
+    Bee.addChannel("文娱", "http://pinglun.youth.cn/wysh/");
+    Bee.addChannel("政策", "http://pinglun.youth.cn/zc/");
+    Bee.addChannel("理论", "http://pinglun.youth.cn/ll/");
+    Bee.setRefreshTime(1000 * 60 * 60 * 4);
+
+    Bee.onListLoaded = function(dom) {
+        if (Bee.getCurCategory() == "理论") {
+            var news = dom.byClasses("pl_news xline pl_ative");
+            var items = [];
+            for (var i = 0; i < news.length; i++) {
+                var item = {};
+                var li = news[i].byTag("li");
+                item.title = li.byTag("a").innerText;
+                item.url = li.byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        } else {
+            var list = dom.byClass("tj3_1");
+            var lis = list.byTags("li");
+            var items = [];
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var li = lis[i];
+                item.title = li.byTag("a").innerText;
+                item.url = li.byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var cont = dom.byClass("article");
+        var content = Bee.htmlToJson(cont);
+        item.content = content;
+        item.status = 3;
+        item.tag = "网评 时评 评论";
+        item.category = Bee.getCurCategory()
+        var source = dom.byId("source_baidu").innerText;
+        source = source.substring(source.indexOf("：")+1).trim();
+        item.source = source;
+        var create_time = dom.byId("pubtime_baidu").innerText;
+        create_time = create_time.substring(create_time.indexOf("：")+1).trim();
+        item.created_at = Bee.convertTime(create_time);
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

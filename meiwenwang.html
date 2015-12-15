@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>美闻网</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.usnook.com/");
+    Bee.addChannel("最新", "http://www.usnook.com/roll/news/");
+    Bee.addChannel("政治", "http://www.usnook.com/roll/news/politics");
+    Bee.addChannel("经济", "http://www.usnook.com/roll/news/finance");
+    Bee.addChannel("社会", "http://www.usnook.com/roll/news/community");
+    Bee.addChannel("移民", "http://www.usnook.com/roll/news/immigrant");
+    Bee.addChannel("地产", "http://www.usnook.com/roll/news/estate");
+    Bee.addChannel("求学", "http://www.usnook.com/roll/news/study");
+    Bee.addChannel("军事", "http://www.usnook.com/roll/news/military");
+    Bee.addChannel("生活", "http://www.usnook.com/roll/news/living");
+    Bee.addChannel("娱乐", "http://www.usnook.com/roll/news/entertainment");
+    Bee.addChannel("科技", "http://www.usnook.com/roll/news/science");
+    Bee.addChannel("体育", "http://www.usnook.com/roll/news/sports");
+    Bee.addChannel("旅游", "http://www.usnook.com/roll/news/travel");
+    Bee.addChannel("华人", "http://www.usnook.com/roll/news/chinese");
+    Bee.addChannel("环球", "http://www.usnook.com/roll/news/world");
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses("usa_blbt");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            var t = itemDivs[i].byClass("usa_blbtlt").byTag("h3").byTag("a");
+            item.title = t.innerText;
+            item.url = t.href;
+            item.key = Bee.hashCode(item.url);
+            item.created_at = Bee.convertTime(itemDivs[i].byClass("usa_blbtrt blue").innerText);
+            var img = itemDivs[i].byClass("usa_blbtrb").byTag("img");
+            if (img != null) {
+                var image = {};
+                image.src = img.src;
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                item.cover_img = image;
+            }
+            items.push(item);
+            console.log(item);
+        }
+        console.log(items.length);
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var source = dom.byId("zg11221");
+        if (source == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var src = source.innerText;
+        var i = src.search("来源");
+        src = src.substr(i, src.length);
+        if (src.search("美闻网") > 0) {
+            item.category = "news";
+            item.source = src;
+            var content = Bee.htmlToJson(dom.byClass("zg114"));
+            item.content = JSON.stringify(content);
+            item.status = 3;
+            Bee.finishExtractItem(item);
+        } else {
+            Bee.passItem(item);
+        }
+    }
+    Bee.start();
+
+</script>
+</body>
+</html>

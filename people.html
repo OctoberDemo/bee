@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>人民网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("m.people.cn");
+    Bee.setImgReferer("m.people.cn");
+    Bee.addChannel("国内", "http://m.people.cn/22/62/index1.html");
+    Bee.addChannel("国内", "http://m.people.cn/22/41/188/index.html");
+    Bee.addChannel("国内", "http://m.people.cn/22/41/189/index.html");
+    Bee.addChannel("国内", "http://m.people.cn/22/192/index.html");
+    Bee.addChannel("国际", "http://m.people.cn/23/57/index.html");
+    Bee.addChannel("国际", "http://m.people.cn/23/58/index.html");
+    Bee.addChannel("国际", "http://m.people.cn/23/59/index.html");
+    Bee.addChannel("国际", "http://m.people.cn/23/60/index.html");
+    Bee.addChannel("国际", "http://m.people.cn/23/61/index.html");
+    Bee.addChannel("观点", "http://m.people.cn/25/110/index.html");
+    Bee.addChannel("观点", "http://m.people.cn/25/112/118/index.html");
+    Bee.addChannel("观点", "http://m.people.cn/25/112/119/index.html");
+    Bee.addChannel("观点", "http://m.people.cn/25/112/122/index.html");
+    Bee.addChannel("观点", "http://m.people.cn/25/112/124/index.html");
+    Bee.addChannel("社会", "http://m.people.cn/30/676/index.html");
+    Bee.addChannel("社会", "http://m.people.cn/30/75/index.html");
+    Bee.addChannel("社会", "http://m.people.cn/30/79/index.html");
+    Bee.addChannel("社会", "http://m.people.cn/30/80/index.html");
+    Bee.addChannel("军事", "http://m.people.cn/24/101/index.html");
+    Bee.addChannel("军事", "http://m.people.cn/24/102/index.html");
+    Bee.addChannel("军事", "http://m.people.cn/29/176/index.html");
+    Bee.addChannel("时尚", "http://m.people.cn/33/931/index.html");
+    Bee.addChannel("健康", "http://m.people.cn/34/166/index.html");
+
+    Bee.setRefreshTime(1000 * 60 * 10);
+
+    Bee.onListLoaded = function(dom) {
+        var news_list = dom.byClass("news_list");
+        var lis = news_list.byTags("li");
+        var items = [];
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var item = {};
+            item.title = li.byTag("a").innerText;
+            item.url = li.byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            item.category = Bee.getCurCategory();
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var h4 = dom.byTag("h4");
+        var infos = h4.innerText.trim().split(" ");
+        var author = infos[infos.length - 1];
+        if (author.indexOf("人民网") >= 0 || author.indexOf("人民日报") >= 0) {
+            item.source = author;
+        } else {
+            Bee.passItem(item);
+            return;
+        }
+        var timeString = "";
+        for (var i = 0; i < infos.length - 1; i++) {
+            timeString += infos[i] + " ";
+        }
+        item.created_at = Bee.convertTime(timeString);
+
+        var window = Bee.getDetailWebView().getWindow();
+        window.showAll();
+        setTimeout(function() {
+            var p_content1 = dom.byId("p_content1");
+            item.content = Bee.htmlToJson(p_content1);
+            item.status = 3;
+            item.class = "news";
+            Bee.finishExtractItem(item);
+        });
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>知乎日报蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("daily.zhihu.com");
+    Bee.addChannel("", "http://daily.zhihu.com/");
+    Bee.setImgReferer("http://www.zhihu.com");
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses("wrap");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            var linkDiv = itemDivs[i].byClass("link-button");
+            item.url = linkDiv.href;
+            item.title = itemDivs[i].byClass("title").innerText;
+            item.key = Bee.hashCode(item.title);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+    Bee.onItemLoaded = function(dom, item) {
+        if (item.title == "瞎扯 · 如何正确地吐槽") {
+            // 爬段子
+            var questions = dom.byClasses("question");
+            for (var i = 0; i < questions.length; i++) {
+                var duanzi = {};
+                duanzi.title = questions[i].byClass("question-title").innerText;
+                var key = Bee.hashCode(duanzi.title);
+                var author = questions[i].byClass("author").innerText;
+                duanzi.source = "知乎 " + author.substring(0, author.length - 1);
+                var date = new Date();
+                duanzi.created_at = Bee.convertTime(date.toDateString());
+                duanzi.status = 3;
+                duanzi.content = JSON.stringify(Bee.htmlToJson(questions[i].byClass("content")));
+                duanzi.class = "episode";
+                duanzi.category = "段子";
+                duanzi.tag = "吐槽";
+                duanzi.url = item.url;
+
+                if (BeeUtils.exist("daily.zhihu.com", key)) {
+                    continue;
+                }
+                var result = BeeUtils.putModel(duanzi);
+                if (result) {
+                    BeeUtils.log("已成功爬取：" + duanzi.title);
+                    BeeUtils.addKey("daily.zhihu.com", key);
+                }
+            }
+            Bee.passItem();
+            return;
+        }
+        if (item.title && item.title.indexOf("·") >= 0) {
+            Bee.passItem();
+            return;
+        }
+        var authorDiv = dom.byClass("author", true);
+        if (authorDiv) {
+            var author = authorDiv.innerText;
+            if (author.indexOf("，") == author.length - 1 || author.indexOf(",") == author.length - 1) {
+                author = author.substring(0, author.length - 1);
+            }
+            item.source = "知乎 " + author;
+        } else {
+            var metaItem = dom.byClass("meta-item", false);
+            if (metaItem) {
+                var metaString = metaItem.innerText;
+                if (metaString.indexOf("来自 ") == 0) {
+                    metaString = metaString.substring(3);
+                }
+                item.source = metaString;
+            } else {
+                item.source = "知乎";
+            }
+        }
+        var date = new Date();
+        item.created_at = Bee.convertTime(date.toDateString());
+        item.status = 3;
+
+        var question = dom.byClass("question");
+        var meta = question.byClass("meta", true);
+        if (meta) {
+            meta.parentNode.removeChild(meta);
+        }
+        var viewMore = question.byClass("view-more", true);
+        if (viewMore) {
+            viewMore.parentNode.removeChild(viewMore);
+        }
+
+        var content = Bee.htmlToJson(question);
+
+        var imgWrap = dom.byClass("img-wrap", true);
+        if (imgWrap) {
+            var img = imgWrap.byTag("img");
+            var image = {};
+            image.src = Bee.makeImgJumpUrl(img.src, "http://www.zhihu.com");
+            image.width = img.clientWidth;
+            image.height = img.clientHeight;
+            item.cover_img = image;
+        }
+
+        item.content = JSON.stringify(content);
+        console.log(item);
+        Bee.finishExtractItem(item);
+    };
+    Bee.start();
+</script>
+</body>
+</html>

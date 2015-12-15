@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>财新网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("caixin.com");
+    Bee.setImgReferer("caixin.com");
+
+    Bee.addChannel("经济", "读懂央行", "http://economy.caixin.com/centralbank/");
+    Bee.addChannel("经济", "税收", "http://economy.caixin.com/revenue/");
+    Bee.addChannel("经济", "预测", "http://economy.caixin.com/daily_forecast/");
+    Bee.addChannel("经济", "政策信息", "http://economy.caixin.com/policy/");
+    Bee.addChannel("经济", "宏观数据", "http://economy.caixin.com/macro_economy/");
+    Bee.addChannel("经济", "贸易投资", "http://economy.caixin.com/trade_investment/");
+    Bee.addChannel("经济", "地方经济", "http://economy.caixin.com/local_economy/");
+    Bee.addChannel("经济", "国际经济", "http://economy.caixin.com/global_economy/");
+
+    Bee.addChannel("金融", "新财路", "http://finance.caixin.com/assets/");
+    Bee.addChannel("金融", "监管", "http://finance.caixin.com/regulation/");
+    Bee.addChannel("金融", "银行", "http://finance.caixin.com/bank/");
+    Bee.addChannel("金融", "证券基金", "http://finance.caixin.com/stock/");
+    Bee.addChannel("金融", "信托保险", "http://finance.caixin.com/insurance_trust/");
+    Bee.addChannel("金融", "投资", "http://finance.caixin.com/investment/");
+    Bee.addChannel("金融", "创新", "http://finance.caixin.com/innovation/");
+    Bee.addChannel("金融", "市场", "http://finance.caixin.com/market/");
+
+    Bee.addChannel("公司", "TMT", "http://companies.caixin.com/tmt/");
+    Bee.addChannel("公司", "汽车", "http://companies.caixin.com/automobile/");
+    Bee.addChannel("公司", "能源资源", "http://companies.caixin.com/energynews/");
+    Bee.addChannel("公司", "交通基建", "http://companies.caixin.com/traffic/");
+    Bee.addChannel("公司", "房地产", "http://companies.caixin.com/property/");
+    Bee.addChannel("公司", "消费", "http://companies.caixin.com/consume/");
+
+
+    Bee.addChannel("国内", "反腐", "http://china.caixin.com/anticorruption/");
+    Bee.addChannel("国内", "健康", "http://china.caixin.com/wynews/");
+    Bee.addChannel("国内", "教育", "http://china.caixin.com/on_equaducation/index.html");
+    Bee.addChannel("国内", "人事观察", "http://china.caixin.com/ups_and_downs/index.html");
+    Bee.addChannel("国内", "新科技", "http://china.caixin.com/xkj/");
+    Bee.addChannel("国内", "法制", "http://china.caixin.com/law/index.html");
+    Bee.addChannel("国内", "时政", "http://china.caixin.com/politics/index.html");
+    Bee.addChannel("国内", "民生", "http://china.caixin.com/medicare/index.html");
+    Bee.addChannel("国内", "社会", "http://china.caixin.com/society/index.html");
+    Bee.addChannel("国内", "三农", "http://china.caixin.com/agriculture/index.html");
+    Bee.addChannel("国内", "环境", "http://china.caixin.com/environment/index.html");
+
+    Bee.addChannel("国际", "旁观中国", "http://international.caixin.com/onchina/");
+    Bee.addChannel("国际", "天下事", "http://international.caixin.com/global_tale/index.html");
+    Bee.addChannel("国际", "天下事", "http://international.caixin.com/global_tale/index.html");
+    Bee.addChannel("国际", "欧洲北美", "http://international.caixin.com/europe_n_north_america/");
+    Bee.addChannel("国际", "亚太地区", "http://international.caixin.com/asia_pacific_region/");
+    Bee.addChannel("国际", "中东北非", "http://international.caixin.com/middle_east_n_north_africa/");
+    Bee.addChannel("国际", "新兴市场", "http://international.caixin.com/emerging_markets/");
+    Bee.addChannel("国际", "中国外交", "http://international.caixin.com/chinese_diplomacy/");
+
+    Bee.addChannel("评论", "观点网 意见领袖", "http://opinion.caixin.com/opinion_leader/index.html");
+    Bee.addChannel("评论", "观点网 社评", "http://opinion.caixin.com/editorial/");
+    Bee.addChannel("评论", "观点网 聚焦", "http://opinion.caixin.com/wyll/");
+    Bee.addChannel("评论", "观点网 智库", "http://opinion.caixin.com/think_tank/");
+    Bee.addChannel("评论", "观点网 思想精选", "http://opinion.caixin.com/sxjx/");
+
+    Bee.addChannel("文化", "专栏", "http://culture.caixin.com/zhuanlan/");
+    Bee.addChannel("文化", "评论", "http://culture.caixin.com/wh_philosophy/");
+    Bee.addChannel("文化", "文学", "http://culture.caixin.com/novel/");
+    Bee.addChannel("艺术", "文化", "http://culture.caixin.com/art/");
+    Bee.addChannel("读书", "文化", "http://culture.caixin.com/books/");
+
+    Bee.setRefreshTime(1000 * 60 * 60);
+
+    Bee.requestNoScript();
+
+    var adImgs = ["http://img.caixin.com/2015-02-10/1423564624279328.jpg",
+        "http://img.caixin.com/2014-02-15/1392431173060921.jpg",
+    "http://img.caixin.com/2014-09-25/1411636158159687.jpg"];
+
+    var adTexts = ["金融混业观察", "财新传媒出品，微信公众号", "更多高品质深度报道，请订阅财新传媒出品的微信公众号"];
+
+    Bee.onListLoaded = function(dom) {
+        dom.removeClass("kjBolgList");
+        dom.removeClass("topicBox");
+
+        var dls = dom.byTags("dl", true);
+        var items = [];
+        for (var i = 0; i < dls.length; i++) {
+            var dl = dls[i];
+            var item = {};
+
+            if (dl.byTag("h4", true)) {
+                var link = dl.byTag("h4").byTag("a");
+                item.title = link.innerText;
+                item.url = link.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        var boxas = dom.byClasses("boxa", true);
+        for (var i = 0; i < boxas.length; i++) {
+            var boxa = boxas[i];
+            var item = {};
+
+            if (boxa.byTag("h4", true)) {
+                var link = boxa.byTag("h4").byTag("a");
+                item.title = link.innerText;
+                item.url = link.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        console.log(items);
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var artInfo = dom.byClass("artInfo", true);
+        if (artInfo == undefined) {
+            Bee.passItem(item);
+            return;
+        }
+        var sourceLink = artInfo.byTag("a");
+        var source = sourceLink.innerText.trim();
+        if (source != "财新网" && source != "《财新周刊》" && source != "观点网") {
+            if (Bee.isKnownSource(source)) {
+                console.log("跳过来源：" + source);
+                Bee.passItem(item);
+                return;
+            }
+        }
+        item.source = source;
+        artInfo.removeChild(sourceLink);
+
+        var timeString = artInfo.innerText;
+        if (timeString.indexOf("出版日期") > 0) {
+            timeString = timeString.substring(timeString.indexOf("出版日期") + 4);
+        } else {
+            timeString = timeString.substring(0, timeString.indexOf("来源于"));
+        }
+        item.created_at = Bee.convertTime(timeString);
+
+        var subhead = dom.byClass("subhead", true);
+        dom.removeClass("pip");
+
+        var media_pic = dom.byClass("media_pic", true);
+        var pic;
+        if (media_pic) {
+            var img = media_pic.byTag("img");
+            pic = Bee.convertImg(img);
+        }
+
+        var Main_Content_Val = dom.byId("Main_Content_Val");
+        item.content = Bee.htmlToJson(Main_Content_Val, adTexts, adImgs);
+
+        if (pic) {
+            var node = {};
+            node.img = pic;
+            item.content.add(0, node);
+        }
+
+        if (subhead && subhead.innerText != "") {
+            var desc = {};
+            desc.desc = subhead.innerText;
+            item.content.add(0, desc);
+        }
+
+        item.class = "news";
+        item.tag = "财经";
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

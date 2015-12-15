@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>人民舆情</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://yuqing.people.com.cn/");
+    Bee.addChannel("", "http://yuqing.people.com.cn/");
+    Bee.setImgReferer("http://yuqing.people.com.cn/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClasses(" hdNews clearfix");
+        var items = [];
+        console.log(itemDivs[0]);
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            item.title = itemDivs[i].byTag("strong").innerText;
+            item.url = itemDivs[i].byTag("strong").byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            var image = {};
+            var img = itemDivs[i].byTag("p").byTag("img");
+            if (img != null) {
+                image.src = img.src;
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                item.cover_img = image;
+            }
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var src = dom.byId("p_origin");
+        if (src == null) {
+            Bee.passItem(item);
+        }
+        var s = src.byTag("a");
+        if (s != null && s.innerText != "人民网-舆情频道") {
+            Bee.passItem(item);
+            return;
+        }
+        if (s != null) {
+            item.source = s.innerText;
+        } else {
+            item.source = "人民网-舆情频道"
+        }
+        item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
+        item.status = 3;
+        var content = Bee.htmlToJson(dom.byId("p_content"));
+        item.content = JSON.stringify(content);
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

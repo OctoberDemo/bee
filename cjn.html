@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>长江网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("news.cjn.cn");
+    Bee.setImgReferer("news.cjn.cn");
+    Bee.addChannel("", "http://news.cjn.cn/24hour/wh24/index.htm");
+    Bee.setRefreshTime(1000 * 60 * 30);
+    Bee.onListLoaded = function(dom) {
+        var art_lis = dom.byClasses("art-li");
+        var items = [];
+        for (var i = 0; i < art_lis.length; i++) {
+            var li = art_lis[i];
+            var item = {};
+            item.title = li.byTag("a").innerText;
+            item.url = li.byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var pub_time = dom.byClass("pub-time").innerText;
+        item.created_at = Bee.convertTime(pub_time);
+        item.source = "长江网";
+        item.content = Bee.htmlToJson(dom.byClass("art-main"), ["点击查看高清原图"]);
+        item.status = 3;
+        item.class = "news";
+        item.category = "国内";
+        item.tag = "武汉";
+        Bee.finishExtractItem(item);
+
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

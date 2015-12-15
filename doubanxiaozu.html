@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>豆瓣小组</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.douban.com/group/explore");
+    Bee.addChannel("精选话题", "http://www.douban.com/group/explore");
+    Bee.setImgReferer("http://www.douban.com/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.requestNoScript();
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClass("article").byClasses("channel-item");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            var tag = itemDivs[i].byClass("bd").byTag("a");
+            item.title = tag.innerText;
+            item.url = tag.href;
+            if (itemDivs[i].byClass("pic-wrap") != null) {
+                var img = itemDivs[i].byClass("pic-wrap").byTag("img");
+                var image = {};
+                image.src = img.src;
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                item.cover_img = img;
+            }
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        setTimeout(function() {
+            if (dom.byClass("from") == null) {
+                Bee.passItem(item);
+                return;
+            }
+            var src = dom.byClass("from").byTag("a");
+            item.source = "豆瓣小组 " + src.innerText;
+            item.created_at = Bee.convertTime(dom.byClass("color-green").innerText);
+            item.status = 3;
+            item.tag = Bee.getCurCategory();
+            var content = Bee.htmlToJson(dom.byId("link-report").byClass("topic-content"));
+            item.content = JSON.stringify(content);
+            Bee.finishExtractItem(item);
+        }, 5000);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

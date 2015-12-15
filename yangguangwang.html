@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>央广网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("国内", "http://roll.cnr.cn/china/");
+    Bee.addChannel("财经", "http://roll.cnr.cn/finance/");
+    Bee.setType("www.cnr.cn");
+    Bee.setImgReferer("www.cnr.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("wh740 left lh24 f14");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var a = lis[i].byClass("ml15 ds f14 wh580").byTag("a");
+                item.url = a.href;
+                item.title = a.innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("TRS_Editor");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("lh30 left f14 yahei");
+            if (attrib == undefined) {
+                Bee.passItem(item);
+                return;
+            }
+            var sourceString = attrib.byTag("a").innerText;
+            console.log(sourceString);
+            if (sourceString.indexOf("央广") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib.innerText.split(" ")[0] + " " + attrib.innerText.split(" ")[1];
+            console.log(sourceString + "  " + timeString);
+            item.created_at = Bee.convertTime(timeString);
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

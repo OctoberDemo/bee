@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>深度中国-中国新闻周刊</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://focuschina.inewsweek.cn/");
+    Bee.addChannel("新闻", "http://focuschina.inewsweek.cn/");
+    Bee.setImgReferer("http://focuschina.inewsweek.cn/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemDivs = dom.byClass("r_b_info").byTags("a");
+        var items = [];
+        for (var i = 0; i < itemDivs.length; i++) {
+            var item = {};
+            item.url = itemDivs[i].href;
+            item.key = Bee.hashCode(item.url);
+            item.title = itemDivs[i].innerText;
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.byId("source_baidu") == null) {
+            Bee.passItem(item);
+            return;
+        }
+        item.source = dom.byId("source_baidu").innerText + " " +dom.byId("author_baidu").innerText;
+        item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
+        var content = Bee.htmlToJson(dom.byClass("text_f"));
+        item.content = JSON.stringify(content);
+        item.status = 3;
+        item.class = "news";
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

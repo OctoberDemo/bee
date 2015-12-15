@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>腾讯大家</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://dajia.qq.com");
+    Bee.addChannel("文章", "http://dajia.qq.com");
+    Bee.setImgReferer("http://dajia.qq.com");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+            var itemDivs = dom.byClasses("items");
+            var items = [];
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                var detail = itemDivs[i].byClass("detail");
+                item.url = detail.byTag("a").href;
+                item.title = detail.byTag("a").innerText;
+                item.key = Bee.hashCode(item.url);
+                var image = {};
+                var img = itemDivs[i].byClass("pic");
+                image.src = img.src;
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                item.cover_img = image;
+                var info = itemDivs[i].byClass("info");
+                var blank = info.byTag("a");
+                item.source = "腾讯大家 "+blank.innerText;
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        item.created_at = Bee.convertTime(dom.byClass("publishtime").innerText);
+        var content = Bee.htmlToJson(dom.byClass("left-b article"));
+        item.content = JSON.stringify(content);
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    }
+
+    Bee.start();
+</script>
+</body>
+</html>

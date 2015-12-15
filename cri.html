@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>国际在线蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("cri.cn");
+    Bee.setImgReferer("cri.cn");
+    Bee.addChannel("国际", "http://gb.cri.cn/world/");
+    Bee.addChannel("国际", "http://gb.cri.cn/42071/more/42148/more42148.htm");
+    Bee.addChannel("外媒看中国", "http://gb.cri.cn/42071/more/42169/more42169.htm");
+    Bee.addChannel("国内", "http://gb.cri.cn/china/");
+
+    Bee.setRefreshTime(1000 * 60 * 10);
+
+    Bee.requestNoScript();
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var yaowen = dom.byClass("yaowen", true);
+        if (yaowen) {
+            getItems(yaowen.byTags("a"));
+        }
+        var more = dom.byClass("more");
+        getItems(more.byTags("a"));
+
+        function getItems(as) {
+            for (var i = 0; i < as.length; i++) {
+                var item = {};
+                item.title = as[i].innerText;
+                item.url = as[i].href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var source_baidu = dom.byId("source_baidu", true);
+        if (source_baidu == undefined) {
+            Bee.passItem(item);
+            return;
+        }
+        dom.removeClass("news_13_nav_bg");
+        dom.removeClass("news_tptj_bg");
+        dom.removeClass("tuijian002");
+
+        var source = source_baidu.innerText.trim();
+        if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+            source = source.substring(3);
+        }
+        if (source.indexOf("国际在线") < 0) {
+            console.log("跳过来源：" + source);
+            Bee.passItem(item);
+            return;
+        }
+        item.source = source;
+        item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
+        item.status = 3;
+        item.class = "news";
+        if (Bee.getCurCategory() == "外媒看中国") {
+            item.category = "国际";
+            item.tag = Bee.getCurCategory();
+        } else {
+            item.category = Bee.getCurCategory();
+        }
+
+        var ccontent = dom.byId("ccontent");
+
+
+        var center = ccontent.byTag("center", true);
+        if (center) {
+            ccontent.removeTag("center");
+            item.content = Bee.htmlToJson(ccontent);
+            var as = center.byTags("a");
+            var subUrls = [];
+            for (var i = 0; i < as.length; i++) {
+                subUrls.push(as[i].href);
+            }
+            Bee.finishExtractSubUrls(subUrls, item);
+        } else {
+            item.content = Bee.htmlToJson(ccontent);
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        var ccontent = dom.byId("ccontent");
+        ccontent.removeTag("center");
+        var content = Bee.htmlToJson(ccontent);
+        for (var i = 0; i < content.length; i++) {
+            item.content.push(content[i]);
+        }
+        var result = Bee.continueSubItem(item);
+        if (result == false) {
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

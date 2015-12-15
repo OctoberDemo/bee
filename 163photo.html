@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>163摄影蜜蜂</title>
+
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    var gap = 1000 * 60 * 5;
+
+    Bee.addChannel("风景", "http://pp.163.com/pp/#p=11&c=-1&m=2&page=1");
+    Bee.addChannel("海外", "http://pp.163.com/pp/#p=41&c=-1&m=2&page=1");
+    Bee.addChannel("人文", "http://pp.163.com/pp/#p=16&c=-1&m=2&page=1");
+    Bee.addChannel("街头", "http://pp.163.com/pp/#p=24&c=-1&m=2&page=1");
+    Bee.addChannel("LOMO", "http://pp.163.com/pp/#p=27&c=-1&m=2&page=1");
+    Bee.addChannel("胶片", "http://pp.163.com/pp/#p=44&c=-1&m=2&page=1");
+    Bee.addChannel("静物", "http://pp.163.com/pp/#p=43&c=-1&m=2&page=1");
+    Bee.addChannel("美食", "http://pp.163.com/pp/#p=28&c=-1&m=2&page=1");
+    Bee.addChannel("宠物", "http://pp.163.com/pp/#p=30&c=-1&m=2&page=1");
+    Bee.addChannel("动物", "http://pp.163.com/pp/#p=20&c=-1&m=2&page=1");
+    Bee.addChannel("植物", "http://pp.163.com/pp/#p=18&c=-1&m=2&page=1");
+
+    Bee.addChannel("风景", "http://pp.163.com/pp/#p=11&c=-1&m=1&page=1");
+    Bee.addChannel("海外", "http://pp.163.com/pp/#p=41&c=-1&m=1&page=1");
+    Bee.addChannel("人文", "http://pp.163.com/pp/#p=16&c=-1&m=1&page=1");
+    Bee.addChannel("街头", "http://pp.163.com/pp/#p=24&c=-1&m=1&page=1");
+    Bee.addChannel("LOMO", "http://pp.163.com/pp/#p=27&c=-1&m=1&page=1");
+    Bee.addChannel("胶片", "http://pp.163.com/pp/#p=44&c=-1&m=1&page=1");
+    Bee.addChannel("静物", "http://pp.163.com/pp/#p=43&c=-1&m=1&page=1");
+    Bee.addChannel("美食", "http://pp.163.com/pp/#p=28&c=-1&m=1&page=1");
+    Bee.addChannel("宠物", "http://pp.163.com/pp/#p=30&c=-1&m=1&page=1");
+    Bee.addChannel("动物", "http://pp.163.com/pp/#p=20&c=-1&m=1&page=1");
+    Bee.addChannel("植物", "http://pp.163.com/pp/#p=18&c=-1&m=1&page=1");
+
+    Bee.addChannel("风景", "http://pp.163.com/pp/#p=11&c=-1&m=1&page=2");
+    Bee.addChannel("海外", "http://pp.163.com/pp/#p=41&c=-1&m=1&page=2");
+    Bee.addChannel("人文", "http://pp.163.com/pp/#p=16&c=-1&m=1&page=2");
+    Bee.addChannel("街头", "http://pp.163.com/pp/#p=24&c=-1&m=1&page=2");
+    Bee.addChannel("LOMO", "http://pp.163.com/pp/#p=27&c=-1&m=1&page=2");
+    Bee.addChannel("胶片", "http://pp.163.com/pp/#p=44&c=-1&m=1&page=2");
+    Bee.addChannel("静物", "http://pp.163.com/pp/#p=43&c=-1&m=1&page=2");
+    Bee.addChannel("美食", "http://pp.163.com/pp/#p=28&c=-1&m=1&page=2");
+    Bee.addChannel("宠物", "http://pp.163.com/pp/#p=30&c=-1&m=1&page=2");
+    Bee.addChannel("动物", "http://pp.163.com/pp/#p=20&c=-1&m=1&page=2");
+    Bee.addChannel("植物", "http://pp.163.com/pp/#p=18&c=-1&m=1&page=2");
+
+    Bee.addChannel("风景", "http://pp.163.com/pp/#p=11&c=-1&m=1&page=3");
+    Bee.addChannel("海外", "http://pp.163.com/pp/#p=41&c=-1&m=1&page=3");
+    Bee.addChannel("人文", "http://pp.163.com/pp/#p=16&c=-1&m=1&page=3");
+    Bee.addChannel("街头", "http://pp.163.com/pp/#p=24&c=-1&m=1&page=3");
+    Bee.addChannel("LOMO", "http://pp.163.com/pp/#p=27&c=-1&m=1&page=3");
+    Bee.addChannel("胶片", "http://pp.163.com/pp/#p=44&c=-1&m=1&page=3");
+    Bee.addChannel("静物", "http://pp.163.com/pp/#p=43&c=-1&m=1&page=3");
+    Bee.addChannel("美食", "http://pp.163.com/pp/#p=28&c=-1&m=1&page=3");
+    Bee.addChannel("宠物", "http://pp.163.com/pp/#p=30&c=-1&m=1&page=3");
+    Bee.addChannel("动物", "http://pp.163.com/pp/#p=20&c=-1&m=1&page=3");
+    Bee.addChannel("植物", "http://pp.163.com/pp/#p=18&c=-1&m=1&page=3");
+
+    Bee.setType("pp.163.com");
+    Bee.setRefreshTime(gap);
+    Bee.onListLoaded = function(dom) {
+        setTimeout(function() {
+            var items = [];
+            var picDivs = dom.byClasses("pic");
+            for (var i = 0; i < picDivs.length; i++) {
+                var picDiv = picDivs[i];
+                var likeCount = parseInt(picDiv.byClass("js-like likeicn etag").innerText);
+                if (likeCount < 10) {
+                    continue;
+                }
+                var item = {};
+                item.url = picDiv.children[0].href;
+                item.title = picDiv.children[0].attr("title");
+                item.key = BeeUtils.hashCode(item.title);
+                item.status = 3;
+                item.class = "image";
+                item.category = Bee.getCurChannel().category;
+                item.source = "网易摄影";
+
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }, 2000);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        BeeUtils.scrollToBottom(dom);
+
+        setTimeout(function() {
+            var infoDiv = dom.byClass("g-mainwraper g-mainwraper-picsetinfo");
+            item.created_at = Math.floor(((new Date()).getTime() - Math.random() * gap) / 1000);
+
+            var content = {};
+            var intro = infoDiv.byClass("picset-intro");
+            if (intro) {
+                content.description = intro.innerText;
+            }
+            if (content.description == "") {
+                content.description = "摄影|视觉|照片|文艺|生活|图片";
+            }
+
+            var commentDiv = dom.byClass("js-cnt b-tag");
+            content.comments = commentDiv.innerText;
+
+            var imgList = [];
+
+            var imgDivs = dom.byClasses("pic-area");
+            for (var i = 0; i < imgDivs.length; i++) {
+                var imgDiv = imgDivs[i];
+                var imgNode = imgDiv.children[0];
+                if (imgNode.src.indexOf("sniff.png") >= 0) {
+                    continue;
+                }
+                var img = {};
+                img.src = Bee.makeImgJumpUrl(imgNode.src, "http://pp.163.com");
+                img.width = imgNode.clientWidth;
+                img.height = imgNode.clientHeight;
+                imgList.push(img);
+            }
+            content.imgs = imgList;
+
+            item.cover_img = imgList[0];
+            item.content = JSON.stringify(content);
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

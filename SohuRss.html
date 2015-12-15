@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Sohu Rss 蜜蜂</title>
+    <script src="../jndroid/jndroid.net.js"></script>
+    <script src="../jndroid/jndroid.core.js"></script>
+    <script src="beeutils.js"></script>
+    <script src="GLOperator.js"></script>
+</head>
+<body>
+<script>
+    setTimeout(function() {
+        location.reload();
+    }, 1000 * 60 * 10);
+</script>
+<script>
+
+    var mMonthName = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+    var mTitleHashCodes = [];
+    var mTitleStorage = localStorage["titlehashcode"];
+    if (mTitleStorage) {
+        mTitleHashCodes = JSON.parse(mTitleStorage);
+    }
+    crawl("http://news.sohu.com/rss/guonei.xml");
+
+    function crawl(url) {
+        var dom = BeeUtils.loadXmlDom(url);
+        console.log(dom);
+        var models = [];
+        var items = dom.getElementsByTagName("item");
+        console.log(items.toString());
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            console.log(item);
+            console.log(item.children);
+            var title = BeeUtils.getXmlValue(item, "title");
+            console.log(title);
+
+            if (exist(title)) {
+                console.log(title + " exist");
+                continue;
+            }
+
+            var model = {};
+            model.title = title;
+            model.url = BeeUtils.getXmlValue(item, "link");
+            var time = BeeUtils.getXmlValue(item, "pubDate");
+            console.log(time);
+            var d = format(time);
+            model.created_at = d.getTime() / 1000;
+
+            models.push(model);
+            log(items[i].innerHTML);
+            log(JSON.stringify(model), 0xff000099);
+        }
+        if (models.length == 0) {
+            return;
+        }
+        GLOperator.putModel(models, function() {
+            console.log("finish");
+
+            for (var i = 0; i < models.length; i++) {
+                addTitle(models[i].title);
+                console.log("add " + models[i].title);
+            }
+        });
+    }
+
+    function exist(title) {
+        var hashcode = BeeUtils.hashCode(title);
+        for (var i = 0; i < mTitleHashCodes.length; i++) {
+            if (mTitleHashCodes[i] == hashcode) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function addTitle(title) {
+        var hashcode = BeeUtils.hashCode(title);
+        mTitleHashCodes.push(hashcode);
+        localStorage["titlehashcode"] = JSON.stringify(mTitleHashCodes);
+    }
+
+    function format(timeStr) {
+        timeStr = timeStr.substring(5);
+        var frames = timeStr.split(" ");
+        var day = parseInt(frames[0]);
+        var month = mMonthName.indexOf(frames[1]);
+        var year = parseInt(frames[2]);
+        var time = frames[3];
+        var times = time.split(":");
+        var hour = parseInt(times[0]);
+        var minute = parseInt(times[1]);
+        var sec = parseInt(times[2]);
+
+        var d = new Date();
+        d.setYear(year);
+        d.setMonth(month);
+        d.setDate(day);
+        d.setHours(hour);
+        d.setMinutes(minute);
+        d.setSeconds(sec);
+
+        return d;
+    }
+
+    function log(string, color) {
+        if (color == undefined) {
+            color = 0xff000000;
+        }
+        var text = document.createElement("div");
+        text.innerText = string;
+        text.style.color = Utils.toCssColor(color);
+        document.body.appendChild(text);
+    }
+
+    function clearLog() {
+        document.body.innerHTML = "";
+    }
+
+</script>
+</body>
+</html>

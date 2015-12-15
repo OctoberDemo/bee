@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>糗百蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.setType("qiushibaike");
+    Bee.addChannel("搞笑", "http://www.qiushibaike.com/text");
+    Bee.onListLoaded = function(dom) {
+        console.log(dom);
+        dom.removeTags("iframe");
+        var items = [];
+        var articles = dom.byTags("article");
+        for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            var id = article.attr("id");
+            var item = {};
+            item.class = "duanzi";
+            item.tag = "糗事百科 糗百";
+            item.url = article.byTag("a").href;
+            item.title = "";
+            item.source = "糗事百科 " + article.byClass("touch-user-name").innerText;
+            item.status = 3;
+            item.category = Bee.getCurCategory();
+            var now = new Date();
+            item.created_at = Bee.convertTime(now.toLocaleDateString());
+            item.key = id;
+
+            var a = article.byTag("a");
+            a.removeChild(a.children[0]);
+
+            item.content = Bee.htmlToJson(a);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

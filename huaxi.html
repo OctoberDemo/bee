@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>华西新闻网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("", "观点", "http://news.huaxi100.com/list-228-1.html");
+    Bee.addChannel("国内", "成都", "http://news.huaxi100.com/list-227-1.html");
+    Bee.addChannel("国内", "四川", "http://news.huaxi100.com/list-226-1.html");
+    Bee.addChannel("文娱", "http://news.huaxi100.com/list-248-1.html");
+    Bee.addChannel("财经", "http://news.huaxi100.com/list-242-1.html");
+    Bee.addChannel("教育", "http://news.huaxi100.com/list-239-1.html");
+    Bee.setType("news.huaxi100.com");
+    Bee.setImgReferer("news.huaxi100.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("more_list", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("list");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var a = lis[i].byTag("a");
+                if (a == undefined) {
+                    continue;
+                }
+                item.url = a.href;
+                item.title = a.byClass("title").innerText;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("content");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("extra-desc");
+            var sourceString = attrib.byTag("a").innerText;
+            console.log(sourceString);
+            if (sourceString.indexOf("华西都市") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib.innerText;
+            console.log(sourceString + "  " + timeString);
+            item.created_at = Bee.convertTime(timeString);
+            var content = Bee.htmlToJson(article);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

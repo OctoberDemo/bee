@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>参考消息蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.cankaoxiaoxi.com");
+    Bee.setImgReferer("www.cankaoxiaoxi.com");
+    Bee.setRefreshTime(1000 * 60 * 60);
+    Bee.requestNoScript();
+
+    Bee.addChannel("环球博览", "http://www.cankaoxiaoxi.com/world/hqbl/");
+    Bee.addChannel("亚太新闻", "http://www.cankaoxiaoxi.com/world/ytxw/");
+    Bee.addChannel("欧美新闻", "http://www.cankaoxiaoxi.com/world/omxw/");
+    Bee.addChannel("其他地区", "http://www.cankaoxiaoxi.com/world/qtdq/");
+    Bee.addChannel("时事要闻", "http://www.cankaoxiaoxi.com/china/szyw/");
+    Bee.addChannel("中国外交", "http://www.cankaoxiaoxi.com/china/zgwj/");
+    Bee.addChannel("社会观察", "http://www.cankaoxiaoxi.com/china/shwx/");
+    Bee.addChannel("港澳传真", "http://www.cankaoxiaoxi.com/china/gacz/");
+    Bee.addChannel("中国军情", "http://www.cankaoxiaoxi.com/mil/zgjq/");
+    Bee.addChannel("国际军情", "http://www.cankaoxiaoxi.com/mil/gjjq/");
+    Bee.addChannel("武器装备", "http://www.cankaoxiaoxi.com/mil/wqzb/");
+    Bee.addChannel("中国财经", "http://www.cankaoxiaoxi.com/finance/zgcj/");
+    Bee.addChannel("国际财经", "http://www.cankaoxiaoxi.com/finance/gjcj/");
+    Bee.addChannel("商业公司", "http://www.cankaoxiaoxi.com/finance/sygs/");
+    Bee.addChannel("金融市场", "http://www.cankaoxiaoxi.com/finance/jrsc/");
+    Bee.addChannel("海峡两岸", "http://www.cankaoxiaoxi.com/tw/hxla/");
+    Bee.addChannel("台湾军事", "http://www.cankaoxiaoxi.com/tw/twjs/");
+    Bee.addChannel("健康生活", "http://www.cankaoxiaoxi.com/science/jksh/");
+    Bee.addChannel("探索发现", "http://www.cankaoxiaoxi.com/science/tsfx/");
+    Bee.addChannel("IT业界", "http://www.cankaoxiaoxi.com/science/ITyj/");
+    Bee.addChannel("环境保护", "http://www.cankaoxiaoxi.com/science/hjbh/");
+    Bee.addChannel("科技头条", "http://www.cankaoxiaoxi.com/science/kjtt/");
+
+    Bee.onListLoaded = function(dom) {
+        var inner = dom.byClass("inner");
+        var ul = inner.byTag("ul");
+        var as = ul.byTags("a");
+        var items = [];
+        for (var i = 0; i < as.length; i++) {
+            var a = as[i];
+            var item = {};
+            item.title = a.innerText;
+            if (item.title.indexOf("(图)") == item.title.length - 3) {
+                item.title = item.title.substring(0, item.title.length - 3);
+            }
+            item.url = a.href;
+            item.key = Bee.hashCode(item.url);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        dom.removeTags("iframe");
+
+        var pubtime_baidu = dom.byId("pubtime_baidu", true);
+        if (pubtime_baidu == undefined) {
+            Bee.passItem(item);
+            return;
+        }
+        item.created_at = Bee.convertTime(pubtime_baidu.innerText);
+        var source = dom.byId("source_baidu").innerText.trim();
+        if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+            source = source.substring(3).trim();
+        }
+        if (source.indexOf("参考消息") < 0) {
+            console.log("跳过来源：" + source);
+            Bee.passItem(item);
+            return;
+        }
+        item.source = source;
+
+        dom.removeClass("read");
+        item.content = Bee.htmlToJson(dom.byId("ctrlfscont"), ["点击图片进入下一页"]);
+        item.status = 3;
+        item.class = "news";
+
+        var descItem = dom.byClass("cont-detail fz-14 cor-333", true);
+        var desc = {};
+        desc.desc = descItem.innerText;
+        item.content.add(0, desc);
+
+        item.tag = Bee.getCurCategory();
+        if (item.tag == "环球博览" || item.tag == "亚太新闻" || item.tag == "欧美新闻" || item.tag == "其他地区") {
+            item.category = "国际";
+        } else if (item.tag == "时事要闻" || item.tag == "社会观察" || item.tag == "港澳传真") {
+            item.category = "国内";
+        } else if (item.tag == "中国军情" || item.tag == "国际军情" || item.tag == "武器装备") {
+            item.category = "军事";
+        } else if (item.tag == "中国财经" || item.tag == "商业公司" || item.tag == "国际财经" || item.tag == "金融市场") {
+            item.category = "财经";
+        } else if (item.tag == "海峡两岸" || item.tag == "台湾要闻" || item.tag == "台湾军事") {
+            item.category = "台海";
+        } else if (item.tag == "健康生活") {
+            item.category = "健康";
+        } else if (item.tag == "探索发现") {
+            item.category = "百科";
+        } else if (item.tag == "IT业界" || item.tag == "科技头条") {
+            item.category = "科技";
+        }
+
+        var next = dom.byClass("t-c mar-b-20", true);
+        if (next) {
+            Bee.finishExtractItem(item);
+            return;
+        }
+
+        subPageUrls.clear();
+        var page_center = dom.byClass("page center", true);
+        if (page_center == undefined) {
+            Bee.finishExtractItem(item);
+            return;
+        }
+        var lis = page_center.byTags("li");
+        for (var i = 1; i < lis.length - 1; i++) {
+            var link = lis[i].byTag("a").href;
+            if (link != item.url && link != "http://www.cankaoxiaoxi.com/") {
+                subPageUrls.push(link);
+            }
+        }
+        loadSubWebView(item);
+    };
+
+    var subPageUrls = [];
+
+    function loadSubWebView(item) {
+        if (subPageUrls.length == 0) {
+            Bee.finishExtractItem(item);
+        } else {
+            var url = subPageUrls.shift();
+            var subWebView = new BeeWebView();
+            Bee.addWebView(subWebView);
+
+            var html = Bee.getNoScriptHtml(url);
+            subWebView.setSrcUrl(url);
+            subWebView.loadDataWithBaseURL(html.innerHTML);
+            subWebView.setOnPageFinishListener(function() {
+                var dom = subWebView.getDom();
+                var content = Bee.htmlToJson(dom.byId("ctrlfscont"), ["点击图片进入下一页"]);
+                for (var i = 0; i < content.length; i++) {
+                    item.content.push(content[i]);
+                }
+                loadSubWebView(item);
+            });
+        }
+    }
+
+    Bee.start();
+</script>
+</body>
+</html>

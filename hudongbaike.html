@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>互动百科蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var adText = ["查看原文"];
+
+    Bee.addChannel("百科", "http://plus.baike.com/m?prd=shouye_wap_fenlei");
+    Bee.setType("m.baike.com");
+    Bee.setImgReferer("plus.baike.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("more", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("cont-list li-h62");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var a = lis[i].byTag("a");
+                var item = {};
+                item.url = a.href;
+                console.log(item.url);
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            item.title = dom.byClass("article-title").innerText;
+
+            var article = dom.byClass("article-kx");
+            if (article == undefined) {
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("article-attrib");
+            var timeString = attrib.byTags("span")[0].innerText;
+            item.created_at = Bee.convertTime(timeString);
+            item.source = attrib.byTags("span")[1].byClass("gray2").innerText;
+            item.category = Bee.getCurCategory();
+            console.log(timeString + " " + item.source);
+            article.removeClass("article-title");
+            attrib.parentNode.removeChild(attrib);
+
+            var content = Bee.htmlToJson(article, adText);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+//            console.log(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

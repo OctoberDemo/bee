@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>信息时报</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.xxsb.com/");
+    Bee.addChannel("新闻", "http://www.xxsb.com/findMenu/news.html");
+    Bee.addChannel("新闻", "http://www.xxsb.com/findMenu/butu.html");
+    Bee.addChannel("新闻", "http://www.xxsb.com/findMenu/guoyin.html");
+    Bee.addChannel("广州", "http://www.xxsb.com/findMenu/peopelGZ.html");
+    Bee.addChannel("婚尚", "http://www.xxsb.com/findMenu/marriage.html");
+    Bee.setImgReferer("http://www.xxsb.com/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var itemDivs = dom.byClasses("l_w b-bor h_10");
+        for (var i = 0; i < itemDivs.length; i++) {
+            var src = itemDivs[i].byClass("fl w460 thr_txt").byTag("h4").innerText;
+            if (src.search("信息时报") > 0) {
+                var item = {};
+                item.url = itemDivs[i].byTag("a").href;
+                item.title = itemDivs[i].byClass("fl w460 thr_txt").byTag("h2").innerText;
+                item.source = "信息时报";
+                item.key = Bee.hashCode(item.url);
+                var img = itemDivs[i].byClass("fr w160").byTag("img");
+                if (img != null) {
+                    var image = {};
+                    image.width = img.clientWidth;
+                    image.height = img.clientHeight;
+                    image.src = img.src;
+                    item.cover_img = image;
+                }
+                items.push(item);
+            } else {
+                console.log("来源不正确");
+            }
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.byClass("info m_t24") == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var time = dom.byClass("info m_t24").innerText;
+        var index = time.search("-") - 4;
+        item.created_at = Bee.convertTime(time.substring(index, time.length));
+        var content = Bee.htmlToJson(dom.byClass("main_Article"));
+        item.content = JSON.stringify(content);
+        item.tag = Bee.getCurCategory();
+        item.status = 3;
+        item.class = "news";
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>modernweekly蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.modernweekly.com");
+    Bee.setImgReferer("www.modernweekly.com");
+
+    Bee.addChannel("新闻", "http://www.modernweekly.com/affairs");
+    Bee.addChannel("新闻", "http://www.modernweekly.com/trend");
+    Bee.addChannel("新闻", "http://www.modernweekly.com/celebrity");
+    Bee.addChannel("体育", "http://www.modernweekly.com/sports");
+    Bee.addChannel("态度", "http://www.modernweekly.com/attitude");
+    Bee.addChannel("商业", "http://www.modernweekly.com/luxury");
+    Bee.addChannel("科技", "http://www.modernweekly.com/tech");
+    Bee.addChannel("汽车", "http://www.modernweekly.com/auto");
+    Bee.addChannel("财经", "http://www.modernweekly.com/finance");
+    Bee.addChannel("健康", "http://www.modernweekly.com/health");
+    Bee.addChannel("能源", "http://www.modernweekly.com/energy");
+    Bee.addChannel("时尚", "http://www.modernweekly.com/fashion");
+    Bee.addChannel("时尚", "http://www.modernweekly.com/precious");
+    Bee.addChannel("电影", "http://www.modernweekly.com/movie");
+    Bee.addChannel("音乐", "http://www.modernweekly.com/music");
+    Bee.addChannel("读书", "http://www.modernweekly.com/literature");
+    Bee.addChannel("文化", "http://www.modernweekly.com/criticism");
+    Bee.addChannel("收藏", "http://www.modernweekly.com/collection");
+    Bee.addChannel("艺术", "http://www.modernweekly.com/exhibition");
+    Bee.addChannel("艺术", "http://www.modernweekly.com/artist");
+    Bee.addChannel("艺术", "http://www.modernweekly.com/review");
+    Bee.addChannel("美食", "http://www.modernweekly.com/food");
+    Bee.addChannel("酒香", "http://www.modernweekly.com/drink");
+    Bee.addChannel("生活", "http://www.modernweekly.com/home");
+    Bee.addChannel("旅游", "http://www.modernweekly.com/travel");
+    Bee.addChannel("手表", "http://www.modernweekly.com/watch");
+    Bee.addChannel("手表", "http://www.modernweekly.com/watch");
+    Bee.addChannel("数码", "http://www.modernweekly.com/digital");
+    Bee.addChannel("设计", "http://www.modernweekly.com/design");
+
+    Bee.setRefreshTime(1000 * 60 * 60 * 3);
+
+    Bee.requestNoScript();
+    Bee.onListLoaded = function(dom) {
+        var article_items = dom.byClasses("article-item");
+        var items = [];
+        for (var i = 0; i < article_items.length; i++) {
+            var article_item = article_items[i];
+            var item = {};
+
+            item.title = article_item.byTag("h3").innerText;
+            item.url = article_item.byTag("h3").byTag("a").href;
+            item.key = Bee.hashCode(item.url);
+            item.desc = article_item.byClass("description").innerText;
+            if (Bee.getCurCategory() != "态度") {
+                item.class = "news";
+            }
+
+            var cover_img = {};
+            var img = article_item.byTag("img");
+            cover_img.width = img.clientWidth;
+            cover_img.height = img.clientHeight;
+            cover_img.src = Bee.makeImgJumpUrl(img.src, "www.modernweekly.com");
+            item.cover_img = cover_img;
+
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (item.title.indexOf("那些关于索") == 0) {
+            Bee.passItem(item);
+            return;
+        }
+        var article_info = dom.byClass("article-info");
+        console.log(article_info);
+        var author = article_info.byClass("author");
+        if (author.byTag("li", true)) {
+            var authorStr = author.byTag("li").innerText;
+            if (authorStr.indexOf("撰文：") == 0 || authorStr.indexOf("撰文:") == 0) {
+                authorStr = authorStr.substring(3).trim();
+            }
+            item.author = authorStr;
+        }
+        article_info.removeChild(author);
+
+        var time = article_info.byTag("p");
+        var timeString = time.innerText;
+        if (timeString.indexOf("时间：") == 0 || timeString.indexOf("时间:") == 0) {
+            timeString = timeString.substring(3).trim();
+        }
+        item.created_at = Bee.convertTime(timeString);
+        article_info.removeChild(time);
+
+        var source = article_info.byTag("p");
+        var sourceStr = source.innerText;
+        if (sourceStr.indexOf("内容来源：") == 0 || sourceStr.indexOf("内容来源:") == 0) {
+            sourceStr = sourceStr.substring(5).trim();
+        }
+        if (sourceStr == "") {
+            sourceStr = "周末画报";
+        }
+        if (sourceStr != "周末画报" && sourceStr != "modernweekly") {
+            if (Bee.isKnownSource(sourceStr)) {
+                console.log("跳过来源：" + sourceStr);
+                Bee.passItem();
+                return;
+            }
+        }
+        item.source = sourceStr;
+
+        var article_tags = dom.byClass("article-tags", true);
+        if (article_tags) {
+            var tags = article_tags.byTags("a");
+            var tag = "";
+            for (var i = 0; i < tags.length; i++) {
+                tag += tags[i].innerText + " ";
+            }
+            item.tag = tag.trim();
+        }
+
+        item.category = Bee.getCurCategory();
+        item.content = Bee.htmlToJson(dom.byClass("article-content"));
+        if (item.desc) {
+            var desc = {};
+            desc.desc = item.desc;
+            item.content.add(0, desc);
+            delete item.desc;
+        }
+        item.status = 3;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

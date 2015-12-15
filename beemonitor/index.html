@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>bee monitor</title>
+    <script src="../jndroid/jndroid.core.js"></script>
+</head>
+<body>
+<script>
+    var clear = document.createElement("input");
+    clear.type = "button";
+    clear.value = "清空";
+    clear.onclick = function() {
+        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function(d) {
+            clearLog();
+        }, "post", "clear");
+    };
+    document.body.appendChild(clear);
+
+    liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function(d) {
+        var logs = JSON.parse(d);
+        for (var i = 0; i < logs.length; i++) {
+            log(logs[i]);
+        }
+    });
+
+    function log(string, color) {
+        if (color == undefined) {
+            color = 0xff000000;
+        }
+        var text = document.createElement("div");
+        text.innerText = string;
+        text.style.color = Utils.toCssColor(color);
+        document.body.appendChild(text);
+        console.log(string);
+    }
+
+    function clearLog() {
+        document.body.innerHTML = "";
+    }
+</script>
+</body>
+</html>

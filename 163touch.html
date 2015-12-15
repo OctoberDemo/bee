@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>163touch新闻蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    var adText = ["图集", "点击阅读"];
+
+    Bee.setImgReferer("3g.163.com");
+
+    Bee.setType("163");
+
+    Bee.addChannel("军事", "http://3g.163.com/touch/mil");
+    Bee.addChannel("体育", "http://3g.163.com/touch/nba");
+    Bee.onListLoaded = function(dom) {
+        var newsHeads = dom.byClasses("newsHead");
+        var items = [];
+        for (var i = 0; i < newsHeads.length; i++) {
+            var item = {};
+            var newsHead = newsHeads[i];
+            item.title = newsHead.byClass("newsTitle").innerText;
+
+            var link = newsHead.byTag("a");
+            item.url = link.href;
+            item.key = item.url.substring(item.url.indexOf("docid=") + 6);
+
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var showAllBtn = dom.byId("showAllArticle");
+        if (showAllBtn) {
+            showAllBtn.click();
+        } else {
+            console.log("showall undefined");
+        }
+
+        setTimeout(function() {
+            var article = dom.byClass("articleList");
+            if (article == undefined) {
+                Bee.finishExtractItem();
+                return;
+            }
+            var timeString = article.byClass("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            item.source = article.byClass("source").innerText;
+            item.category = Bee.getCurCategory();
+
+            var cnt = article.byClass("text1");
+            var ad = cnt.byClass("fix-break-word");
+            cnt.removeChild(ad);
+            var ad2 = cnt.byClass("more-client");
+            ad2.parentNode.removeChild(ad2);
+            var content = Bee.htmlToJson(cnt, adText);
+            item.content = content;
+            item.status = 2;
+            item.class = "news";
+
+            if (Bee.getCurChannel().url.indexOf("nba") > 0) {
+                item.tag = "nba";
+            }
+
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].img) {
+                    item.cover_img = content[i].img;
+                    break;
+                }
+            }
+
+            Bee.finishExtractItem(item);
+            console.log(item);
+        }, 100);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

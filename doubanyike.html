@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>豆瓣一刻蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+        Bee.setType("moment.douban.com");
+        Bee.addChannel("", "http://doubanyike.com/#/column/26");
+        Bee.setImgReferer("");
+        Bee.setRefreshTime(60 * 60 * 1000);
+        Bee.onListLoaded = function(dom) {
+            setTimeout(function() {
+                var itemDivs = dom.byClass("post-container");
+                var items = [];
+                var item = {};
+                item.url = itemDivs.src;
+                items.push(item);
+                Bee.finishExtractList(items);
+            }, 5000);
+        };
+        Bee.onItemLoaded = function(dom, item) {
+            var itemDivs = dom.byClasses("status-card");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var duanzi = {};
+                var content = Bee.htmlToJson(itemDivs[i].byClass("bd"));
+                duanzi.content = JSON.stringify(content);
+                duanzi.key = Bee.hashCode(JSON.stringify(content));
+                duanzi.source = "豆瓣一刻 " + itemDivs[i].byClass("hd").innerText;
+                var date = new Date();
+                duanzi.created_at = Bee.convertTime(date.toDateString());
+                duanzi.status = 3;
+                duanzi.class = "episode";
+                duanzi.category = "段子";
+                duanzi.tag = "吐槽";
+                console.log(duanzi);
+                Bee.finishExtractItem(duanzi);
+            }
+        }
+        Bee.start();
+</script>
+</body>
+</html>

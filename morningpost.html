@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>北京晨报网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.morningpost.com.cn/");
+    Bee.setImgReferer("http://www.morningpost.com.cn/");
+
+    Bee.addChannel("新闻-速览", "http://www.morningpost.com.cn/news/yw/");
+    Bee.addChannel("新闻-北京", "http://www.morningpost.com.cn/news/bj/");
+    Bee.addChannel("新闻-国内", "http://www.morningpost.com.cn/news/gn/");
+    Bee.addChannel("新闻-国际", "http://www.morningpost.com.cn/news/gj/");
+    Bee.addChannel("新闻-经济", "http://www.morningpost.com.cn/news/jj/");
+    Bee.addChannel("新闻-评论", "http://www.morningpost.com.cn/news/pl/");
+    Bee.addChannel("新闻-特别报道", "http://www.morningpost.com.cn/news/tb/");
+    Bee.addChannel("新闻-北京-社区", "http://www.morningpost.com.cn/news/quxian/sqxw/");
+
+    Bee.addChannel("军事-头条", "http://www.morningpost.com.cn/mil/mtt/");
+    Bee.addChannel("军事-军情", "http://www.morningpost.com.cn/mil/mjq/");
+    Bee.addChannel("军事-装备", "http://www.morningpost.com.cn/mil/mzb/");
+    Bee.addChannel("军事-历史", "http://www.morningpost.com.cn/mil/mls/");
+
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/ett/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/ezx/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/gt/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/rh/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/bg/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/zy/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/ys/");
+    Bee.addChannel("娱乐", "http://www.morningpost.com.cn/ent/yy/");
+
+    Bee.addChannel("科技", "http://www.morningpost.com.cn/tech/stt/");
+    Bee.addChannel("科技", "http://www.morningpost.com.cn/tech/szx/");
+    Bee.addChannel("科技", "http://www.morningpost.com.cn/tech/kg/");
+    Bee.addChannel("科技", "http://www.morningpost.com.cn/tech/ts/");
+    Bee.addChannel("科技", "http://www.morningpost.com.cn/tech/ufo/");
+
+    Bee.addChannel("汽车", "http://www.morningpost.com.cn/auto/qtt/");
+    Bee.addChannel("汽车", "http://www.morningpost.com.cn/auto/qzx/");
+
+    Bee.addChannel("游戏", "http://www.morningpost.com.cn/game/gtt/");
+    Bee.addChannel("游戏", "http://www.morningpost.com.cn/game/gzx/");
+    Bee.addChannel("游戏", "http://www.morningpost.com.cn/game/grg/");
+    Bee.addChannel("游戏", "http://www.morningpost.com.cn/game/gl/");
+
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/fzx/");
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/mr/");
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/qg/");
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/cw/");
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/my/");
+    Bee.addChannel("时尚", "http://www.morningpost.com.cn/fashion/ms/");
+
+    Bee.addChannel("健康", "http://www.morningpost.com.cn/health/jktt/");
+    Bee.addChannel("健康", "http://www.morningpost.com.cn/health/news/");
+    Bee.addChannel("健康", "http://www.morningpost.com.cn/health/bjys/");
+    Bee.addChannel("健康", "http://www.morningpost.com.cn/health/zyy/");
+    Bee.addChannel("健康", "http://www.morningpost.com.cn/health/lx/");
+
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/ttt/");
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/tzx/");
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/tgj/");
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/trw/");
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/tlx/");
+    Bee.addChannel("教育", "http://www.morningpost.com.cn/edu/tlx/");
+
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/ltt/");
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/bb/");
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/sy/");
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/it/");
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/bk/");
+    Bee.addChannel("生活", "http://www.morningpost.com.cn/life/ja/");
+
+    Bee.setRefreshTime(1000 * 60 * 60 * 1);
+
+    Bee.onListLoaded = function(dom) {
+        if (Bee.getCurCategory().indexOf("特别报道") >= 0) {
+            var list = dom.byClass("list-pic-text");
+            var alist = list.byTags("a");
+            var items = [];
+            for (var i = 0; i < alist.length; i++) {
+                var a = alist[i];
+                if (a.title) { } else continue;
+                var item = {};
+                item.title = a.title;
+                item.url = a.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        } else {
+            var list = dom.byClass("list list-point");
+            var alist = list.byTags("a");
+            var items = [];
+            for (var i = 0; i < alist.length; i++) {
+                var a = alist[i];
+                var item = {};
+                item.title = a.innerText;
+                item.url = a.href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var cont = dom.byClass("article-content", true);
+        if (cont) {
+            item.content = Bee.htmlToJson(cont);
+        } else {
+            Bee.passItem(item);
+            return;
+        }
+        var infos = dom.byClass("article-infos", true);
+        if (infos) { } else {
+            Bee.passItem(item);
+            return;
+        }
+        item.created_at = Bee.convertTime(infos.byClass("date").innerText);
+        var editor = infos.byClass("editors", true);
+        if (editor) {
+            item.source = editor.innerText.trim();
+        } else {
+            var source = infos.byClass("source", true);
+            if (source) {
+                source = source.byTag("a", true);
+                if (source) {
+                    item.source = source.innerText;
+                } else {
+                    source = infos.byClass("source", true).innerText;
+                    item.source = source.substring(source.indexOf("来源：") + "来源：".length).trim();
+                }
+            } else {
+                item.source = "北京晨报";
+            }
+        }
+        if (item.source == "北京晨报" || Bee.knownSource.indexOf(item.source) < 0) {
+            item.status = 3;
+            item.category = Bee.getCurCategory();
+            Bee.finishExtractItem(item);
+        } else {
+            Bee.passItem(item);
+        }
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

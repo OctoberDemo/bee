@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>大河网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var addText = ["眼遇二维码"];
+
+    Bee.addChannel("国内", "河南", "http://4g.dahe.cn/news/sz/index.html");
+    Bee.setType("www.dahe.cn");
+    Bee.setImgReferer("img.dahe.cn");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        var pageButton = dom.byClass("gomore", true);
+        if (pageButton) {
+            pageButton.click();
+            pageButton.click();
+            pageButton.click();
+        }
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("list");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var header = lis[i];
+                item.url = header.byTag("a").href;
+                item.title = header.byTag("h2").innerText;
+                item.key = Bee.hashCode(item.url + "test");
+                items.push(item);
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byId("main");
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("laiyuan").innerText.split(" ");
+            var sourceString = attrib[0];
+            console.log(sourceString);
+            if (sourceString.indexOf("大河") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib[1];
+            item.created_at = Bee.convertTime(timeString);
+            item.tag = Bee.getCurCategory();
+            item.category = "河南";
+            article.removeTag("h1");
+            article.removeClass("laiyuan");
+            article.removeClass("yanyu");
+            article.removeClass("bianji");
+            var p = article.byTags("p");
+            for (var i = 0; i < p.length; i++) {
+                var img = p[i].byTag("img");
+                if (img && img.alt == "眼遇二维码") {
+                    article.removeChild(p[i]);
+                }
+            }
+            var content = Bee.htmlToJson(article, addText);
+            item.content = content;
+            item.status = 3;
+            item.class = "";
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>
