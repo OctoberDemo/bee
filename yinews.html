@@ -81,7 +81,7 @@
 
         var content = Bee.htmlToJson(cntDiv, adText, adImgs, imgConverter);
         item.content = JSON.stringify(content);
-        item.status = 2;
+        item.status = 3;
         for (var i = 0; i < content.length; i++) {
             if (content[i].img) {
                 item.cover_img = content[i].img;
@@ -89,7 +89,7 @@
             }
         }
 //        console.log(item);
-        Bee.finishExtractItem(item, true, true);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();
