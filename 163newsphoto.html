@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>163新闻图片爬虫</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("163.com");
+    Bee.setImgReferer("163.com");
+    Bee.addChannel("", "http://news.163.com/photo/#Current");
+    Bee.setRefreshTime(1000 * 60 * 5);
+
+    Bee.onListLoaded = function(dom) {
+        var win = this.getWindow();
+        var listData = win.galleryListData;
+        console.log(listData);
+        var items = [];
+        for (var i = 0; i < listData.ss.length; i++) {
+            var item = createItem(listData.ss[i]);
+            item.category = "时事";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.kk.length; i++) {
+            var item = createItem(listData.kk[i]);
+            item.category = "";
+            item.tag = "看客";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.hk.length; i++) {
+            var item = createItem(listData.hk[i]);
+            item.category = "";
+            item.tag = "航空";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.jx.length; i++) {
+            var item = createItem(listData.jx[i]);
+            item.category = "";
+            item.tag = "一周精选";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.ch.length; i++) {
+            var item = createItem(listData.ch[i]);
+            item.category = "";
+            item.tag = "策划";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.js.length; i++) {
+            var item = createItem(listData.js[i]);
+            item.category = "";
+            item.tag = "军事";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.ts.length; i++) {
+            var item = createItem(listData.ts[i]);
+            item.category = "";
+            item.tag = "探索";
+            items.push(item);
+        }
+        for (var i = 0; i < listData.zm.length; i++) {
+            var item = createItem(listData.zm[i]);
+            item.category = "";
+            item.tag = "媒体精选";
+            items.push(item);
+        }
+
+        function createItem(obj) {
+            var item = {};
+            item.url = obj.seturl;
+            item.title = obj.setname;
+            item.desc = obj.desc;
+            item.created_at = Bee.convertTime(obj.createdate);
+            return item;
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var info;
+        var textAreas = dom.byTags("textarea");
+        for (var i = 0; i < textAreas.length; i++) {
+            var textArea = textAreas[i];
+            if (textArea.name == "gallery-data") {
+                info = JSON.parse(textArea.innerText);
+            }
+        }
+        item.class = "image";
+        item.status = 3;
+        item.source = "网易悦图";
+        item.content = {};
+        item.content.imgs = [];
+
+        item.content.desc = item.desc;
+        delete item.desc;
+
+        loadImage();
+
+        function loadImage() {
+            if (info.list.length == 0) {
+                item.cover_img = item.content.imgs[0];
+                Bee.finishExtractItem(item);
+                return;
+            }
+            var imgInfo = info.list.shift();
+            var img = {};
+            img.desc = imgInfo.note;
+            img.src = Bee.makeImgJumpUrl(imgInfo.oimg, "163.com");
+            var imgNode = document.createElement("img");
+            dom.body.appendChild(imgNode);
+            imgNode.src = img.src;
+            imgNode.onload = function() {
+                img.width = imgNode.clientWidth;
+                img.height = imgNode.clientHeight;
+                item.content.imgs.push(img);
+                loadImage();
+            }
+        }
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
