@@ -169,13 +169,13 @@ function _Bee() {
         listWebView.setOnPageFinishListener(function() {
             var dom = listWebView.getDom();
             if (self.onListLoaded) {
-                self.onListLoaded.call(self, dom);
+                self.onListLoaded.call(listWebView, dom);
             }
         }, 10000);
         listWebView.setOnDomLoadedListener(function() {
             var dom = listWebView.getDom();
             if (self.onListDomLoaded) {
-                self.onListDomLoaded.call(self, dom);
+                self.onListDomLoaded.call(listWebView, dom);
             }
         });
 
@@ -193,7 +193,9 @@ function _Bee() {
     this.finishExtractList = function(items) {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            item.key = Bee.hashCode(item.url);
+            if (item.key == undefined) {
+                item.key = Bee.hashCode(item.url);
+            }
             if (debug == false && item.key && BeeUtils.exist(type, item.key)) {
                 continue;
             }
@@ -224,13 +226,13 @@ function _Bee() {
         itemWebView.setOnPageFinishListener(function() {
             var dom = itemWebView.getDom();
             if (self.onItemLoaded) {
-                self.onItemLoaded.call(self, dom, item);
+                self.onItemLoaded.call(itemWebView, dom, item);
             }
         }, 10000);
         itemWebView.setOnDomLoadedListener(function() {
             var dom = itemWebView.getDom();
             if (self.onItemDomLoaded) {
-                self.onItemDomLoaded.call(self, dom, item);
+                self.onItemDomLoaded.call(itemWebView, dom, item);
             }
         });
         if (noScript) {
@@ -261,13 +263,13 @@ function _Bee() {
         if (self.onSubItemLoaded) {
             subItemWebView.setOnPageFinishListener(function() {
                 var dom = subItemWebView.getDom();
-                self.onSubItemLoaded.call(self, dom, item);
+                self.onSubItemLoaded.call(subItemWebView, dom, item);
             }, 10000);
         }
         if (self.onSubItemDomLoaded) {
             subItemWebView.setOnDomLoadedListener(function() {
                 var dom = subItemWebView.getDom();
-                self.onSubItemDomLoaded.call(self, dom, item);
+                self.onSubItemDomLoaded.call(subItemWebView, dom, item);
             });
         }
         if (noScript) {
