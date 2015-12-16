@@ -15,6 +15,8 @@
     Bee.addChannel("", "图片 一周天下", "http://photos.caixin.com/photoreport/");
     Bee.addChannel("", "图片 一周人物", "http://photos.caixin.com/newsmaker/");
 
+    Bee.setRefreshTime(1000 * 60 * 60);
+
     Bee.requestNoScript();
     Bee.onListLoaded = function(dom) {
         var picList = dom.byClass("picList");
