@@ -10,8 +10,10 @@
     Bee.setType("caixin.com");
     Bee.setImgReferer("caixin.com");
 
-//    Bee.addChannel("", "图片 滚动新闻", "http://photos.caixin.com/dailynews/");
+    Bee.addChannel("", "图片 滚动新闻", "http://photos.caixin.com/dailynews/");
     Bee.addChannel("", "图片 专题报道", "http://photos.caixin.com/cxtj/");
+    Bee.addChannel("", "图片 一周天下", "http://photos.caixin.com/photoreport/");
+    Bee.addChannel("", "图片 一周人物", "http://photos.caixin.com/newsmaker/");
 
     Bee.requestNoScript();
     Bee.onListLoaded = function(dom) {
@@ -70,10 +72,10 @@
             item.content.imgs = item.imgs;
             delete item.imgs;
 
-            item.status = 5;
+            item.status = 3;
             item.source = "财新网";
             item.class = "image";
-            Bee.finishExtractItem(item, true);
+            Bee.finishExtractItem(item);
         }
     };
 
