@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>腾讯明星</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://ent.qq.com/star/");
+    Bee.addChannel("娱乐", "明星", "http://ent.qq.com/star/");
+    Bee.setImgReferer("http://ent.qq.com/star/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var fcons = dom.byClasses("fcon");
+        for (var i = 0; i < fcons.length; i++) {
+            var shadow = fcons[i].byClass("shadow").byTag("a");
+            var item = {};
+            item.title = shadow.innerText;
+            item.url = shadow.href;
+            item.key = Bee.hashCode(item.url);
+            if (fcons[i].byTag("img") != null) {
+                var image = fcons[i].byTag("img");
+                var img = {};
+                img.src = image.src;
+                img.width = image.clientWidth;
+                img.height = image.clientHeight;
+                item.cover_img = img;
+            }
+            items.push(item);
+        }
+
+        var itemDivs = dom.byClasses("item clearfix");
+        for (var i = 0; i < itemDivs.length; i++) {
+            var info = itemDivs[i].byClass("title").byTag("a");
+            var item = {};
+            item.title = info.innerText;
+            item.url = info.href;
+            item.key = Bee.hashCode(item.url);
+            if (itemDivs[i].byClass("pic") != null) {
+                var image = itemDivs[i].byClass("pic").byTag("img");
+                var img = {};
+                img.src = image.src;
+                img.width = image.clientWidth;
+                img.height = image.clientHeight;
+                item.cover_img = img;
+            }
+            items.push(item);
+        }
+
+        if (dom.byClass("count") != null) {
+            itemDivs = dom.byClass("count").byClasses("split");
+            for (var i = 0; i < itemDivs.length; i++) {
+                item.title = itemDivs[i].byClass("title").innerText;
+                item.url = itemDivs[i].byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                var image = itemDivs[i].byTag("img");
+                var img = {};
+                img.src = image.src;
+                img.width = image.clientWidth;
+                img.height = image.clientHeight;
+                item.cover_img = img;
+                items.push(item);
+            }
+        }
+
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (dom.byClass("a_source") == null || dom.byClass("a_source").innerText != "腾讯娱乐") {
+            console.log("来源不正确");
+            Bee.passItem(item);
+            return;
+        }
+        item.source = dom.byClass("a_source").innerText;
+        item.created_at = Bee.convertTime(dom.byClass("a_time").innerText);
+        item.status = 3;
+        var article = dom.byClass("Cnt-Main-Article-QQ");
+        if (article) {
+            console.log(item.title);
+            var content = [];
+            if (article.byTag("p")) {
+                content.push({
+                    desc: article.byTag("p").innerText
+                });
+            }
+            if (dom.byClass("gallery")) {
+                var index = item.url.search("htm");
+                var picSrc = item.url.substring(0, index) + "hdPic.js";
+                liteAjax(picSrc, function(data) {
+                    eval("var picArr ="+data);
+                    var picList = [];
+                    findInJson(picArr, "Name", "bigimgurl", picList);
+                    console.log(picList);
+                    for (var i = 0; i < picList.length; i++) {
+                        var img = {};
+                        img.src = Bee.makeImgJumpUrl(picList[i].Children[0].Content, "http://ent.qq.com/");
+                        content.push({
+                            img: img
+                        });
+                    }
+                    item.content = JSON.stringify(content);
+                })
+                Bee.finishExtractItem(item);
+            } else {
+                Bee.passItem(item);
+            }
+        } else {
+            Bee.passItem(item);
+        }
+    }
+
+    function findInJson(json, itemName, itemValue, resultItems) {
+        if (json instanceof Object) {
+            for (var name in json) {
+                if (name == itemName && json[name] == itemValue) {
+                    resultItems.push(json);;
+                }
+                findInJson(json[name],itemName, itemValue, resultItems);
+            }
+        } else if (json instanceof Array) {
+            for (var i = 0; i < json.length; ++i) {
+                findInJson(json[i], itemName, itemValue, resultItems);
+            }
+        }
+    }
+    Bee.start();
+</script>
+</body>
+</html>
