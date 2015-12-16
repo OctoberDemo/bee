@@ -330,7 +330,7 @@ function _BeeUtils() {
         }
         timeString = timeString.replace(/-/g, "/");
         d = new Date(timeString);
-        if (d != "Invalid Date") {
+        if (d != "Invalid Date" && d.getTime() <= now.getTime()) {
             return d;
         } else {
             console.log("Error:" + timeString);
@@ -472,7 +472,7 @@ function _BeeUtils() {
                         }
                     }
                     if (embed == false) {
-                        if (node.nodeName != "#comment" && node.nodeName.toLowerCase() != "script"
+                        if (node.nodeName != "#comment" && node.nodeName.toLowerCase() != "script" && node.nodeName.toLowerCase() != "style"
                             && node.style.visibility != "hidden" && node.style.display != "none") {
                             recursiveFormat(node);
                         }
