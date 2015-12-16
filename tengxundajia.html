@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>腾讯大家</title>
+    <title>腾讯大家蜜蜂</title>
     <script src="bee.js"></script>
 </head>
 <body>
@@ -35,11 +35,13 @@
     }
 
     Bee.onItemLoaded = function(dom, item) {
-        item.created_at = Bee.convertTime(dom.byClass("publishtime").innerText);
-        var content = Bee.htmlToJson(dom.byClass("left-b article"));
-        item.content = JSON.stringify(content);
-        item.status = 3;
-        Bee.finishExtractItem(item);
+        setTimeout(function() {
+            item.created_at = Bee.convertTime(dom.byClass("publishtime").innerText);
+            var content = Bee.htmlToJson(dom.byClass("left-b article"));
+            item.content = JSON.stringify(content);
+            item.status = 3;
+            Bee.finishExtractItem(item);
+        }, 1000);
     }
 
     Bee.start();
