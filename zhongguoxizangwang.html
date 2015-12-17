@@ -79,7 +79,6 @@
                 item.author = author.replace("作者： ","");
                 var content = Bee.htmlToJson(dom.byId("text"));
                 item.content = JSON.stringify(content);
-                item.status = 3;
                 Bee.finishExtractItem(item);
             } else {
                 Bee.passItem(item);

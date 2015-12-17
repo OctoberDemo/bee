@@ -62,7 +62,6 @@
             item.source = src;
             var content = Bee.htmlToJson(dom.byClass("zg114"));
             item.content = JSON.stringify(content);
-            item.status = 3;
             Bee.finishExtractItem(item);
         } else {
             Bee.passItem(item);

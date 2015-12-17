@@ -43,7 +43,6 @@
             var src = dom.byClass("from").byTag("a");
             item.source = "豆瓣小组 " + src.innerText;
             item.created_at = Bee.convertTime(dom.byClass("color-green").innerText);
-            item.status = 3;
             item.tag = Bee.getCurCategory();
             var content = Bee.htmlToJson(dom.byId("link-report").byClass("topic-content"));
             item.content = JSON.stringify(content);

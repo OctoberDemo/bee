@@ -39,7 +39,6 @@
             item.created_at = Bee.convertTime(dom.byClass("publishtime").innerText);
             var content = Bee.htmlToJson(dom.byClass("left-b article"));
             item.content = JSON.stringify(content);
-            item.status = 3;
             Bee.finishExtractItem(item);
         }, 1000);
     }

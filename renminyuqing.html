@@ -49,7 +49,6 @@
             item.source = "人民网-舆情频道"
         }
         item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
-        item.status = 3;
         var content = Bee.htmlToJson(dom.byId("p_content"));
         item.content = JSON.stringify(content);
         Bee.finishExtractItem(item);

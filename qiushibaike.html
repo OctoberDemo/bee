@@ -24,7 +24,6 @@
             item.url = article.byTag("a").href;
             item.title = "";
             item.source = "糗事百科 " + article.byClass("touch-user-name").innerText;
-            item.status = 3;
             item.category = Bee.getCurCategory();
             var now = new Date();
             item.created_at = Bee.convertTime(now.toLocaleDateString());

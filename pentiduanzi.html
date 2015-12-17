@@ -28,7 +28,6 @@
                     item.key = Bee.hashCode(lis[i].innerText);
                     item.class = "duanzi";
                     item.tag = "喷嚏网";
-                    item.status = 3;
                     item.content = Bee.htmlToJson(lis[i]);
                     var now = new Date();
                     item.created_at = Bee.convertTime(now.toLocaleDateString());

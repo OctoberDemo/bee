@@ -61,7 +61,6 @@
             ad2.parentNode.removeChild(ad2);
             var content = Bee.htmlToJson(cnt, adText);
             item.content = JSON.stringify(content);
-            item.status = 3;
             item.class = "news";
 
             if (Bee.getCurChannel().url.indexOf("nba") > 0) {

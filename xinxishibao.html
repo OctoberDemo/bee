@@ -53,7 +53,6 @@
         var content = Bee.htmlToJson(dom.byClass("main_Article"));
         item.content = JSON.stringify(content);
         item.tag = Bee.getCurCategory();
-        item.status = 3;
         item.class = "news";
         Bee.finishExtractItem(item);
     }

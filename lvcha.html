@@ -77,7 +77,6 @@
     Bee.onItemLoaded = function(dom, item) {
         var content = dom.byId("js_content");
         item.content = Bee.htmlToJson(content, "", "", imgConverter);
-        item.status = 3;
         Bee.finishExtractItem(item, true, true);
 
         function imgConverter(node) {

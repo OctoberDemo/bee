@@ -76,7 +76,6 @@
         }
         item.source = dom.byClass("a_source").innerText;
         item.created_at = Bee.convertTime(dom.byClass("a_time").innerText);
-        item.status = 3;
         var article = dom.byClass("Cnt-Main-Article-QQ");
         if (article) {
             console.log(item.title);

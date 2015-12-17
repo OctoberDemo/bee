@@ -139,7 +139,6 @@
             }
         }
         if (item.source == "北京晨报" || Bee.knownSource.indexOf(item.source) < 0) {
-            item.status = 3;
             item.category = Bee.getCurCategory();
             Bee.finishExtractItem(item);
         } else {

@@ -73,7 +73,6 @@
         setTimeout(function() {
             var p_content1 = dom.byId("p_content1");
             item.content = Bee.htmlToJson(p_content1);
-            item.status = 3;
             item.class = "news";
             Bee.finishExtractItem(item);
         });

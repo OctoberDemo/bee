@@ -60,7 +60,6 @@
         }
         item.source = source;
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
-        item.status = 3;
         item.class = "news";
         if (Bee.getCurCategory() == "外媒看中国") {
             item.category = "国际";

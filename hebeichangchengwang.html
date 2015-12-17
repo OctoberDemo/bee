@@ -42,7 +42,6 @@
             var content = Bee.htmlToJson(dom.byId("docContent"));
             item.content = JSON.stringify(content);
             item.class = "news";
-            item.status = 3;
             Bee.finishExtractItem(item);
         } else {
             console.log("来源不正确");

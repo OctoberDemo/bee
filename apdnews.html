@@ -123,7 +123,6 @@
         var cont = dom.byId("viewContent");
         var content = Bee.htmlToJson(cont);
         item.content = content;
-        item.status = 3;
         item.tag = Bee.getCurCategory().replaceAll("-", " ");
         item.category = Bee.getCurCategory().split("-")[0];
         Bee.finishExtractItem(item);
