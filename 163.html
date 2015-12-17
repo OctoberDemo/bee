@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>163蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("163.com");
+    Bee.setImgReferer("163.com");
+    var adText = ["图集", "点击阅读"];
+    Bee.addChannel("财经", "http://money.163.com/");
+
+    Bee.onListDomLoaded = function(dom) {
+        dom.removeTags("iframe");
+        var fn_text_news = dom.byClass("fn_text_news");
+        var lis = fn_text_news.byTags("li");
+        var items = [];
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var as = li.byTags("a");
+            for (var j = 0; j < as.length; j++) {
+                var item = {};
+                var id = as[j].href;
+                id = id.substring(id.lastIndexOf("/") + 1);
+                id = id.substring(0, id.indexOf(".html"));
+                item.url = "http://3g.163.com/touch/article.html?docid=" + id;
+                items.push(item);
+            }
+        }
+        console.log(items);
+//        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        var showAllBtn = dom.byId("showAllArticle");
+        if (showAllBtn) {
+            showAllBtn.click();
+        } else {
+            console.log("showall undefined");
+        }
+
+        setTimeout(function() {
+            item.title = dom.byClass("article-title").innerText;
+
+            var article = dom.byClass("articleList");
+            if (article == undefined) {
+                Bee.finishExtractItem();
+                return;
+            }
+            var timeString = article.byClass("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            item.source = article.byClass("source").innerText;
+            item.category = Bee.getCurCategory();
+
+            var cnt = article.byClass("text1");
+            var ad = cnt.byClass("fix-break-word");
+            cnt.removeChild(ad);
+            var ad2 = cnt.byClass("more-client");
+            ad2.parentNode.removeChild(ad2);
+            var content = Bee.htmlToJson(cnt, adText);
+            item.content = JSON.stringify(content);
+            item.status = 3;
+            item.class = "news";
+
+            if (Bee.getCurChannel().url.indexOf("nba") > 0) {
+                item.tag = "nba";
+            }
+
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].img) {
+                    item.cover_img = content[i].img;
+                    break;
+                }
+            }
+
+//            Bee.finishExtractItem(item);
+            console.log(item);
+        });
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

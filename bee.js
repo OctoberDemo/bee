@@ -399,6 +399,10 @@ function _Bee() {
             }
         }
 
+        if (item.status == undefined) {
+            item.status = 2;
+        }
+
         if (debug || test) {
             console.log(item);
             return;

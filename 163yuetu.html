@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>网易悦图蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("163.com");
+    Bee.setImgReferer("163.com");
+
+    Bee.addChannel("", "http://yuetu.163.com");
+
+    var TopicName = [
+        {"id":"0001", "name":"新闻"}
+//        {"id":"0005", "name":"体育"},
+//        {"id":"0003", "name":"娱乐"},
+//        {"id":"0025", "name":"财经"},
+//        {"id":"0026", "name":"女人"},
+//        {"id":"0008", "name":"汽车"},
+//        {"id":"0031", "name":"游戏"},
+//        {"id":"0011", "name":"手机"},
+//        {"id":"0010", "name":"家居"},
+//        {"id":"0087", "name":"房产"},
+//        {"id":"0006", "name":"旅游"}
+    ];
+
+    Bee.onListDomLoaded = function(dom) {
+        var win = this.getWindow();
+        var subTopic = win.yuetu_subtopic_config;
+        var topics = [];
+        console.log(subTopic);
+        for (var i = 0; i < TopicName.length; i++) {
+            var topicItem = TopicName[i];
+            var subItems = subTopic[topicItem.id];
+            if (subItems == undefined) {
+                continue;
+            }
+            for (var j = 0; j < subItems.length; j++) {
+                var topic = {};
+                if (topicItem.name == "新闻") {
+                    topic.category = "";
+                } else {
+                    topic.category = topicItem.name;
+                }
+                topic.id = subItems[j][0];
+                topic.tag = subItems[j][1];
+                if (topic.tag == "国际" || topic.tag == "国内" || topic.tag == "社会" || topic.tag == "军事") {
+                    topic.category = topic.tag;
+                }
+                topics.push(topic);
+            }
+        }
+
+        var items = [];
+        loadList();
+        function loadList() {
+            if (topics.length == 0) {
+                Bee.finishExtractList(items);
+                return;
+            }
+            var topic = topics.shift();
+            var url = "http://pic.news.163.com/photocenter/api/alllist/" + topic.id.substring(topic.id.length - 4) + "/" + topic.id + "/0/80/yuetu_show_topic.json?callback=yuetu_show_topic"
+            liteAjax(url, function(e) {
+                var dataString = e.substring("yuetu_show_topic".length + 1, e.length - 1);
+                var datas = JSON.parse(dataString);
+                for (var i = 0; i < Math.min(datas.length, 5); i++) {
+                    var item = createItem(datas[i]);
+                    item.category = topic.category;
+                    item.tag = topic.tag;
+                    items.push(item);
+                }
+                console.log("完成对" + topic.tag + "的数据拉取");
+                setTimeout(loadList, 100);
+            })
+        }
+
+        function createItem(obj) {
+            var item = {};
+            item.url = obj.seturl;
+            item.title = obj.setname;
+            item.desc = obj.desc;
+            item.created_at = Bee.convertTime(obj.createdate);
+            return item;
+        }
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var info;
+        var textAreas = dom.byTags("textarea");
+        for (var i = 0; i < textAreas.length; i++) {
+            var textArea = textAreas[i];
+            if (textArea.name == "gallery-data") {
+                info = JSON.parse(textArea.innerText);
+            }
+        }
+        item.class = "image";
+        item.status = 5;
+        item.source = "网易悦图";
+        item.content = {};
+        item.content.imgs = [];
+
+        item.content.desc = item.desc;
+        delete item.desc;
+
+        loadImage();
+
+        function loadImage() {
+            if (info.list.length == 0) {
+                item.cover_img = item.content.imgs[0];
+                Bee.finishExtractItem(item, true);
+                return;
+            }
+            var imgInfo = info.list.shift();
+            var img = {};
+            img.desc = imgInfo.note;
+            img.src = Bee.makeImgJumpUrl(imgInfo.oimg, "163.com");
+            var imgNode = document.createElement("img");
+            dom.body.appendChild(imgNode);
+            imgNode.src = img.src;
+            imgNode.onload = function() {
+                img.width = imgNode.clientWidth;
+                img.height = imgNode.clientHeight;
+                item.content.imgs.push(img);
+                loadImage();
+            }
+        }
+    };
+
+
+    Bee.start();
+</script>
+</body>
+</html>
