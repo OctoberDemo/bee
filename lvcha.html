@@ -75,8 +75,8 @@
         item.status = 5;
         var content = dom.byId("js_content");
         item.content = Bee.htmlToJson(content, "", "", imgConverter);
-        UploadImages(dom, item.content, function() {
-            Bee.finishExtractItem(item);
+        UploadImages(item.url, dom, item.content, function() {
+            Bee.finishExtractItem(item,true, true);
         });
 
         function imgConverter(node) {
@@ -89,22 +89,31 @@
         }
     };
 
-    function UploadImages(dom, content, callback) {
+    function UploadImages(item_url, dom, content, callback) {
         function uploadItemImagesInternal(index) {
             if (index >= content.length) {
                 callback();
                 return;
             }
             if (content[index].img) {
-                parseImage(content[index].img, function(base64Image, width, height) {
-                    liteAjax("http://10.4.162.106:15555/upload", function(resText) {
-                        var result = JSON.parse(resText);
-                        content[index].img.src = result.image_url;
-                        content[index].img.width = width;
-                        content[index].img.height = height;
-                        uploadItemImagesInternal(index+1);
-                    }, "POST", base64Image, true);
+//                parseImage(content[index].img, function(base64Image, width, height) {
+//                    liteAjax("http://10.4.162.106:15555/upload", function(resText) {
+//                        var result = JSON.parse(resText);
+//                        content[index].img.src = result.image_url;
+//                        content[index].img.width = width;
+//                        content[index].img.height = height;
+//                        uploadItemImagesInternal(index+1);
+//                    }, "POST", base64Image, true);
+//                });
+                var postBody = JSON.stringify({
+                    image_url: content[index].img.src,
+                    referer: item_url
                 });
+                liteAjax("http://10.4.162.106:15555/put", function(resText) {
+                    var result = JSON.parse(resText);
+                    content[index].img.src = result.image_url;
+                    uploadItemImagesInternal(index+1);
+                }, "POST", postBody);
             } else {
                 uploadItemImagesInternal(index+1);
             }
