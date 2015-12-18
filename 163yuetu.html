@@ -9,21 +9,20 @@
 <script>
     Bee.setType("163.com");
     Bee.setImgReferer("163.com");
+    Bee.setRefreshTime(1000 * 60 * 10);
 
     Bee.addChannel("", "http://yuetu.163.com");
 
     var TopicName = [
-        {"id":"0001", "name":"新闻"}
-//        {"id":"0005", "name":"体育"},
-//        {"id":"0003", "name":"娱乐"},
-//        {"id":"0025", "name":"财经"},
-//        {"id":"0026", "name":"女人"},
-//        {"id":"0008", "name":"汽车"},
-//        {"id":"0031", "name":"游戏"},
-//        {"id":"0011", "name":"手机"},
-//        {"id":"0010", "name":"家居"},
-//        {"id":"0087", "name":"房产"},
-//        {"id":"0006", "name":"旅游"}
+        {"id":"0001", "name":"新闻"},
+        {"id":"0005", "name":"体育"},
+        {"id":"0003", "name":"娱乐"},
+        {"id":"0025", "name":"财经"},
+        {"id":"0026", "name":"女人"},
+        {"id":"0031", "name":"游戏"},
+        {"id":"0011", "name":"手机"},
+        {"id":"0087", "name":"房产"},
+        {"id":"0006", "name":"旅游"}
     ];
 
     Bee.onListDomLoaded = function(dom) {
@@ -96,7 +95,6 @@
             }
         }
         item.class = "image";
-        item.status = 5;
         item.source = "网易悦图";
         item.content = {};
         item.content.imgs = [];
@@ -108,8 +106,11 @@
 
         function loadImage() {
             if (info.list.length == 0) {
-                item.cover_img = item.content.imgs[0];
-                Bee.finishExtractItem(item, true);
+                item.cover_img = {};
+                item.cover_img.src = item.content.imgs[0].src;
+                item.cover_img.width = item.content.imgs[0].width;
+                item.cover_img.height = item.content.imgs[0].height;
+                Bee.finishExtractItem(item);
                 return;
             }
             var imgInfo = info.list.shift();
