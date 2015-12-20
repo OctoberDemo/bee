@@ -33,7 +33,8 @@
                 duanzi.title = questions[i].byClass("question-title").innerText;
                 var key = Bee.hashCode(duanzi.title);
                 var author = questions[i].byClass("author").innerText;
-                duanzi.source = "知乎 " + author.substring(0, author.length - 1);
+                duanzi.source = "知乎";
+                duanzi.author = author.substring(0, author.length - 1);
                 var date = new Date();
                 duanzi.created_at = Bee.convertTime(date.toDateString());
                 duanzi.status = 3;
@@ -65,7 +66,8 @@
             if (author.indexOf("，") == author.length - 1 || author.indexOf(",") == author.length - 1) {
                 author = author.substring(0, author.length - 1);
             }
-            item.source = "知乎 " + author;
+            item.source = "知乎";
+            item.authro = author;
         } else {
             var metaItem = dom.byClass("meta-item", false);
             if (metaItem) {

@@ -155,44 +155,52 @@ function _Bee() {
         }
         if (channelList.length == 0) {
             BeeUtils.log("全部爬取成功");
-            var parentWin = window.parent;
-            if (parentWin) {
-                parentWin.postMessage("finish", "*");
-            }
+            postFinishMessage();
             return;
         }
         curChannel = channelList.shift();
         detailItems.clear();
 
-        if (listWebView != null) {
-            root.removeView(listWebView);
-        }
-        listWebView = new BeeWebView();
-        root.addView(listWebView, 0, webViewLp);
-
-        listWebView.setOnPageFinishListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListLoaded) {
-                self.onListLoaded.call(listWebView, dom);
+        try {
+            if (listWebView != null) {
+                root.removeView(listWebView);
             }
-        }, 10000);
-        listWebView.setOnDomLoadedListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListDomLoaded) {
-                self.onListDomLoaded.call(listWebView, dom);
-            }
-        });
+            listWebView = new BeeWebView();
+            root.addView(listWebView, 0, webViewLp);
 
-        if (noScript) {
-            self.getNoScriptHtml(curChannel.url, function(html) {
-                listWebView.loadDataWithBaseURL(html.innerHTML);
+            listWebView.setOnPageFinishListener(function() {
+                var dom = listWebView.getDom();
+                if (self.onListLoaded) {
+                    self.onListLoaded.call(listWebView, dom);
+                }
+            }, 10000);
+            listWebView.setOnDomLoadedListener(function() {
+                var dom = listWebView.getDom();
+                if (self.onListDomLoaded) {
+                    self.onListDomLoaded.call(listWebView, dom);
+                }
             });
-            listWebView.setSrcUrl(curChannel.url);
-        } else {
-            var url = 'javascript:"<script>location.replace(\''+curChannel.url+'\')<\/script>"';
-            listWebView.loadUrl(url);
+
+            if (noScript) {
+                self.getNoScriptHtml(curChannel.url, function(html) {
+                    listWebView.loadDataWithBaseURL(html.innerHTML);
+                });
+                listWebView.setSrcUrl(curChannel.url);
+            } else {
+                var url = 'javascript:"<script>location.replace(\''+curChannel.url+'\')<\/script>"';
+                listWebView.loadUrl(url);
+            }
+        } catch (e) {
+            postFinishMessage();
         }
     };
+
+    function postFinishMessage() {
+        var parentWin = window.parent;
+        if (parentWin) {
+            parentWin.postMessage("finish", "*");
+        }
+    }
 
     this.finishExtractList = function(items) {
         for (var i = 0; i < items.length; i++) {
@@ -215,38 +223,42 @@ function _Bee() {
     };
 
     function loadItem() {
-        if (detailItems.length <= 0) {
-            BeeUtils.log(curChannel.category + "全部处理完成");
-            self.start();
-            return;
-        }
+        try {
+            if (detailItems.length <= 0) {
+                BeeUtils.log(curChannel.category + "全部处理完成");
+                self.start();
+                return;
+            }
 
-        var item = detailItems.shift();
-        if (itemWebView != null) {
-            root.removeView(itemWebView);
-        }
-        itemWebView = new BeeWebView();
-        root.addView(itemWebView, webViewLp);
-        itemWebView.setOnPageFinishListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemLoaded) {
-                self.onItemLoaded.call(itemWebView, dom, item);
+            var item = detailItems.shift();
+            if (itemWebView != null) {
+                root.removeView(itemWebView);
             }
-        }, 10000);
-        itemWebView.setOnDomLoadedListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemDomLoaded) {
-                self.onItemDomLoaded.call(itemWebView, dom, item);
-            }
-        });
-        if (noScript) {
-            self.getNoScriptHtml(item.url, function(html) {
-                itemWebView.loadDataWithBaseURL(html.innerHTML);
+            itemWebView = new BeeWebView();
+            root.addView(itemWebView, webViewLp);
+            itemWebView.setOnPageFinishListener(function() {
+                var dom = itemWebView.getDom();
+                if (self.onItemLoaded) {
+                    self.onItemLoaded.call(itemWebView, dom, item);
+                }
+            }, 10000);
+            itemWebView.setOnDomLoadedListener(function() {
+                var dom = itemWebView.getDom();
+                if (self.onItemDomLoaded) {
+                    self.onItemDomLoaded.call(itemWebView, dom, item);
+                }
             });
-            itemWebView.setSrcUrl(item.url);
-        } else {
-            var url = 'javascript:"<script>location.replace(\''+item.url+'\')<\/script>"';
-            itemWebView.loadUrl(url);
+            if (noScript) {
+                self.getNoScriptHtml(item.url, function(html) {
+                    itemWebView.loadDataWithBaseURL(html.innerHTML);
+                });
+                itemWebView.setSrcUrl(item.url);
+            } else {
+                var url = 'javascript:"<script>location.replace(\''+item.url+'\')<\/script>"';
+                itemWebView.loadUrl(url);
+            }
+        } catch(e) {
+            postFinishMessage();
         }
     }
 
@@ -255,37 +267,42 @@ function _Bee() {
     };
 
     function loadSubItem(item) {
-        if (subItems.length == 0) {
-            return false;
+        try {
+            if (subItems.length == 0) {
+                return false;
+            }
+            var url = subItems.shift();
+            if (subItemWebView != null) {
+                root.removeView(subItemWebView);
+            }
+            subItemWebView = new BeeWebView();
+            root.addView(subItemWebView, webViewLp);
+            if (self.onSubItemLoaded) {
+                subItemWebView.setOnPageFinishListener(function() {
+                    var dom = subItemWebView.getDom();
+                    self.onSubItemLoaded.call(subItemWebView, dom, item);
+                }, 10000);
+            }
+            if (self.onSubItemDomLoaded) {
+                subItemWebView.setOnDomLoadedListener(function() {
+                    var dom = subItemWebView.getDom();
+                    self.onSubItemDomLoaded.call(subItemWebView, dom, item);
+                });
+            }
+            if (noScript) {
+                self.getNoScriptHtml(url, function(html) {
+                    subItemWebView.loadDataWithBaseURL(html.innerHTML);
+                });
+                subItemWebView.setSrcUrl(url);
+            } else {
+                url = 'javascript:"<script>location.replace(\''+url+'\')<\/script>"';
+                subItemWebView.loadUrl(url);
+            }
+            return true;
+        } catch (e) {
+            postFinishMessage();
         }
-        var url = subItems.shift();
-        if (subItemWebView != null) {
-            root.removeView(subItemWebView);
-        }
-        subItemWebView = new BeeWebView();
-        root.addView(subItemWebView, webViewLp);
-        if (self.onSubItemLoaded) {
-            subItemWebView.setOnPageFinishListener(function() {
-                var dom = subItemWebView.getDom();
-                self.onSubItemLoaded.call(subItemWebView, dom, item);
-            }, 10000);
-        }
-        if (self.onSubItemDomLoaded) {
-            subItemWebView.setOnDomLoadedListener(function() {
-                var dom = subItemWebView.getDom();
-                self.onSubItemDomLoaded.call(subItemWebView, dom, item);
-            });
-        }
-        if (noScript) {
-            self.getNoScriptHtml(url, function(html) {
-                subItemWebView.loadDataWithBaseURL(html.innerHTML);
-            });
-            subItemWebView.setSrcUrl(url);
-        } else {
-            url = 'javascript:"<script>location.replace(\''+url+'\')<\/script>"';
-            subItemWebView.loadUrl(url);
-        }
-        return true;
+
     }
 
     this.getNoScriptHtml = function(url, callback) {
@@ -352,79 +369,83 @@ function _Bee() {
     };
 
     this.finishExtractItem = function(item, oneByone, test) {
-        if (item == undefined) {
-            loadItem();
-            return;
-        }
-        if (debug == false && BeeUtils.exist(type, item.key)) {
-            loadItem();
-            return;
-        }
-        var key = item.key;
-        delete item.key;
-
-        if (typeof item.content == "string") {
-            item.content = JSON.parse(item.content);
-        }
-
-        if (imgReferer != null) {
-            if (item.cover_img && item.cover_img.src.indexOf("fw.mb.lenovomm.com") < 0) {
-                item.cover_img.src = this.makeImgJumpUrl(item.cover_img.src, imgReferer);
+        try {
+            if (item == undefined) {
+                loadItem();
+                return;
             }
-            for (var i = 0; i < item.content.length; i++) {
-                var img = item.content[i].img;
-                if (img && img.src.indexOf("fw.mb.lenovomm.com") < 0) {
-                    item.content[i].img.src = Bee.makeImgJumpUrl(img.src, imgReferer);
+            if (debug == false && BeeUtils.exist(type, item.key)) {
+                loadItem();
+                return;
+            }
+            var key = item.key;
+            delete item.key;
+
+            if (typeof item.content == "string") {
+                item.content = JSON.parse(item.content);
+            }
+
+            if (imgReferer != null) {
+                if (item.cover_img && item.cover_img.src.indexOf("fw.mb.lenovomm.com") < 0) {
+                    item.cover_img.src = this.makeImgJumpUrl(item.cover_img.src, imgReferer);
+                }
+                for (var i = 0; i < item.content.length; i++) {
+                    var img = item.content[i].img;
+                    if (img && img.src.indexOf("fw.mb.lenovomm.com") < 0) {
+                        item.content[i].img.src = Bee.makeImgJumpUrl(img.src, imgReferer);
+                    }
                 }
             }
-        }
 
-        if (item.cover_img == undefined) {
-            for (var i = 0; i < item.content.length; i++) {
-                if (item.content[i].img) {
-                    item.cover_img = item.content[i].img;
-                    break;
+            if (item.cover_img == undefined) {
+                for (var i = 0; i < item.content.length; i++) {
+                    if (item.content[i].img) {
+                        item.cover_img = item.content[i].img;
+                        break;
+                    }
                 }
             }
-        }
 
-        if (item.category == undefined) {
-            item.category = Bee.getCurCategory();
-        }
+            if (item.category == undefined) {
+                item.category = Bee.getCurCategory();
+            }
 
-        var tag = Bee.getCurTag();
-        if (tag != "") {
-            if (item.tag == undefined) {
-                item.tag = tag;
-            } else {
-                if (item.tag.indexOf(tag) < 0) {
-                    item.tag = item.tag + " " + tag;
+            var tag = Bee.getCurTag();
+            if (tag != "") {
+                if (item.tag == undefined) {
+                    item.tag = tag;
+                } else {
+                    if (item.tag.indexOf(tag) < 0) {
+                        item.tag = item.tag + " " + tag;
+                    }
                 }
             }
-        }
 
-        if (item.status == undefined) {
-            item.status = 2;
-        }
+            if (item.status == undefined) {
+                item.status = 2;
+            }
 
-        if (debug || test) {
+            if (debug || test) {
+                console.log(item);
+                return;
+            }
+            item.content = JSON.stringify(item.content);
             console.log(item);
-            return;
-        }
-        item.content = JSON.stringify(item.content);
-        console.log(item);
-        var result = BeeUtils.putModel(item);
-        if (result) {
-            BeeUtils.log("已成功爬取：" + item.title);
-            BeeUtils.addKey(type, key);
+            var result = BeeUtils.putModel(item);
+            if (result) {
+                BeeUtils.log("已成功爬取：" + item.title);
+                BeeUtils.addKey(type, key);
 
-            if (oneByone != true) {
-                loadItem();
+                if (oneByone != true) {
+                    loadItem();
+                }
+            } else {
+                if (oneByone != true) {
+                    loadItem();
+                }
             }
-        } else {
-            if (oneByone != true) {
-                loadItem();
-            }
+        } catch (e) {
+            postFinishMessage();
         }
     };
 
