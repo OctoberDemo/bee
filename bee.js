@@ -155,6 +155,10 @@ function _Bee() {
         }
         if (channelList.length == 0) {
             BeeUtils.log("全部爬取成功");
+            var parentWin = window.parent;
+            if (parentWin) {
+                parentWin.postMessage("finish", "*");
+            }
             return;
         }
         curChannel = channelList.shift();
