@@ -161,37 +161,33 @@ function _Bee() {
         curChannel = channelList.shift();
         detailItems.clear();
 
-        try {
-            if (listWebView != null) {
-                root.removeView(listWebView);
-            }
-            listWebView = new BeeWebView();
-            root.addView(listWebView, 0, webViewLp);
+        if (listWebView != null) {
+            root.removeView(listWebView);
+        }
+        listWebView = new BeeWebView();
+        root.addView(listWebView, 0, webViewLp);
 
-            listWebView.setOnPageFinishListener(function() {
-                var dom = listWebView.getDom();
-                if (self.onListLoaded) {
-                    self.onListLoaded.call(listWebView, dom);
-                }
-            }, 10000);
-            listWebView.setOnDomLoadedListener(function() {
-                var dom = listWebView.getDom();
-                if (self.onListDomLoaded) {
-                    self.onListDomLoaded.call(listWebView, dom);
-                }
+        listWebView.setOnPageFinishListener(function() {
+            var dom = listWebView.getDom();
+            if (self.onListLoaded) {
+                self.onListLoaded.call(listWebView, dom);
+            }
+        }, 10000);
+        listWebView.setOnDomLoadedListener(function() {
+            var dom = listWebView.getDom();
+            if (self.onListDomLoaded) {
+                self.onListDomLoaded.call(listWebView, dom);
+            }
+        });
+
+        if (noScript) {
+            self.getNoScriptHtml(curChannel.url, function(html) {
+                listWebView.loadDataWithBaseURL(html.innerHTML);
             });
-
-            if (noScript) {
-                self.getNoScriptHtml(curChannel.url, function(html) {
-                    listWebView.loadDataWithBaseURL(html.innerHTML);
-                });
-                listWebView.setSrcUrl(curChannel.url);
-            } else {
-                var url = 'javascript:"<script>location.replace(\''+curChannel.url+'\')<\/script>"';
-                listWebView.loadUrl(url);
-            }
-        } catch (e) {
-            postFinishMessage();
+            listWebView.setSrcUrl(curChannel.url);
+        } else {
+            var url = 'javascript:"<script>location.replace(\''+curChannel.url+'\')<\/script>"';
+            listWebView.loadUrl(url);
         }
     };
 
@@ -228,42 +224,38 @@ function _Bee() {
     };
 
     function loadItem() {
-        try {
-            if (detailItems.length <= 0) {
-                BeeUtils.log(curChannel.category + "全部处理完成");
-                self.start();
-                return;
-            }
+        if (detailItems.length <= 0) {
+            BeeUtils.log(curChannel.category + "全部处理完成");
+            self.start();
+            return;
+        }
 
-            var item = detailItems.shift();
-            if (itemWebView != null) {
-                root.removeView(itemWebView);
+        var item = detailItems.shift();
+        if (itemWebView != null) {
+            root.removeView(itemWebView);
+        }
+        itemWebView = new BeeWebView();
+        root.addView(itemWebView, webViewLp);
+        itemWebView.setOnPageFinishListener(function() {
+            var dom = itemWebView.getDom();
+            if (self.onItemLoaded) {
+                self.onItemLoaded.call(itemWebView, dom, item);
             }
-            itemWebView = new BeeWebView();
-            root.addView(itemWebView, webViewLp);
-            itemWebView.setOnPageFinishListener(function() {
-                var dom = itemWebView.getDom();
-                if (self.onItemLoaded) {
-                    self.onItemLoaded.call(itemWebView, dom, item);
-                }
-            }, 10000);
-            itemWebView.setOnDomLoadedListener(function() {
-                var dom = itemWebView.getDom();
-                if (self.onItemDomLoaded) {
-                    self.onItemDomLoaded.call(itemWebView, dom, item);
-                }
+        }, 10000);
+        itemWebView.setOnDomLoadedListener(function() {
+            var dom = itemWebView.getDom();
+            if (self.onItemDomLoaded) {
+                self.onItemDomLoaded.call(itemWebView, dom, item);
+            }
+        });
+        if (noScript) {
+            self.getNoScriptHtml(item.url, function(html) {
+                itemWebView.loadDataWithBaseURL(html.innerHTML);
             });
-            if (noScript) {
-                self.getNoScriptHtml(item.url, function(html) {
-                    itemWebView.loadDataWithBaseURL(html.innerHTML);
-                });
-                itemWebView.setSrcUrl(item.url);
-            } else {
-                var url = 'javascript:"<script>location.replace(\''+item.url+'\')<\/script>"';
-                itemWebView.loadUrl(url);
-            }
-        } catch(e) {
-            postFinishMessage();
+            itemWebView.setSrcUrl(item.url);
+        } else {
+            var url = 'javascript:"<script>location.replace(\''+item.url+'\')<\/script>"';
+            itemWebView.loadUrl(url);
         }
     }
 
@@ -272,41 +264,37 @@ function _Bee() {
     };
 
     function loadSubItem(item) {
-        try {
-            if (subItems.length == 0) {
-                return false;
-            }
-            var url = subItems.shift();
-            if (subItemWebView != null) {
-                root.removeView(subItemWebView);
-            }
-            subItemWebView = new BeeWebView();
-            root.addView(subItemWebView, webViewLp);
-            if (self.onSubItemLoaded) {
-                subItemWebView.setOnPageFinishListener(function() {
-                    var dom = subItemWebView.getDom();
-                    self.onSubItemLoaded.call(subItemWebView, dom, item);
-                }, 10000);
-            }
-            if (self.onSubItemDomLoaded) {
-                subItemWebView.setOnDomLoadedListener(function() {
-                    var dom = subItemWebView.getDom();
-                    self.onSubItemDomLoaded.call(subItemWebView, dom, item);
-                });
-            }
-            if (noScript) {
-                self.getNoScriptHtml(url, function(html) {
-                    subItemWebView.loadDataWithBaseURL(html.innerHTML);
-                });
-                subItemWebView.setSrcUrl(url);
-            } else {
-                url = 'javascript:"<script>location.replace(\''+url+'\')<\/script>"';
-                subItemWebView.loadUrl(url);
-            }
-            return true;
-        } catch (e) {
-            postFinishMessage();
+        if (subItems.length == 0) {
+            return false;
         }
+        var url = subItems.shift();
+        if (subItemWebView != null) {
+            root.removeView(subItemWebView);
+        }
+        subItemWebView = new BeeWebView();
+        root.addView(subItemWebView, webViewLp);
+        if (self.onSubItemLoaded) {
+            subItemWebView.setOnPageFinishListener(function() {
+                var dom = subItemWebView.getDom();
+                self.onSubItemLoaded.call(subItemWebView, dom, item);
+            }, 10000);
+        }
+        if (self.onSubItemDomLoaded) {
+            subItemWebView.setOnDomLoadedListener(function() {
+                var dom = subItemWebView.getDom();
+                self.onSubItemDomLoaded.call(subItemWebView, dom, item);
+            });
+        }
+        if (noScript) {
+            self.getNoScriptHtml(url, function(html) {
+                subItemWebView.loadDataWithBaseURL(html.innerHTML);
+            });
+            subItemWebView.setSrcUrl(url);
+        } else {
+            url = 'javascript:"<script>location.replace(\''+url+'\')<\/script>"';
+            subItemWebView.loadUrl(url);
+        }
+        return true;
 
     }
 
@@ -374,83 +362,79 @@ function _Bee() {
     };
 
     this.finishExtractItem = function(item, oneByone, test) {
-        try {
-            if (item == undefined) {
-                loadItem();
-                return;
-            }
-            if (debug == false && BeeUtils.exist(type, item.key)) {
-                loadItem();
-                return;
-            }
-            var key = item.key;
-            delete item.key;
+        if (item == undefined) {
+            loadItem();
+            return;
+        }
+        if (debug == false && BeeUtils.exist(type, item.key)) {
+            loadItem();
+            return;
+        }
+        var key = item.key;
+        delete item.key;
 
-            if (typeof item.content == "string") {
-                item.content = JSON.parse(item.content);
-            }
+        if (typeof item.content == "string") {
+            item.content = JSON.parse(item.content);
+        }
 
-            if (imgReferer != null) {
-                if (item.cover_img && item.cover_img.src.indexOf("fw.mb.lenovomm.com") < 0) {
-                    item.cover_img.src = this.makeImgJumpUrl(item.cover_img.src, imgReferer);
-                }
-                for (var i = 0; i < item.content.length; i++) {
-                    var img = item.content[i].img;
-                    if (img && img.src.indexOf("fw.mb.lenovomm.com") < 0) {
-                        item.content[i].img.src = Bee.makeImgJumpUrl(img.src, imgReferer);
-                    }
+        if (imgReferer != null) {
+            if (item.cover_img && item.cover_img.src.indexOf("fw.mb.lenovomm.com") < 0) {
+                item.cover_img.src = this.makeImgJumpUrl(item.cover_img.src, imgReferer);
+            }
+            for (var i = 0; i < item.content.length; i++) {
+                var img = item.content[i].img;
+                if (img && img.src.indexOf("fw.mb.lenovomm.com") < 0) {
+                    item.content[i].img.src = Bee.makeImgJumpUrl(img.src, imgReferer);
                 }
             }
+        }
 
-            if (item.cover_img == undefined) {
-                for (var i = 0; i < item.content.length; i++) {
-                    if (item.content[i].img) {
-                        item.cover_img = item.content[i].img;
-                        break;
-                    }
+        if (item.cover_img == undefined) {
+            for (var i = 0; i < item.content.length; i++) {
+                if (item.content[i].img) {
+                    item.cover_img = item.content[i].img;
+                    break;
                 }
             }
+        }
 
-            if (item.category == undefined) {
-                item.category = Bee.getCurCategory();
-            }
+        if (item.category == undefined) {
+            item.category = Bee.getCurCategory();
+        }
 
-            var tag = Bee.getCurTag();
-            if (tag != "") {
-                if (item.tag == undefined) {
-                    item.tag = tag;
-                } else {
-                    if (item.tag.indexOf(tag) < 0) {
-                        item.tag = item.tag + " " + tag;
-                    }
-                }
-            }
-
-            if (item.status == undefined) {
-                item.status = 2;
-            }
-
-            if (debug || test) {
-                console.log(item);
-                return;
-            }
-            item.content = JSON.stringify(item.content);
-            console.log(item);
-            var result = BeeUtils.putModel(item);
-            if (result) {
-                BeeUtils.log("已成功爬取：" + item.title);
-                BeeUtils.addKey(type, key);
-
-                if (oneByone != true) {
-                    loadItem();
-                }
+        var tag = Bee.getCurTag();
+        if (tag != "") {
+            if (item.tag == undefined) {
+                item.tag = tag;
             } else {
-                if (oneByone != true) {
-                    loadItem();
+                if (item.tag.indexOf(tag) < 0) {
+                    item.tag = item.tag + " " + tag;
                 }
             }
-        } catch (e) {
-            postFinishMessage();
+        }
+
+        if (item.status == undefined) {
+            item.status = 2;
+        }
+
+        if (debug || test) {
+            console.log(item);
+            return;
+        }
+        item.content = JSON.stringify(item.content);
+        console.log(item);
+        var result = BeeUtils.putModel(item);
+        if (result) {
+            BeeUtils.log("已成功爬取：" + item.title);
+            BeeUtils.addKey(type, key);
+
+            if (oneByone != true) {
+                loadItem();
+            }
+        } else {
+            if (oneByone != true) {
+                loadItem();
+            }
         }
     };
 

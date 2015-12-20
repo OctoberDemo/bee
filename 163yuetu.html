@@ -105,6 +105,10 @@
         loadImage();
 
         function loadImage() {
+            if (info == undefined || info.list == undefined) {
+                this.passItem(item);
+                return;
+            }
             if (info.list.length == 0) {
                 item.cover_img = {};
                 item.cover_img.src = item.content.imgs[0].src;
