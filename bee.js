@@ -195,6 +195,11 @@ function _Bee() {
         }
     };
 
+    window.onerror = function() {
+        console.log("Error!!!");
+        postFinishMessage();
+    };
+
     function postFinishMessage() {
         var parentWin = window.parent;
         if (parentWin) {
