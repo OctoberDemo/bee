@@ -64,7 +64,8 @@
     Bee.onItemLoaded = function(dom, item) {
         dom.removeTags("iframe");
         var titleAuthorDiv = dom.byClass("article-info");
-        item.source = titleAuthorDiv.children[0].innerText;
+        item.source = "百度百家";
+        item.author = titleAuthorDiv.children[0].innerText;
         var timeString = titleAuthorDiv.children[1].innerText;
         item.created_at = Bee.convertTime(timeString);
 
