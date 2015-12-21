@@ -12,28 +12,28 @@
     Bee.setRefreshTime(1000 * 60 * 60);
     Bee.requestNoScript();
 
-    Bee.addChannel("环球博览", "http://www.cankaoxiaoxi.com/world/hqbl/");
-    Bee.addChannel("亚太新闻", "http://www.cankaoxiaoxi.com/world/ytxw/");
-    Bee.addChannel("欧美新闻", "http://www.cankaoxiaoxi.com/world/omxw/");
-    Bee.addChannel("其他地区", "http://www.cankaoxiaoxi.com/world/qtdq/");
-    Bee.addChannel("时事要闻", "http://www.cankaoxiaoxi.com/china/szyw/");
-    Bee.addChannel("中国外交", "http://www.cankaoxiaoxi.com/china/zgwj/");
-    Bee.addChannel("社会观察", "http://www.cankaoxiaoxi.com/china/shwx/");
-    Bee.addChannel("港澳传真", "http://www.cankaoxiaoxi.com/china/gacz/");
-    Bee.addChannel("中国军情", "http://www.cankaoxiaoxi.com/mil/zgjq/");
-    Bee.addChannel("国际军情", "http://www.cankaoxiaoxi.com/mil/gjjq/");
-    Bee.addChannel("武器装备", "http://www.cankaoxiaoxi.com/mil/wqzb/");
-    Bee.addChannel("中国财经", "http://www.cankaoxiaoxi.com/finance/zgcj/");
-    Bee.addChannel("国际财经", "http://www.cankaoxiaoxi.com/finance/gjcj/");
-    Bee.addChannel("商业公司", "http://www.cankaoxiaoxi.com/finance/sygs/");
-    Bee.addChannel("金融市场", "http://www.cankaoxiaoxi.com/finance/jrsc/");
-    Bee.addChannel("海峡两岸", "http://www.cankaoxiaoxi.com/tw/hxla/");
-    Bee.addChannel("台湾军事", "http://www.cankaoxiaoxi.com/tw/twjs/");
-    Bee.addChannel("健康生活", "http://www.cankaoxiaoxi.com/science/jksh/");
-    Bee.addChannel("探索发现", "http://www.cankaoxiaoxi.com/science/tsfx/");
-    Bee.addChannel("IT业界", "http://www.cankaoxiaoxi.com/science/ITyj/");
+    Bee.addChannel("国际", "环球博览", "http://www.cankaoxiaoxi.com/world/hqbl/");
+    Bee.addChannel("国际", "亚太新闻", "http://www.cankaoxiaoxi.com/world/ytxw/");
+    Bee.addChannel("国际", "欧美新闻", "http://www.cankaoxiaoxi.com/world/omxw/");
+    Bee.addChannel("国际", "其他地区", "http://www.cankaoxiaoxi.com/world/qtdq/");
+    Bee.addChannel("国内", "时事要闻", "http://www.cankaoxiaoxi.com/china/szyw/");
+    Bee.addChannel("国内", "中国外交", "http://www.cankaoxiaoxi.com/china/zgwj/");
+    Bee.addChannel("国内", "社会观察", "http://www.cankaoxiaoxi.com/china/shwx/");
+    Bee.addChannel("国内", "港澳传真", "http://www.cankaoxiaoxi.com/china/gacz/");
+    Bee.addChannel("军事", "中国军情", "http://www.cankaoxiaoxi.com/mil/zgjq/");
+    Bee.addChannel("军事", "国际军情", "http://www.cankaoxiaoxi.com/mil/gjjq/");
+    Bee.addChannel("军事", "武器装备", "http://www.cankaoxiaoxi.com/mil/wqzb/");
+    Bee.addChannel("财经", "中国财经", "http://www.cankaoxiaoxi.com/finance/zgcj/");
+    Bee.addChannel("财经", "国际财经", "http://www.cankaoxiaoxi.com/finance/gjcj/");
+    Bee.addChannel("财经", "商业公司", "http://www.cankaoxiaoxi.com/finance/sygs/");
+    Bee.addChannel("财经", "金融市场", "http://www.cankaoxiaoxi.com/finance/jrsc/");
+    Bee.addChannel("台海", "海峡两岸", "http://www.cankaoxiaoxi.com/tw/hxla/");
+    Bee.addChannel("台海", "台湾军事", "http://www.cankaoxiaoxi.com/tw/twjs/");
+    Bee.addChannel("健康", "健康生活", "http://www.cankaoxiaoxi.com/science/jksh/");
+    Bee.addChannel("百科", "探索发现", "http://www.cankaoxiaoxi.com/science/tsfx/");
+    Bee.addChannel("科技", "IT业界", "http://www.cankaoxiaoxi.com/science/ITyj/");
     Bee.addChannel("环境保护", "http://www.cankaoxiaoxi.com/science/hjbh/");
-    Bee.addChannel("科技头条", "http://www.cankaoxiaoxi.com/science/kjtt/");
+    Bee.addChannel("科技", "科技头条", "http://www.cankaoxiaoxi.com/science/kjtt/");
 
     Bee.onListLoaded = function(dom) {
         var inner = dom.byClass("inner");
@@ -68,9 +68,13 @@
             source = source.substring(3).trim();
         }
         if (source.indexOf("参考消息") < 0) {
-            console.log("跳过来源：" + source);
-            Bee.passItem(item);
-            return;
+            if (Bee.existSource(source)) {
+                console.log("跳过来源：" + source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源："  + source);
+            }
         }
         item.source = source;
 
@@ -79,27 +83,10 @@
         item.class = "news";
 
         var descItem = dom.byClass("cont-detail fz-14 cor-333", true);
-        var desc = {};
-        desc.desc = descItem.innerText;
-        item.content.add(0, desc);
-
-        item.tag = Bee.getCurCategory();
-        if (item.tag == "环球博览" || item.tag == "亚太新闻" || item.tag == "欧美新闻" || item.tag == "其他地区") {
-            item.category = "国际";
-        } else if (item.tag == "时事要闻" || item.tag == "社会观察" || item.tag == "港澳传真") {
-            item.category = "国内";
-        } else if (item.tag == "中国军情" || item.tag == "国际军情" || item.tag == "武器装备") {
-            item.category = "军事";
-        } else if (item.tag == "中国财经" || item.tag == "商业公司" || item.tag == "国际财经" || item.tag == "金融市场") {
-            item.category = "财经";
-        } else if (item.tag == "海峡两岸" || item.tag == "台湾要闻" || item.tag == "台湾军事") {
-            item.category = "台海";
-        } else if (item.tag == "健康生活") {
-            item.category = "健康";
-        } else if (item.tag == "探索发现") {
-            item.category = "百科";
-        } else if (item.tag == "IT业界" || item.tag == "科技头条") {
-            item.category = "科技";
+        if (descItem) {
+            var desc = {};
+            desc.desc = descItem.innerText;
+            item.content.add(0, desc);
         }
 
         var next = dom.byClass("t-c mar-b-20", true);
