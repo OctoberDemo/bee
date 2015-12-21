@@ -56,6 +56,15 @@
             var timeString = article.byClass("time").innerText;
             item.created_at = Bee.convertTime(timeString);
             item.source = article.byClass("source").innerText;
+            if (item.source.indexOf("网易") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("跳过来源：" + item.source);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + item.source);
+                }
+            }
             item.category = Bee.getCurCategory();
 
             var cnt = article.byClass("text1");
