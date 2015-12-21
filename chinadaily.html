@@ -12,16 +12,16 @@
     Bee.setRefreshTime(1000 * 60 * 10);
 
     Bee.addChannel("国际", "http://world.chinadaily.com.cn/node_1072266.htm");
-    Bee.addChannel("洋观中国", "http://world.chinadaily.com.cn/node_1072267.htm");
-    Bee.addChannel("环球人物", "http://world.chinadaily.com.cn/node_1072282.htm");
-    Bee.addChannel("X档案", "http://world.chinadaily.com.cn/node_1128885.htm");
+    Bee.addChannel("国际", "洋观中国", "http://world.chinadaily.com.cn/node_1072267.htm");
+    Bee.addChannel("国际", "环球人物", "http://world.chinadaily.com.cn/node_1072282.htm");
+    Bee.addChannel("国际", "X档案", "http://world.chinadaily.com.cn/node_1128885.htm");
 
-    Bee.addChannel("要闻", "http://china.chinadaily.com.cn/node_1143902.htm");
-    Bee.addChannel("外媒看中国", "http://china.chinadaily.com.cn/node_1143904.htm");
-    Bee.addChannel("法制中国", "http://china.chinadaily.com.cn/node_1143905.htm");
-    Bee.addChannel("网友之声", "http://cnews.chinadaily.com.cn/node_1109821.htm");
+    Bee.addChannel("中国", "要闻", "http://china.chinadaily.com.cn/node_1143902.htm");
+    Bee.addChannel("中国", "外媒看中国", "http://china.chinadaily.com.cn/node_1143904.htm");
+    Bee.addChannel("中国", "法制中国", "http://china.chinadaily.com.cn/node_1143905.htm");
+    Bee.addChannel("中国", "网友之声", "http://cnews.chinadaily.com.cn/node_1109821.htm");
 
-    Bee.addChannel("地方", "http://cnews.chinadaily.com.cn/node_1021009.htm");
+    Bee.addChannel("国内", "地方", "http://cnews.chinadaily.com.cn/node_1021009.htm");
 
     Bee.addChannel("军事", "http://cnews.chinadaily.com.cn/node_1110667.htm");
 
@@ -29,16 +29,16 @@
 
     Bee.addChannel("财经", "http://caijing.chinadaily.com.cn/node_1119884.htm");
 
-    Bee.addChannel("名人面对面", "http://ent.chinadaily.com.cn/node_1114141.htm");
+    Bee.addChannel("文化", "名人面对面", "http://ent.chinadaily.com.cn/node_1114141.htm");
     Bee.addChannel("艺术", "http://ent.chinadaily.com.cn/node_1127180.htm");
-    Bee.addChannel("电影", "http://ent.chinadaily.com.cn/node_1069392.htm");
-    Bee.addChannel("电视", "http://ent.chinadaily.com.cn/node_1069421.htm");
+    Bee.addChannel("文化", "电影", "http://ent.chinadaily.com.cn/node_1069392.htm");
+    Bee.addChannel("文化", "电视", "http://ent.chinadaily.com.cn/node_1069421.htm");
     Bee.addChannel("音乐", "http://ent.chinadaily.com.cn/node_1069430.htm");
-    Bee.addChannel("明星", "http://ent.chinadaily.com.cn/node_1069404.htm");
+    Bee.addChannel("文化", "明星", "http://ent.chinadaily.com.cn/node_1069404.htm");
 
     Bee.addChannel("时尚", "http://fashion.chinadaily.com.cn/node_1127722.htm");
-    Bee.addChannel("奢享", "http://fashion.chinadaily.com.cn/node_1127723.htm");
-    Bee.addChannel("名人", "http://fashion.chinadaily.com.cn/node_1127762.htm");
+    Bee.addChannel("时尚", "奢享", "http://fashion.chinadaily.com.cn/node_1127723.htm");
+    Bee.addChannel("时尚", "名人", "http://fashion.chinadaily.com.cn/node_1127762.htm");
 
     Bee.addChannel("健康", "http://fashion.chinadaily.com.cn/node_1127741.htm");
 
@@ -88,12 +88,18 @@
         }
         var source = source_baidu.innerText.trim();
         if (source != "" && source.indexOf("中国日报") < 0) {
-            console.log("跳过来源：" + source);
-            Bee.passItem(item);
-            return;
+            if (Bee.existSource(source)) {
+                console.log("跳过来源：" + source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + source);
+            }
+            item.source = source
+        } else {
+            item.source = "中国日报网";
         }
 
-        item.source = "中国日报网";
         var arcform = dom.byClass("arcform");
         dom.removeId("source_baidu");
         dom.removeId("author_baidu");
@@ -111,21 +117,6 @@
         }
 
         item.class = "news";
-        item.tag = Bee.getCurCategory();
-        item.category = item.tag;
-        if (item.tag == "国际" || item.tag == "洋观中国" || item.tag == "环球人物" || item.tag == "X档案") {
-            item.category = "国际";
-        } else if (item.tag == "要闻" || item.tag == "外媒看中国" || item.tag == "网友之声") {
-            item.category = "中国";
-        } else if (item.tag == "地方") {
-            item.category = "国内";
-        } else if (item.tag == "全球" || item.tag == "贸易") {
-            item.category = "财经";
-        } else if (item.tag == "名人面对面" || item.tag == "艺术" || item.tag == "电影" || item.tag == "电视" || item.tag == "明星") {
-            item.category = "文化";
-        } else if (item.tag == "奢享" || item.tag == "名人") {
-            item.category = "时尚";
-        }
 
         var div_currpage = dom.byId("div_currpage", true);
         if (div_currpage == undefined) {
