@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>搜狐娱乐蜜蜂</title>
+    <script src="Bee.js"></script>
+</head>
+<body>
+<script>
+
+    var addText = ["点击进入高清组图"];
+
+    Bee.addChannel("", "八卦绯闻", "http://yule.sohu.com/stars_news.shtml");
+    Bee.addChannel("", "欧美日韩明星", "http://yule.sohu.com/star.shtml");
+    Bee.addChannel("", "华语电影", "http://yule.sohu.com/guoneidianying.shtml");
+    Bee.addChannel("", "外国电影", "http://yule.sohu.com/guowaidongtai.shtml");
+    Bee.addChannel("", "内地电视", "http://yule.sohu.com/ndds.shtml");
+    Bee.addChannel("", "海外电视", "http://yule.sohu.com/tvnews2.shtml");
+    Bee.addChannel("", "音乐新闻", "http://music.yule.sohu.com/news.shtml");
+    Bee.addChannel("", "音乐人物", "http://music.yule.sohu.com/musicrw/");
+    Bee.setType("yule.sohu.com");
+    Bee.setImgReferer("yule.sohu.com");
+    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.onListLoaded = function(dom) {
+        setTimeout(function() {
+            var items = [];
+            var contList = dom.byClass("f14list");
+            var lis = contList.byTags("li");
+            for (var i = 0; i < lis.length; i++) {
+                var li = lis[i];
+                var item = {};
+                var head = li.byTag("a");
+                if (head) {
+                    item.url = head.href;
+                    item.title = head.innerText;
+                    item.key = Bee.hashCode(item.url + "test2");
+                    items.push(item);
+                }
+            }
+            console.log(items);
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+
+        setTimeout(function() {
+            var article = dom.byClass("text clear");
+            console.log(dom);
+            if (article == undefined) {
+                console.log("article == undefined");
+                Bee.finishExtractItem();
+                return;
+            }
+            var attrib = dom.byClass("time-source");
+            var sourceString = attrib.byId("media_span").byTag("span").innerText;
+            if (sourceString.indexOf("搜狐") >= 0) {
+                item.source = sourceString;
+            } else {
+                Bee.passItem(item);
+                return;
+            }
+            var timeString = attrib.byClass("time").innerText;
+            item.created_at = Bee.convertTime(timeString);
+            article.removeTag("iframe");
+            article.removeClasses("comCount");
+            article.removeClasses("savePicBtn");
+            var content = Bee.htmlToJson(article, addText);
+            item.content = content;
+            item.status = 2;
+            item.class = "";
+
+            Bee.finishExtractItem(item, true);
+        }, 1000);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>
