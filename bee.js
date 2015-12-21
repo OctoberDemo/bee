@@ -211,6 +211,7 @@ function _Bee() {
         if (parentWin) {
             parentWin.postMessage("finish", "*");
         }
+        window.close();
     }
 
     this.finishExtractList = function(items) {

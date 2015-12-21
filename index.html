@@ -59,7 +59,12 @@
         var webView = new WebView();
         root.addView(webView);
         var now = new Date();
-        webView.loadUrl(url + "?time=" + now.getTime());
+        if (url.indexOf("?") < 0) {
+            url = url + "?time=" + now.getTime()
+        } else {
+            url = url + "&time=" + now.getTime()
+        }
+        webView.loadUrl(url);
         console.log("正在排队的任务还有" + beeQueue.length + "个");
         console.warn("gyy:" + url);
     }
