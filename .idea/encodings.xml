@@ -3,13 +3,10 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/163.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/163news.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/163newsphoto.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/163photo.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/163touch.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/GLOperator.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SohuRss.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/SpiderTest.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/TimeConvert.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/apdnews.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/baidubaijia.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bee.js" charset="UTF-8" />
@@ -48,8 +45,6 @@
     <file url="file://$PROJECT_DIR$/pentiduanzi.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/people.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pinglun_youth.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/publishtime.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/publishtime.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qiushibaike.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qiushivideo.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qqvideo.html" charset="UTF-8" />
@@ -58,7 +53,6 @@
     <file url="file://$PROJECT_DIR$/shenzhenshangbao.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sohu.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tengxundajia.html" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/testRange.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xinwang.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/xinxishibao.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yangguangwang.html" charset="UTF-8" />
