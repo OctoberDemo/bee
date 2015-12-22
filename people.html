@@ -57,11 +57,17 @@
         var infos = h4.innerText.trim().split(" ");
         var author = infos[infos.length - 1];
         if (author.indexOf("人民网") >= 0 || author.indexOf("人民日报") >= 0) {
-            item.source = author;
+
         } else {
-            Bee.passItem(item);
-            return;
+            if (Bee.existSource(author)) {
+                console.log("跳过来源：" + author);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + author);
+            }
         }
+        item.source = author;
         var timeString = "";
         for (var i = 0; i < infos.length - 1; i++) {
             timeString += infos[i] + " ";

@@ -54,9 +54,13 @@
             source = source.substring(3);
         }
         if (source.indexOf("国际在线") < 0) {
-            console.log("跳过来源：" + source);
-            Bee.passItem(item);
-            return;
+            if (Bee.existSource(source)) {
+                console.log("跳过来源：" + source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + source);
+            }
         }
         item.source = source;
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);

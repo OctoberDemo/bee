@@ -3,8 +3,85 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>蜜蜂</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="jndroid/jndroid.layout.js"></script>
+    <script src="jndroid/jndroid.widget.js"></script>
 </head>
 <body>
-这是蜜蜂系统的主页
+<script>
+    var bees = [];
+    addBee("http://greatlibrary.jndroid.cn/filter/index.html", 1);
+    addBee("http://adamdictionary.jndroid.cn/feature/index.html?type=auto", 1);
+    addBee("http://bee.jndroid.cn/163yuetu.html", 20);
+    addBee("http://bee.jndroid.cn/baidubaijia.html", 10);
+    addBee("http://bee.jndroid.cn/cankaoxiaoxi.html", 10);
+    addBee("http://bee.jndroid.cn/guokr.html", 10);
+    addBee("http://bee.jndroid.cn/zhihuribao.html", 10);
+    addBee("http://bee.jndroid.cn/chinadaily.html", 10);
+    addBee("http://bee.jndroid.cn/caixinphoto.html", 20);
+    addBee("http://bee.jndroid.cn/people.html", 10);
+    addBee("http://bee.jndroid.cn/dapenti.html", 10);
+    addBee("http://bee.jndroid.cn/163photo.html", 20);
+    addBee("http://bee.jndroid.cn/cri.html", 20);
+    addBee("http://bee.jndroid.cn/meishitianxia.html", 20);
+    addBee("http://bee.jndroid.cn/gmw.html", 20);
+    addBee("http://bee.jndroid.cn/jinghua.html", 60);
+
+    var beeQueue = [];
+
+    var root = new FrameLayout();
+    setContentView(root);
+
+    loadBees();
+
+    function loadBees() {
+        for (var i = 0; i < bees.length; i++) {
+            var bee = bees[i];
+            beeQueue.push(bee.url);
+            var refreshTime = bee.refresh * 60 * 1000;
+            setInterval(function(bee) {
+                beeQueue.push(bee.url);
+            }, refreshTime, bee);
+        }
+
+        start();
+    }
+
+    function start() {
+        if (beeQueue.length == 0) {
+            setTimeout(start, 30 * 1000);
+            console.log("暂无任务，休息30s");
+            return;
+        }
+        var url = beeQueue.shift();
+
+        root.removeAllViews();
+        var webView = new WebView();
+        root.addView(webView);
+        var now = new Date();
+        if (url.indexOf("?") < 0) {
+            url = url + "?time=" + now.getTime()
+        } else {
+            url = url + "&time=" + now.getTime()
+        }
+        webView.loadUrl(url);
+        console.log("正在排队的任务还有" + beeQueue.length + "个");
+        console.warn("gyy:" + url);
+    }
+
+
+    function addBee(url, refreshMin) {
+        var bee = {};
+        bee.url = url;
+        bee.refresh = refreshMin;
+        bees.push(bee);
+    }
+
+    window.onmessage = function(e) {
+        if (e.data == "finish") {
+            start();
+        }
+    }
+</script>
 </body>
 </html>

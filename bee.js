@@ -114,6 +114,16 @@ function _Bee() {
         imgReferer = referer;
     };
 
+    this.existSource = function(source) {
+        var url = "http://fw.jndroid.com/greatlibrary/source/exist?source=" + source;
+        var result = true;
+        liteAjax(url, function(e) {
+            var json = JSON.parse(e);
+            result = !(json.err_no == 0 && json.result == 0);
+        }, "get", "", false);
+        return result;
+    };
+
     this.isKnownSource = function(src) {
         return this.knownSource.indexOf(src) >= 0;
     };
@@ -201,6 +211,7 @@ function _Bee() {
         if (parentWin) {
             parentWin.postMessage("finish", "*");
         }
+        window.close();
     }
 
     this.finishExtractList = function(items) {
