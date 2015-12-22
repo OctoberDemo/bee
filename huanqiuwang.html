@@ -14,7 +14,7 @@
     Bee.addChannel("国际", "http://m.huanqiu.com/lm.html?id=33&v=9");
     Bee.setType("m.huanqiu.com");
     Bee.setImgReferer("m.huanqiu.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function(dom) {
         var pageButton = dom.byClass("more", true);
         if (pageButton) {
@@ -36,7 +36,6 @@
                     continue;
                 }
                 item.title = a.innerText;
-                item.key = Bee.hashCode(item.url);
                 items.push(item);
             }
             console.log(items);
@@ -60,12 +59,16 @@
             var attrib = dom.byClass("article_date_l fl").innerHTML;
             var reCat = /[\u4e00-\u9fa5]{1,20}/gi;
             var sourceString = attrib.match(reCat);
-            if (sourceString != null && sourceString[0].indexOf("环球") >= 0) {
-                item.source = sourceString[0];
-            } else {
-                Bee.passItem(item);
-                return;
+            if (sourceString.indexOf("环球时报") < 0 && sourceString.indexOf("环球网") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("跳过来源：" + sourceString);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + sourceString);
+                }
             }
+            item.source = sourceString;
             var timeString = attrib.replace(sourceString[0], "");
             item.created_at = Bee.convertTime(timeString);
             item.category = Bee.getCurCategory();

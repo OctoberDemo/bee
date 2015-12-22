@@ -38,7 +38,7 @@
     Bee.addChannel("军事", "http://www.fawan.com/mil/");
     Bee.addChannel("", "辟谣", "http://www.fawan.com/Article/zxbk/");
     Bee.addChannel("", "漫评", "http://www.fawan.com/comic/");
-    Bee.addChannel("国内","北京", "http://www.fawan.com/bjxw/");
+    Bee.addChannel("国内", "北京", "http://www.fawan.com/bjxw/");
     Bee.addChannel("", "即时快评", "http://www.fawan.com/jskp/");
     Bee.addChannel("财经", "http://www.fawan.com/finance/");
     Bee.addChannel("娱乐", "http://www.fawan.com/ent/");
@@ -46,57 +46,55 @@
     Bee.addChannel("教育", "http://www.fawan.com/Article/Youthszk/");
     Bee.setType("www.fawan.com");
     Bee.setImgReferer("www.fawan.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
-        setTimeout(function() {
-            var items = [];
-            var contList = dom.byId("left");
-            var divs = contList.byTags("div");
-            var lis = getLis(divs, 660, 189);
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListDomLoaded = function (dom) {
+        var items = [];
+        var contList = dom.byId("left");
+        var divs = contList.byTags("div");
+        var lis = getLis(divs, 660, 189);
 
 
-            for (var i = 0; i < lis.length; i++) {
-                var item = {};
-                var title = getLis(lis[i].byTags("div"), 660, 46)[0];
-                    if (title) {
-                        item.url = title.byTag("a").href;
-                        item.title = title.byTag("a").innerText;
-                        item.key = Bee.hashCode(item.url + "test1");
-                    }
-                    var sourceItem = getLis(lis[i].byTags("div"), 495, 30)[0];
-                if (sourceItem) {
-                    var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
-                    if (sourceString.indexOf("法制") >= 0) {
-                        item.source = sourceString;
-                    } else {
-                            Bee.passItem(item);
-                            continue;
-                        }
-                        var timeString = sourceItem.byTags("div")[1].innerText;
-                        item.created_at = Bee.convertTime(timeString);
-                    }
-                items.push(item);
+        for (var i = 0; i < lis.length; i++) {
+            var item = {};
+            var title = getLis(lis[i].byTags("div"), 660, 46)[0];
+            if (title) {
+                item.url = title.byTag("a").href;
+                item.title = title.byTag("a").innerText;
             }
-            console.log(items);
-            Bee.finishExtractList(items);
-        }, 500);
+            var sourceItem = getLis(lis[i].byTags("div"), 495, 30)[0];
+            if (sourceItem) {
+                var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
+                if (sourceString.indexOf("法制晚报") < 0) {
+                    if (Bee.existSource(item.source)) {
+                        console.log("跳过来源：" + sourceString);
+                        Bee.passItem(item);
+                        continue;
+                    } else {
+                        console.log("未知来源：" + sourceString);
+                    }
+                }
+                item.source = sourceString;
+                var timeString = sourceItem.byTags("div")[1].innerText;
+                item.created_at = Bee.convertTime(timeString);
+            }
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
 
-        setTimeout(function() {
-            var article = dom.byId("articleContnet");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            var content = Bee.htmlToJson(article, addText);
-            item.content = content;
-            item.class = "";
+        var article = dom.byId("articleContnet");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        var content = Bee.htmlToJson(article, addText);
+        item.content = content;
+        item.class = "";
 
-            Bee.finishExtractItem(item);
-        }, 1000);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();
