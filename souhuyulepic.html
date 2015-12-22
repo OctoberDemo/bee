@@ -60,7 +60,6 @@
         item.created_at = meta.date / 1000;
         item.class = "image";
         item.content = {};
-        item.status = "5";
         item.content.imgs = [];
         loadImage();
 
@@ -74,7 +73,7 @@
                 item.cover_img.src = item.content.imgs[0].src;
                 item.cover_img.width = item.content.imgs[0].width;
                 item.cover_img.height = item.content.imgs[0].height;
-                Bee.finishExtractItem(item, true);
+                Bee.finishExtractItem(item);
                 return;
             }
             var imgInfo = pics.shift();
