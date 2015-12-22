@@ -58,16 +58,19 @@
             }
             var attrib = dom.byClasses("about_news");
             var sourceString = attrib[0].innerText.split(" ")[0];
-            console.log(sourceString);
-            if (sourceString.indexOf("澎湃") >= 0) {
-                if (sourceString == "澎湃新闻记者") {
-                    item.source = "澎湃新闻网";
+            if (sourceString.indexOf("澎湃") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("跳过来源：" + sourceString);
+                    Bee.passItem(item);
+                    return;
                 } else {
-                    item.source = sourceString;
+                    console.log("未知来源：" + sourceString);
                 }
+            }
+            if (sourceString.indexOf("澎湃新闻") >= 0 && sourceString.indexOf("记者") >= 0) {
+                item.source = "澎湃新闻网";
             } else {
-                Bee.passItem(item);
-                return;
+                item.source = sourceString;
             }
             var timeString = attrib[1].innerText;
             item.created_at = Bee.convertTime(timeString);

@@ -35,10 +35,8 @@
                 item.url = a.href;
                 item.key = Bee.hashCode(item.url);
                 item.title = a.innerText;
-                console.log(item.title);
                 items.push(item);
             }
-            console.log(items);
             Bee.finishExtractList(items);
         }, 500);
     };
@@ -51,14 +49,19 @@
                 Bee.finishExtractItem();
                 return;
             }
-            var attribTags = dom.byClass("title").byTags("li");
-            var souceString =attribTags[0].innerText;
-            if (souceString.indexOf("一财网") >= 0 ) {
-                item.source = souceString;
-            } else {
-                Bee.passItem(item);
-                return;
+            var title = dom.byClass("title");
+            var attribTags = title.byTags("li");
+            var sourceString =attribTags[0].innerText;
+            if (sourceString.indexOf("一财网") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("跳过来源：" + sourceString);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + sourceString);
+                }
             }
+            item.source = sourceString;
             var timeString = attribTags[2].innerText;
             item.created_at = Bee.convertTime(timeString);
             item.category = Bee.getCurCategory();
@@ -68,10 +71,14 @@
 
             var content = Bee.htmlToJson(article);
             item.content = content;
-            item.class = "";
-
+            var descItem = title.byClass("summary", true);
+            if (descItem  && descItem.innerText.length > 0) {
+                var desc = {};
+                desc.desc = descItem.innerText;
+                item.content.add(0, desc);
+            }
+            item.class = "news";
             Bee.finishExtractItem(item);
-//            console.log(item);
         }, 1000);
     };
 

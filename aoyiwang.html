@@ -7,27 +7,37 @@
 </head>
 <body>
 <script>
+    //TODO 除了广州深圳，其他市用其他爬虫
+    Bee.addChannel("国内", "广东", "http://news.oeeee.com/#gd");
+    Bee.addChannel("国内", "", "http://news.oeeee.com/#china");
+    Bee.addChannel("国际", "", "http://news.oeeee.com/#world");
+    Bee.addChannel("", "评论", "http://news.oeeee.com/#opinion");
+    Bee.addChannel("娱乐", "", "http://news.oeeee.com/#ent");
+    Bee.addChannel("体育", "", "http://news.oeeee.com/#sports");
+    Bee.addChannel("国内", "广州", "http://gd.oeeee.com/gz/");
+    Bee.addChannel("国内", "深圳", "http://sz.oeeee.com/");
 
-    Bee.addChannel("国内", "广东", "http://3g.oeeee.com/m.php?s=/m2/gd/");
-    Bee.addChannel("国内", "深圳", "http://3g.oeeee.com/m.php?s=/m2/szX/");
-    Bee.setType("3g.oeeee.com");
-    Bee.setImgReferer("3g.oeeee.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
-        Bee.scrollToBottom(dom);
-        Bee.scrollToBottom(dom);
-        Bee.scrollToBottom(dom);
-        setTimeout(function() {
+    Bee.setType("news.oeeee.com");
+    Bee.setImgReferer("news.oeeee.com");
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListLoaded = function (dom) {
+        console.log("yang ++ list");
+        var button = dom.byClass("more");
+        if (button) {
+            button.click();
+            button.click();
+            button.click();
+        }
+        console.log("logyang");
+        setTimeout(function () {
             var items = [];
-            var contList = dom.byId("J_index_article");
-            var lis = contList.byClasses("box-list");
+            var contList = dom.byId("J_roll_news");
+            var lis = contList.byClasses("J-roll-list roll-list clearfix");
             for (var i = 0; i < lis.length; i++) {
                 var a = lis[i].byTag("a");
                 var item = {};
                 item.url = a.href;
-                item.key = Bee.hashCode(item.url);
-                item.title = a.byTag("h3").innerText;
-                console.log(item.title);
+                item.title = a.innerText;
                 items.push(item);
             }
             console.log(items);
@@ -35,40 +45,38 @@
         }, 500);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
-        var pageButton = dom.byClass("loadmore", true);
-        if (pageButton) {
-            pageButton.click();
+    Bee.onItemDomLoaded = function (dom, item) {
+        var article = dom.byClass("content content2");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
         }
-
-        setTimeout(function() {
-            console.log(dom);
-            var article = dom.byClass("bd text1");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            var attribTags = dom.byClass("head clearfix");
-            var souceString = attribTags.byClass("nickname").innerText.split("：")[1];
-            console.log(souceString);
-            if (souceString.indexOf("南方都市报") >= 0 ) {
-                item.source = souceString;
-            } else {
+        var sourceString = dom.byId("source_baidu").innerText.split("：")[1];
+        if (sourceString.indexOf("南方都市报") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
+            } else {
+                console.log("未知来源：" + sourceString);
             }
-            var timeString = (new Date()).getFullYear() + "-" + attribTags.byClass("time").innerText;
-            item.created_at = Bee.convertTime(timeString);
-            item.category = Bee.getCurCategory();
-            console.log(timeString + " " + item.source);
-            var content = Bee.htmlToJson(article);
-            item.content = content;
-            item.class = "";
-
-            Bee.finishExtractItem(item);
-//            console.log(item);
-        }, 1000);
+        }
+        item.source = sourceString;
+        var timeString = dom.byId("pubtime_baidu").innerText;
+        item.created_at = Bee.convertTime(timeString);
+        item.category = Bee.getCurCategory();
+        console.log(timeString + " " + item.source);
+        var content = Bee.htmlToJson(article);
+        item.content = content;
+        var descItem = dom.byClass("summary", true);
+        if (descItem && descItem.innerText.length > 0) {
+            var desc = {};
+            desc.desc = descItem.innerText;
+            item.content.add(0, desc);
+        }
+        item.class = "";
+        Bee.finishExtractItem(item, true);
     };
 
     Bee.start();
