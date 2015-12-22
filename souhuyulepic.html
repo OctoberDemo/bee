@@ -48,14 +48,19 @@
         var groupData = this.getWindow()["groupData"];
         var pics = groupData.items;
         var meta = groupData.meta;
-        var source = meta.src.title;
-        if (source.indexOf("搜狐") >= 0) {
-            item.source = source;
-        } else if (source == "") {
+        var sourceString = meta.src.title;
+        if (sourceString.indexOf("搜狐") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + sourceString);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + sourceString);
+            }
+        }
+        item.source = sourceString;
+        if (item.source == "") {
             item.source = "搜狐大视野";
-        }else {
-            Bee.passItem(item);
-            return;
         }
         item.created_at = meta.date / 1000;
         item.class = "image";
