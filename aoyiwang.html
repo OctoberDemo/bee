@@ -21,14 +21,12 @@
     Bee.setImgReferer("news.oeeee.com");
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function (dom) {
-        console.log("yang ++ list");
         var button = dom.byClass("more");
         if (button) {
             button.click();
             button.click();
             button.click();
         }
-        console.log("logyang");
         setTimeout(function () {
             var items = [];
             var contList = dom.byId("J_roll_news");
@@ -54,7 +52,7 @@
         }
         var sourceString = dom.byId("source_baidu").innerText.split("：")[1];
         if (sourceString.indexOf("南方都市报") < 0) {
-            if (Bee.existSource(item.source)) {
+            if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
@@ -76,7 +74,7 @@
             item.content.add(0, desc);
         }
         item.class = "";
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();

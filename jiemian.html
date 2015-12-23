@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>界面蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    var addTexts = ["- - - - - - - - - - - - - - - - - - - ", "长按二维码，关注", "请关注界面游戏频道", "相关报道：", "相关阅读："];
+    var addImgs = ["http://img.jiemian.com/101/original/20151117/144773002149744300.jpg"];
+
+    Bee.addChannel("", "国际政治", "http://www.jiemian.com/lists/35.html");
+    Bee.addChannel("", "全球经济", "http://www.jiemian.com/lists/46.html");
+    Bee.addChannel("", "社会万象", "http://www.jiemian.com/lists/47.html");
+    Bee.addChannel("国内", "经济", "http://www.jiemian.com/lists/20.html");
+    Bee.addChannel("国内", "时政", "http://www.jiemian.com/lists/34.html");
+    Bee.addChannel("国内", "社会民生", "http://www.jiemian.com/lists/72.html");
+    Bee.addChannel("娱乐", "大牌", "http://www.jiemian.com/lists/25.html");
+    Bee.addChannel("娱乐", "娱乐圈", "http://www.jiemian.com/lists/76.html");
+    Bee.addChannel("娱乐", "视听", "http://www.jiemian.com/lists/77.html");
+    Bee.addChannel("娱乐", "八卦", "http://www.jiemian.com/lists/81.html");
+    Bee.addChannel("体育", "巨星", "http://www.jiemian.com/lists/11.html");
+    Bee.addChannel("体育", "体育市场", "http://www.jiemian.com/lists/78.html");
+    Bee.addChannel("体育", "篮球", "http://www.jiemian.com/lists/80.html");
+    Bee.addChannel("体育", "足球", "http://www.jiemian.com/lists/83.html");
+    Bee.addChannel("体育", "综合", "http://www.jiemian.com/lists/91.html");
+    Bee.addChannel("体育", "场外", "http://www.jiemian.com/lists/92.html");
+    Bee.addChannel("体育", "装备", "http://www.jiemian.com/lists/93.html");
+    Bee.addChannel("体育", "速递", "http://www.jiemian.com/lists/110.html");
+    Bee.addChannel("时尚", "时尚要闻", "http://www.jiemian.com/lists/42.html");
+    Bee.addChannel("时尚", "潮流", "http://www.jiemian.com/lists/96.html");
+    Bee.addChannel("时尚", "设计", "http://www.jiemian.com/lists/97.html");
+    Bee.addChannel("时尚", "大咖", "http://www.jiemian.com/lists/98.html");
+    Bee.addChannel("旅游", "旅讯", "http://www.jiemian.com/lists/106.html");
+    Bee.addChannel("旅游", "旅讯", "http://www.jiemian.com/lists/106.html");
+    Bee.addChannel("旅游", "目的地", "http://www.jiemian.com/lists/107.html");
+    Bee.addChannel("旅游", "游记", "http://www.jiemian.com/lists/108.html");
+    Bee.addChannel("旅游", "行程", "http://www.jiemian.com/lists/109.html");
+    Bee.addChannel("科技", "必读", "http://www.jiemian.com/lists/6.html");
+    Bee.addChannel("科技", "趋势", "http://www.jiemian.com/lists/43.html");
+    Bee.addChannel("科技", "玩物", "http://www.jiemian.com/lists/66.html");
+    Bee.addChannel("科技", "产品榜", "http://www.jiemian.com/lists/73.html");
+    Bee.addChannel("汽车", "生意", "http://www.jiemian.com/lists/14.html");
+    Bee.addChannel("汽车", "座驾", "http://www.jiemian.com/lists/57.html");
+    Bee.addChannel("汽车", "花边", "http://www.jiemian.com/lists/60.html");
+    Bee.addChannel("汽车", "榜单", "http://www.jiemian.com/lists/61.html");
+    Bee.addChannel("地产", "深度", "http://www.jiemian.com/lists/7.html");
+    Bee.addChannel("地产", "市场", "http://www.jiemian.com/lists/64.html");
+    Bee.addChannel("地产", "建筑", "http://www.jiemian.com/lists/67.html");
+    Bee.addChannel("地产", "楼盘", "http://www.jiemian.com/lists/70.html");
+    Bee.addChannel("文化", "", "http://www.jiemian.com/lists/79.html");
+    Bee.addChannel("投资", "理财", "http://www.jiemian.com/lists/5.html");
+    Bee.addChannel("投资", "基金", "http://www.jiemian.com/lists/87.html");
+    Bee.addChannel("股票", "", "http://www.jiemian.com/lists/89.html");
+    Bee.addChannel("投资", "私募", "http://www.jiemian.com/lists/88.html");
+    Bee.addChannel("投资", "银行", "http://www.jiemian.com/lists/94.html");
+    Bee.addChannel("游戏", "要闻", "http://www.jiemian.com/lists/100.html");
+    Bee.addChannel("游戏", "单品", "http://www.jiemian.com/lists/119.html");
+    Bee.addChannel("游戏", "盘点", "http://www.jiemian.com/lists/120.html");
+    Bee.addChannel("游戏", "花边趣闻", "http://www.jiemian.com/lists/121.html");
+    Bee.addChannel("财经", "市场", "http://www.jiemian.com/lists/101.html");
+    Bee.addChannel("财经", "独家", "http://www.jiemian.com/lists/113.html");
+    Bee.addChannel("财经", "调查", "http://www.jiemian.com/lists/114.html");
+    Bee.addChannel("财经", "第一时间", "http://www.jiemian.com/lists/115.html");
+    Bee.addChannel("财经", "竞争力报告", "http://www.jiemian.com/lists/117.html");
+    Bee.addChannel("商业", "金融", "http://www.jiemian.com/lists/9.html");
+    Bee.addChannel("商业", "能源", "http://www.jiemian.com/lists/28.html");
+    Bee.addChannel("商业", "传媒", "http://www.jiemian.com/lists/29.html");
+    Bee.addChannel("商业", "交通", "http://www.jiemian.com/lists/30.html");
+    Bee.addChannel("商业", "消费", "http://www.jiemian.com/lists/31.html");
+    Bee.addChannel("商业", "LEAD", "http://www.jiemian.com/lists/38.html");
+    Bee.addChannel("商业", "营销", "http://www.jiemian.com/lists/49.html");
+    Bee.addChannel("商业", "职场", "http://www.jiemian.com/lists/50.html");
+    Bee.setType("www.jiemian.com");
+    Bee.setImgReferer("www.jiemian.com");
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListLoaded = function (dom) {
+        var loadMore = dom.byClass("load-more", true);
+        if (loadMore) {
+            loadMore.click();
+            loadMore.click();
+            loadMore.click();
+        }
+
+        setTimeout(function () {
+            var items = [];
+            var contList = dom.byClass("list-view card");
+            var lis = contList.byClasses("news-view left card");
+            for (var i = 0; i < lis.length; i++) {
+                var li = lis[i];
+                var item = {};
+                var head = li.byTag("a");
+                if (head) {
+                    item.url = head.href;
+                    item.title = head.title;
+                    item.key = Bee.hashCode(item.url + "test2");
+                    items.push(item);
+                }
+            }
+            Bee.finishExtractList(items);
+        }, 500);
+    };
+
+    Bee.onItemDomLoaded = function (dom, item) {
+
+        var article = dom.byClass("article-main");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        var outSource = dom.byClass("article-source");
+        var sourceString = "界面";
+        if (outSource) {
+            sourceString = outSource.byTag("p").innerText.replace("来源：", "");
+        }
+        if (sourceString.indexOf("界面") < 0) {
+            if (Bee.existSource(sourceString)) {
+                console.log("跳过来源：" + sourceString);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + sourceString);
+            }
+        }
+        item.source = sourceString;
+        var timeString = dom.byClass("date").innerText;
+        item.created_at = Bee.convertTime(timeString);
+        article.removeClass("article-header");
+        article.removeClass("article-btn");
+        article.removeClass("a-b-ad");
+        article.removeClass("article-footer");
+        article.removeClass("article-source");
+        article.removeTag("iframe");
+        var content = Bee.htmlToJson(article, addTexts, addImgs);
+        var descItem = dom.byClass("article-header").byTag("p");
+        if (descItem && descItem.innerText.length > 0) {
+            var desc = {};
+            desc.desc = descItem.innerText;
+            content.add(0, desc);
+        }
+        item.content = content;
+        item.class = "";
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>

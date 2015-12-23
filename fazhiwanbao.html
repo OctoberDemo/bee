@@ -65,7 +65,7 @@
             if (sourceItem) {
                 var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
                 if (sourceString.indexOf("法制晚报") < 0) {
-                    if (Bee.existSource(item.source)) {
+                    if (Bee.existSource(sourceString)) {
                         console.log("跳过来源：" + sourceString);
                         Bee.passItem(item);
                         continue;

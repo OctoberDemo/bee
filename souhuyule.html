@@ -54,7 +54,7 @@
             var attrib = dom.byClass("time-source");
             var sourceString = attrib.byId("media_span").byTag("span").innerText;
             if (sourceString.indexOf("搜狐娱乐") < 0) {
-                if (Bee.existSource(item.source)) {
+                if (Bee.existSource(sourceString)) {
                     console.log("跳过来源：" + sourceString);
                     Bee.passItem(item);
                     return;

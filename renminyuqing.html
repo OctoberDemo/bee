@@ -14,7 +14,6 @@
     Bee.onListLoaded = function(dom) {
         var itemDivs = dom.byClasses(" hdNews clearfix");
         var items = [];
-        console.log(itemDivs[0]);
         for (var i = 0; i < itemDivs.length; i++) {
             var item = {};
             item.title = itemDivs[i].byTag("strong").innerText;
@@ -38,16 +37,17 @@
         if (src == null) {
             Bee.passItem(item);
         }
-        var s = src.byTag("a");
-        if (s != null && s.innerText != "人民网-舆情频道") {
-            Bee.passItem(item);
-            return;
+        var s = src.byTag("a").innerText;
+        if (s.search("人民网-舆情频道") < 0) {
+            if (Bee.existSource(s)) {
+                console.log("跳过来源：" + s);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + s);
+            }
         }
-        if (s != null) {
-            item.source = s.innerText;
-        } else {
-            item.source = "人民网-舆情频道"
-        }
+        item.source = s;
         item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
         var content = Bee.htmlToJson(dom.byId("p_content"));
         item.content = JSON.stringify(content);

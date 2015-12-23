@@ -58,7 +58,7 @@
         var attrib = dom.byClasses("about_news");
         var sourceString = attrib[0].innerText.split(" ")[0];
         if (sourceString.indexOf("澎湃") < 0) {
-            if (Bee.existSource(item.source)) {
+            if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>美闻网</title>
+    <title>美闻网蜜蜂</title>
     <script src="bee.js"></script>
 </head>
 <body>
@@ -42,9 +42,7 @@
                 item.cover_img = image;
             }
             items.push(item);
-            console.log(item);
         }
-        console.log(items.length);
         Bee.finishExtractList(items);
     }
 
@@ -57,18 +55,23 @@
         var src = source.innerText;
         var i = src.search("来源");
         src = src.substr(i, src.length);
-        if (src.search("美闻网") > 0) {
-            item.category = "news";
-            item.source = src;
-            var content = Bee.htmlToJson(dom.byClass("zg114"));
-            item.content = JSON.stringify(content);
-            Bee.finishExtractItem(item);
-        } else {
-            Bee.passItem(item);
+        src = src.replace("来源:", "");
+        if (src.search("美闻网") < 0) {
+            if (Bee.existSource(src)) {
+                console.log("跳过来源：" + src);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + src);
+            }
         }
+        item.category = "news";
+        item.source = src;
+        var content = Bee.htmlToJson(dom.byClass("zg114"));
+        item.content = JSON.stringify(content);
+        Bee.finishExtractItem(item);
     }
     Bee.start();
-
 </script>
 </body>
 </html>
