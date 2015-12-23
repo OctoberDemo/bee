@@ -51,7 +51,6 @@ function _Bee() {
     var detailItems = [];
     var subItems = [];
 
-    var webViewLp;
     var root = null;
     var listWebView = null;
     var itemWebView = null;
@@ -175,7 +174,8 @@ function _Bee() {
             root.removeView(listWebView);
         }
         listWebView = new BeeWebView();
-        root.addView(listWebView, 0, webViewLp);
+        listWebView.setBorder(2, 0xff666666);
+        root.addView(listWebView, 0);
 
         listWebView.setOnPageFinishListener(function() {
             var dom = listWebView.getDom();
@@ -246,7 +246,8 @@ function _Bee() {
             root.removeView(itemWebView);
         }
         itemWebView = new BeeWebView();
-        root.addView(itemWebView, webViewLp);
+        itemWebView.setBorder(2, 0xff666666);
+        root.addView(itemWebView);
         itemWebView.setOnPageFinishListener(function() {
             var dom = itemWebView.getDom();
             if (self.onItemLoaded) {
@@ -283,7 +284,8 @@ function _Bee() {
             root.removeView(subItemWebView);
         }
         subItemWebView = new BeeWebView();
-        root.addView(subItemWebView, webViewLp);
+        subItemWebView.setBorder(2, 0xff666666);
+        root.addView(subItemWebView);
         if (self.onSubItemLoaded) {
             subItemWebView.setOnPageFinishListener(function() {
                 var dom = subItemWebView.getDom();
@@ -499,7 +501,8 @@ function _Bee() {
     };
 
     this.addWebView = function(webview) {
-        root.addView(webview, webViewLp);
+        webview.setBorder(2, 0xff666666);
+        root.addView(webview);
     };
 
     this.removeView = function(view) {
@@ -507,17 +510,29 @@ function _Bee() {
     };
 
     function onCreate() {
-        root = new LinearLayout();
+        root = new ViewGroup();
         root.setBg(0xffcccccc);
-        root.setOrientation(LinearLayout.HORIZONTAL);
-        var rootLp = new LP(LP.FP, LP.FP);
-        root.setLayoutParams(rootLp);
+        root.onMeasure = function(wMS, hMS) {
+            var w = MS.getSize(wMS);
+            var h = MS.getSize(hMS);
+
+            for (var i = 0; i < this.getChildCount(); i++) {
+                this.getChildAt(i).measure(360, h);
+            }
+
+            this.setMD(w, h);
+        };
+        root.onLayout = function() {
+            var x = 0;
+            var y = 0;
+            var itemW = this.getMW() / this.getChildCount();
+            for (var i = 0; i < this.getChildCount(); i++) {
+                this.getChildAt(i).layout(x, y);
+                x += itemW;
+            }
+        };
 
         setContentView(root);
-
-        webViewLp = new LP(0, LP.FP);
-        webViewLp.weight = 0.5;
-        webViewLp.setMargins(6);
     }
 
     var beeJsTotal = 0;
