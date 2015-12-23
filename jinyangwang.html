@@ -54,21 +54,25 @@
             return;
         }
         var s = src.innerText;
-        if (s.search("金羊网") >= 0 || s.search("羊城晚报") >= 0) {
-            var time = dom.byId("pubtime_baidu").innerText;
-            time = time.replace("发表时间：","");
-            item.source = "金羊网";
-            item.created_at = Bee.convertTime(time);
-            item.tag = Bee.getCurCategory();
-            var content = Bee.htmlToJson(dom.byClass("main_article"));
-            item.content = JSON.stringify(content);
-            item.class = "news";
-            Bee.finishExtractItem(item);
-        } else {
-            console.log("来源不正确");
-            Bee.passItem(item);
-            return;
+        s = s.replace("来源:","");
+        if (s.search("金羊网") < 0 && s.search("羊城晚报") < 0) {
+            if (Bee.existSource(s)) {
+                console.log("跳过来源：" + s);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + s);
+            }
         }
+        var time = dom.byId("pubtime_baidu").innerText;
+        time = time.replace("发表时间：","");
+        item.source = s;
+        item.created_at = Bee.convertTime(time);
+        item.tag = Bee.getCurCategory();
+        var content = Bee.htmlToJson(dom.byClass("main_article"));
+        item.content = JSON.stringify(content);
+        item.class = "news";
+        Bee.finishExtractItem(item);
     }
     Bee.start();
 </script>

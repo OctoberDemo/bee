@@ -26,26 +26,35 @@
     Bee.onListLoaded = function(dom) {
         var itemDivs = dom.byClasses("hoverQk clear");
         var items = [];
+        console.log(itemDivs.length);
         for (var i = 0; i < itemDivs.length; i++) {
             var src = itemDivs[i].byClass("dataR").innerText;
-            if (src.search("信网") > 0) {
-                var item = {};
-                var detail = itemDivs[i].byClass("biaoTiLink").byTag("a");
-                item.title = detail.innerText;
-                item.url = detail.href;
-                item.key = Bee.hashCode(item.url);
-                var img = itemDivs[i].byTag("img");
-                if (img != null) {
-                    var image = {};
-                    image.src = img.src;
-                    image.height = img.clientHeight;
-                    image.width = img.clientWidth;
-                    item.cover_img = img;
+            var j = src.search("来源");
+            src = src.substr(j, src.length);
+            src = src.replace("来源: ", "");
+            if (src.search("信网") < 0) {
+                if (Bee.existSource(src)) {
+                    console.log("跳过来源：" + src);
+                    continue;
+                } else {
+                    console.log("未知来源：" + src);
                 }
-                items.push(item);
-            } else {
-                console.log("非来自信网");
             }
+            var item = {};
+            var detail = itemDivs[i].byClass("biaoTiLink").byTag("a");
+            item.source = src;
+            item.title = detail.innerText;
+            item.url = detail.href;
+            item.key = Bee.hashCode(item.url);
+            var img = itemDivs[i].byTag("img");
+            if (img != null) {
+                var image = {};
+                image.src = img.src;
+                image.height = img.clientHeight;
+                image.width = img.clientWidth;
+                item.cover_img = img;
+            }
+            items.push(item);
         }
         Bee.finishExtractList(items);
     }
@@ -56,8 +65,6 @@
             Bee.passItem(item);
             return;
         }
-        var s = src.innerText;
-        item.source = s;
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
         var content = Bee.htmlToJson(dom.byClass("baohanP"));
         item.content = content;

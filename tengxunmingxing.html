@@ -69,16 +69,24 @@
     }
 
     Bee.onItemLoaded = function(dom, item) {
-        if (dom.byClass("a_source") == null || dom.byClass("a_source").innerText != "腾讯娱乐") {
-            console.log("来源不正确");
+        if (dom.byClass("a_source") == null ) {
             Bee.passItem(item);
             return;
         }
-        item.source = dom.byClass("a_source").innerText;
+        var src = dom.byClass("a_source").innerText;
+        if (src.search("腾讯娱乐") < 0) {
+            if (Bee.existSource(src)) {
+                console.log("跳过来源：" + src);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + src);
+            }
+        }
+        item.source = src;
         item.created_at = Bee.convertTime(dom.byClass("a_time").innerText);
         var article = dom.byClass("Cnt-Main-Article-QQ");
         if (article) {
-            console.log(item.title);
             var content = [];
             if (article.byTag("p")) {
                 content.push({
@@ -92,7 +100,6 @@
                     eval("var picArr ="+data);
                     var picList = [];
                     findInJson(picArr, "Name", "bigimgurl", picList);
-                    console.log(picList);
                     for (var i = 0; i < picList.length; i++) {
                         var img = {};
                         img.src = Bee.makeImgJumpUrl(picList[i].Children[0].Content, "http://ent.qq.com/");

@@ -71,19 +71,24 @@
             }
             var info = dom.byClass("info").byTags("span");
             var src = info[2].innerText;
-            if (src.search("中国西藏网") > 0) {
-                item.source = src.replace("来源： ","");
-                var time = info[1].innerText;
-                item.created_at = Bee.convertTime(time.replace("发布时间： ",""));
-                var author = info[0].innerText;
-                item.author = author.replace("作者： ","");
-                var content = Bee.htmlToJson(dom.byId("text"));
-                item.content = JSON.stringify(content);
-                Bee.finishExtractItem(item);
-            } else {
-                Bee.passItem(item);
-                return;
+            src = src.replace("来源： ","");
+            if (src.search("中国西藏网") < 0) {
+                if (Bee.existSource(src)) {
+                    console.log("跳过来源：" + src);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + src);
+                }
             }
+            item.source = src;
+            var time = info[1].innerText;
+            item.created_at = Bee.convertTime(time.replace("发布时间： ",""));
+            var author = info[0].innerText;
+            item.author = author.replace("作者： ","");
+            var content = Bee.htmlToJson(dom.byId("text"));
+            item.content = JSON.stringify(content);
+            Bee.finishExtractItem(item);
         }, 1000);
     }
     Bee.start();
