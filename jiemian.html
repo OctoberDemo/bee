@@ -75,7 +75,7 @@
     Bee.addChannel("商业", "职场", "http://www.jiemian.com/lists/50.html");
     Bee.setType("www.jiemian.com");
     Bee.setImgReferer("www.jiemian.com");
-    //    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function (dom) {
         var loadMore = dom.byClass("load-more", true);
         if (loadMore) {
