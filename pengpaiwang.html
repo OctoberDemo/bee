@@ -14,7 +14,7 @@
     Bee.addChannel("", "生活", "http://m.thepaper.cn/channel_25953");
     Bee.setType("m.thepaper.cn");
     Bee.setImgReferer("m.thepaper.cn");
-    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function(dom) {
         var pageButton = dom.byClass("more_bt", true);
         if (pageButton) {
@@ -43,40 +43,41 @@
         }, 500);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
 
-        setTimeout(function() {
-            var article = dom.byClass("news_part");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            if (dom.byTag("video")) {
+        var article = dom.byClass("news_part");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        if (dom.byTag("video")) {
+            Bee.passItem(item);
+            return;
+        }
+        var attrib = dom.byClasses("about_news");
+        var sourceString = attrib[0].innerText.split(" ")[0];
+        if (sourceString.indexOf("澎湃") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
-            }
-            var attrib = dom.byClasses("about_news");
-            var sourceString = attrib[0].innerText.split(" ")[0];
-            console.log(sourceString);
-            if (sourceString.indexOf("澎湃") >= 0) {
-                if (sourceString == "澎湃新闻记者") {
-                    item.source = "澎湃新闻";
-                } else {
-                    item.source = sourceString;
-                }
             } else {
-                Bee.passItem(item);
-                return;
+                console.log("未知来源：" + sourceString);
             }
-            var timeString = attrib[1].innerText;
-            item.created_at = Bee.convertTime(timeString);
-            var content = Bee.htmlToJson(article);
-            item.content = content;
-            item.class = "";
+        }
+        if (sourceString.indexOf("澎湃新闻") >= 0 && sourceString.indexOf("记者") >= 0) {
+            item.source = "澎湃新闻网";
+        } else {
+            item.source = sourceString;
+        }
+        var timeString = attrib[1].innerText;
+        item.created_at = Bee.convertTime(timeString);
+        var content = Bee.htmlToJson(article);
+        item.content = content;
+        item.class = "";
 
-            Bee.finishExtractItem(item);
-        }, 1000);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();

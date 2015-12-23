@@ -12,13 +12,13 @@
     Bee.addChannel("", "华人", "http://www.chinanews.com/m/channel/hr/");
     Bee.setType("www.chinanews.com");
     Bee.setImgReferer("www.chinanews.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListLoaded = function (dom) {
         var pageButton = dom.byClass("load_more1", true);
         if (pageButton) {
             pageButton.click();
         }
-        setTimeout(function() {
+        setTimeout(function () {
             var items = [];
             var contList = dom.byId("ent0");
             var lis = contList.byTags("li");
@@ -42,35 +42,36 @@
         }, 500);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
 
-        setTimeout(function() {
-            var article = dom.byClass("content_context");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            var attrib = dom.byClass("subtitle").byTag("time").innerText.split(" ");
-            var sourceString = attrib[2];
-            console.log(attrib);
-            if (sourceString.indexOf("中国新闻网") >= 0) {
-                item.source = sourceString;
-            } else {
+        var article = dom.byClass("content_context");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        var attrib = dom.byClass("subtitle").byTag("time").innerText.split(" ");
+        var sourceString = attrib[2];
+        if (sourceString.indexOf("中国新闻网") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
+            } else {
+                console.log("未知来源：" + sourceString);
             }
-            var timeString = attrib[0] + attrib[1];
-            item.created_at = Bee.convertTime(timeString);
-            item.category = Bee.getCurCategory();
-            article.removeClass("spss");
-            article.removeClass("fenx_box");
-            var content = Bee.htmlToJson(article);
-            item.content = content;
-            item.class = "";
+        }
+        item.source = sourceString;
+        var timeString = attrib[0] + attrib[1];
+        item.created_at = Bee.convertTime(timeString);
+        item.category = Bee.getCurCategory();
+        article.removeClass("spss");
+        article.removeClass("fenx_box");
+        var content = Bee.htmlToJson(article);
+        item.content = content;
+        item.class = "";
 
-            Bee.finishExtractItem(item);
-        }, 1000);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();

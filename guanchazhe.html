@@ -14,15 +14,15 @@
     Bee.addChannel("时评", "http://m.guancha.cn/home-comment");
     Bee.setType("m.guancha.cn");
     Bee.setImgReferer("m.guancha.cn");
-    Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListLoaded = function (dom) {
         var pageButton = dom.byClass("more", true);
         if (pageButton) {
             pageButton.click();
             pageButton.click();
             pageButton.click();
         }
-        setTimeout(function() {
+        setTimeout(function () {
             var items = [];
             var contList = dom.byClass("info_list");
             var lis = contList.byTags("section");
@@ -30,45 +30,42 @@
                 var a = lis[i].byTag("a");
                 var item = {};
                 item.url = a.href;
-                item.key = Bee.hashCode(item.url);
                 items.push(item);
             }
-            console.log(items);
             Bee.finishExtractList(items);
         }, 500);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
+        item.title = dom.byClass("detail").byTag("h1").innerText;
 
-        setTimeout(function() {
-            item.title = dom.byClass("detail").byTag("h1").innerText;
-
-            var article = dom.byClass("detail");
-            if (article == undefined) {
-                Bee.finishExtractItem();
-                return;
-            }
-            item.title = article.byTag("h1").innerText;
-            var timeString = article.byTag("time").innerText;
-            item.created_at = Bee.convertTime(timeString);
-            var section = article.byTag("section");
-            var source = section.byClass("author").innerText.split("|");
-            var author = source[0].replace("来源：", "");
-            if (author.indexOf("观察者") >= 0) {
-                item.source = author;
-            } else {
+        var article = dom.byClass("detail");
+        if (article == undefined) {
+            Bee.finishExtractItem();
+            return;
+        }
+        item.title = article.byTag("h1").innerText;
+        var timeString = article.byTag("time").innerText;
+        item.created_at = Bee.convertTime(timeString);
+        var section = article.byTag("section");
+        var source = section.byClass("author").innerText.split("|");
+        var sourceString = source[0].replace("来源：", "");
+        if (sourceString.indexOf("观察者网") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
+            } else {
+                console.log("未知来源：" + sourceString);
             }
-            item.category = Bee.getCurCategory();
-            section.removeClass("bdsharebuttonbox m_share bdshare-button-style0-16");
-            section.removeClass("details-author");
-            item.content = Bee.htmlToJson(section, adText);
-            item.class = "";
-
-            Bee.finishExtractItem(item);
-            console.log(item);
-        }, 1000);
+        }
+        item.source = sourceString;
+        item.category = Bee.getCurCategory();
+        section.removeClass("bdsharebuttonbox m_share bdshare-button-style0-16");
+        section.removeClass("details-author");
+        item.content = Bee.htmlToJson(section, adText);
+        item.class = "";
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();

@@ -3,7 +3,7 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>搜狐娱乐蜜蜂</title>
-    <script src="Bee.js"></script>
+    <script src="bee.js"></script>
 </head>
 <body>
 <script>
@@ -20,7 +20,7 @@
     Bee.addChannel("", "音乐人物", "http://music.yule.sohu.com/musicrw/");
     Bee.setType("yule.sohu.com");
     Bee.setImgReferer("yule.sohu.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
+    Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function(dom) {
         setTimeout(function() {
             var items = [];
@@ -46,7 +46,6 @@
 
         setTimeout(function() {
             var article = dom.byClass("text clear");
-            console.log(dom);
             if (article == undefined) {
                 console.log("article == undefined");
                 Bee.finishExtractItem();
@@ -54,12 +53,16 @@
             }
             var attrib = dom.byClass("time-source");
             var sourceString = attrib.byId("media_span").byTag("span").innerText;
-            if (sourceString.indexOf("搜狐") >= 0) {
-                item.source = sourceString;
-            } else {
-                Bee.passItem(item);
-                return;
+            if (sourceString.indexOf("搜狐娱乐") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("跳过来源：" + sourceString);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + sourceString);
+                }
             }
+            item.source = sourceString;
             var timeString = attrib.byClass("time").innerText;
             item.created_at = Bee.convertTime(timeString);
             article.removeTag("iframe");
@@ -67,10 +70,9 @@
             article.removeClasses("savePicBtn");
             var content = Bee.htmlToJson(article, addText);
             item.content = content;
-            item.status = 2;
             item.class = "";
 
-            Bee.finishExtractItem(item, true);
+            Bee.finishExtractItem(item);
         }, 1000);
     };
 
