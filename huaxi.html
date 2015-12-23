@@ -28,7 +28,7 @@
             var items = [];
             var contList = dom.byClass("list");
             var lis = contList.byTags("li");
-            for (var i = 0; i <3; i++) {
+            for (var i = 0; i <lis.length; i++) {
                 var item = {};
                 var a = lis[i].byTag("a");
                 if (a == undefined) {
@@ -48,7 +48,6 @@
                 }
                 items.push(item);
             }
-            console.log(items);
             Bee.finishExtractList(items);
         }, 500);
     };
