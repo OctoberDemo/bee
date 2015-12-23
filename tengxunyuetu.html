@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>腾讯悦图</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://info.3g.qq.com");
+    Bee.addChannel("热门", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_hotpic");
+    Bee.addChannel("奇趣", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=tech02_qiwen");
+    Bee.addChannel("八卦", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_ent_bg");
+    Bee.addChannel("美女", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=meinv");
+    Bee.addChannel("故事", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_news2");
+    Bee.addChannel("美食", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=itu_food");
+    Bee.addChannel("偷拍", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=ent_img_gouzai");
+    Bee.addChannel("校花", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=fashion_xiaohua");
+    Bee.addChannel("汽车", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_auto_gd");
+    Bee.addChannel("旅游", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=trip_ytly");
+    Bee.addChannel("时尚", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_lady_apppic");
+    Bee.addChannel("COSPLAY", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=gamezone_pic");
+    Bee.addChannel("科技", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_tech_pic");
+    Bee.addChannel("摄影", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_digi_gy");
+    Bee.addChannel("NBA", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=sports_nbapp");
+    Bee.addChannel("嫩模", "http://info.3g.qq.com/g/s?aid=image&i_f=812&sid=&iarea=165#pos/pos=img_lady_moko");
+    Bee.setImgReferer("http://info.3g.qq.com");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var itemTag;
+        if (Bee.getCurCategory() == "热门") {
+            itemTag = "img_hotpic";
+        } else if (Bee.getCurCategory() == "奇趣") {
+            itemTag = "tech02_qiwen";
+        } else if (Bee.getCurCategory() == "八卦") {
+            itemTag = "img_ent_bg";
+        } else if (Bee.getCurCategory() == "美女") {
+            itemTag = "meinv";
+        } else if (Bee.getCurCategory() == "故事") {
+            itemTag = "img_news2";
+        } else if (Bee.getCurCategory() == "美食") {
+            itemTag = "itu_food";
+        } else if (Bee.getCurCategory() == "偷拍") {
+            itemTag = "ent_img_gouzai";
+        } else if (Bee.getCurCategory() == "校花") {
+            itemTag = "tfashion_xiaohua";
+        } else if (Bee.getCurCategory() == "汽车") {
+            itemTag = "img_auto_gd";
+        } else if (Bee.getCurCategory() == "旅游") {
+            itemTag = "trip_ytly";
+        } else if (Bee.getCurCategory() == "时尚") {
+            itemTag = "img_lady_apppic";
+        } else if (Bee.getCurCategory() == "COSPLAY") {
+            itemTag = "gamezone_pic";
+        } else if (Bee.getCurCategory() == "科技") {
+            itemTag = "img_tech_pic";
+        } else if (Bee.getCurCategory() == "摄影") {
+            itemTag = "img_digi_gy";
+        } else if (Bee.getCurCategory() == "NBA") {
+            itemTag = "sports_nbapp";
+        } else if (Bee.getCurCategory() == "嫩模") {
+            itemTag = "img_lady_moko";
+        }
+        var items = [];
+        var mainUrl = "http://info.3g.qq.com/g/photo/photo3/api/api.jsp?action=photo4_pos_list&pl_pos=";
+        var photoUrl =  mainUrl + itemTag + "" + "&pl_page=1&pl_size=10";
+        liteAjax(photoUrl, function(data) {
+            var list = JSON.parse(data).photo4_pos_list.data.list;
+            for (var i = 0; i < list.length; i++) {
+                var item = {};
+                var date = new Date();
+                item.created_at = Bee.convertTime(date.toDateString());
+                item.url = photoUrl;
+                item.title = list[i].title;
+                coverImg = {};
+                coverImg.src = list[i].coverimg;
+                item.key = Bee.hashCode(JSON.stringify(list[i].title));
+                item.cover_img = coverImg;
+                item.source  = "腾讯悦图";
+                item.status = 3;
+                item.class = "image";
+                var content = {};
+                content.imgs = [];
+                for (var j = 0; j < list[i].imglist.length; j++) {
+                    var dd = list[i].imglist[j];
+                    var img = {};
+                    img.src = Bee.makeImgJumpUrl(dd.img, "info.3g.qq.com");
+                    img.desc = dd.desc;
+                    img.width = dd.width;
+                    img.height = dd.height;
+                    content.imgs.push(img);
+                }
+                item.content = JSON.stringify(content);
+                items.push(item);
+            }
+        })
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        Bee.finishExtractItem(item);
+    }
+    Bee.start();
+</script>
+</body>
+</html>
