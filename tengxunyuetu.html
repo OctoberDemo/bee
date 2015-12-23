@@ -73,7 +73,11 @@
                 item.url = photoUrl;
                 item.title = list[i].title;
                 coverImg = {};
-                coverImg.src = list[i].coverimg;
+                if (list[i].coverimg == "") {
+                    coverImg.src = list[i].imglist[0].img;
+                } else {
+                    coverImg.src = list[i].coverimg;
+                }
                 item.key = Bee.hashCode(JSON.stringify(list[i].title));
                 item.cover_img = coverImg;
                 item.source  = "腾讯悦图";
