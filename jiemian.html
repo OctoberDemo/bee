@@ -112,11 +112,9 @@
             return;
         }
         var outSource = dom.byClass("article-source");
-        var sourceString = dom.byClass("author").byTag("a").innerText;
+        var sourceString = "界面";
         if (outSource) {
             sourceString = outSource.byTag("p").innerText.replace("来源：", "");
-        } else {
-            sourceString = "界面";
         }
         if (sourceString.indexOf("界面") < 0) {
             if (Bee.existSource(sourceString)) {
