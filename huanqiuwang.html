@@ -60,7 +60,7 @@
             var reCat = /[\u4e00-\u9fa5]{1,20}/gi;
             var sourceString = attrib.match(reCat);
             if (sourceString.indexOf("环球时报") < 0 && sourceString.indexOf("环球网") < 0) {
-                if (Bee.existSource(item.source)) {
+                if (Bee.existSource(sourceString)) {
                     console.log("跳过来源：" + sourceString);
                     Bee.passItem(item);
                     return;

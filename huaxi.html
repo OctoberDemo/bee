@@ -16,19 +16,19 @@
     Bee.addChannel("教育", "http://news.huaxi100.com/list-239-1.html");
     Bee.setType("news.huaxi100.com");
     Bee.setImgReferer("news.huaxi100.com");
-    Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
+    Bee.setRefreshTime(1000 * 60 * 10);
+    Bee.onListLoaded = function (dom) {
         var pageButton = dom.byClass("more_list", true);
         if (pageButton) {
             pageButton.click();
             pageButton.click();
             pageButton.click();
         }
-        setTimeout(function() {
+        setTimeout(function () {
             var items = [];
             var contList = dom.byClass("list");
             var lis = contList.byTags("li");
-            for (var i = 0; i < lis.length; i++) {
+            for (var i = 0; i <3; i++) {
                 var item = {};
                 var a = lis[i].byTag("a");
                 if (a == undefined) {
@@ -36,7 +36,16 @@
                 }
                 item.url = a.href;
                 item.title = a.byClass("title").innerText;
-                item.key = Bee.hashCode(item.url);
+                var timeString = a.byClass("down").innerHTML.split(/&nbsp;&nbsp;&nbsp;&nbsp;/)[1];
+                item.created_at = Bee.convertTime(timeString);
+                item.cover_img = Bee.htmlToJson(a.byClass("list_img"))[0].img;
+                var des = a.byClass("des");
+                if (des && des.innerText.length > 0) {
+                    item.content = [];
+                    var desc = {};
+                    desc.desc =  des.innerText;
+                    item.content.add(desc);
+                }
                 items.push(item);
             }
             console.log(items);
@@ -44,33 +53,36 @@
         }, 500);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
 
-        setTimeout(function() {
-            var article = dom.byClass("content");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            var attrib = dom.byClass("extra-desc");
-            var sourceString = attrib.byTag("a").innerText;
-            console.log(sourceString);
-            if (sourceString.indexOf("华西都市") >= 0) {
-                item.source = sourceString;
-            } else {
+        var article = dom.byId("summary");
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        var attrib = dom.byClass("details_info");
+        var reCat = /[\u4e00-\u9fa5]{1,20}/gi;
+        var sourceString = attrib.innerText.match(reCat)[1];
+        if (sourceString.indexOf("华西都市报") < 0) {
+            if (Bee.existSource(sourceString)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
+            } else {
+                console.log("未知来源：" + sourceString);
             }
-            var timeString = attrib.innerText;
-            console.log(sourceString + "  " + timeString);
-            item.created_at = Bee.convertTime(timeString);
-            var content = Bee.htmlToJson(article);
+        }
+        item.source = sourceString;
+        var content = Bee.htmlToJson(article);
+        if (item.content == undefined) {
             item.content = content;
-            item.class = "";
+        } else {
+            item.content = item.content.concat(content);
+        }
+        item.class = "";
 
-            Bee.finishExtractItem(item);
-        }, 1000);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();

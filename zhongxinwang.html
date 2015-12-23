@@ -53,7 +53,7 @@
         var attrib = dom.byClass("subtitle").byTag("time").innerText.split(" ");
         var sourceString = attrib[2];
         if (sourceString.indexOf("中国新闻网") < 0) {
-            if (Bee.existSource(item.source)) {
+            if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;

@@ -51,7 +51,7 @@
         var source = section.byClass("author").innerText.split("|");
         var sourceString = source[0].replace("来源：", "");
         if (sourceString.indexOf("观察者网") < 0) {
-            if (Bee.existSource(item.source)) {
+            if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;

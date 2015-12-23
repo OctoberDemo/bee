@@ -53,7 +53,7 @@
             var attribTags = title.byTags("li");
             var sourceString =attribTags[0].innerText;
             if (sourceString.indexOf("一财网") < 0) {
-                if (Bee.existSource(item.source)) {
+                if (Bee.existSource(sourceString)) {
                     console.log("跳过来源：" + sourceString);
                     Bee.passItem(item);
                     return;

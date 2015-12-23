@@ -50,7 +50,7 @@
         var meta = groupData.meta;
         var sourceString = meta.src.title;
         if (sourceString.indexOf("搜狐") < 0) {
-            if (Bee.existSource(item.source)) {
+            if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
