@@ -20,11 +20,10 @@
     Bee.addChannel("体育", "综合", "http://voice.hupu.com/sports/newslist");
 
     Bee.onListLoaded = function(dom) {
-        var newslist = dom.byClass("news-list");
-        var alist = newslist.byTags("a");
+        var h4list = dom.byClass("news-list").byTags("h4");
         var items = [];
-        for (var i = 0; i < alist.length; i++) {
-            var a = alist[i];
+        for (var i = 0; i < h4list.length; i++) {
+            var a = h4list[i].byTag("a");
             var item = {};
             item.title = a.innerText;
             item.url = a.href;
