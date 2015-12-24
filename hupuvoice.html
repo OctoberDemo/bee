@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>虎扑体育蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.hupu.com");
+    Bee.setImgReferer("http://voice.hupu.com");
+
+    Bee.addChannel("体育", "篮球|NBA", "http://voice.hupu.com/nba/newslist");
+    Bee.addChannel("体育", "篮球|CBA", "http://voice.hupu.com/cba/newslist");
+    Bee.addChannel("体育", "足球|国际足球", "http://voice.hupu.com/soccer/newslist");
+    Bee.addChannel("体育", "足球|中超", "http://voice.hupu.com/china/newslist");
+
+    Bee.addChannel("体育", "赛车|F1", "http://voice.hupu.com/f1/newslist");
+    Bee.addChannel("体育", "网球", "http://voice.hupu.com/tennis/newslist");
+    Bee.addChannel("体育", "综合", "http://voice.hupu.com/sports/newslist");
+
+    Bee.onListLoaded = function(dom) {
+        var newslist = dom.byClass("news-list");
+        var alist = newslist.byTags("a");
+        var items = [];
+        for (var i = 0; i < alist.length; i++) {
+            var a = alist[i];
+            var item = {};
+            item.title = a.innerText;
+            item.url = a.href;
+            items.push(item);
+            item.key = Bee.hashCode(item.url);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var create_time = dom.byId("pubtime_baidu").innerText;
+        item.created_at = Bee.convertTime(create_time);
+
+        var source = dom.byId("source_baidu").innerText;
+        item.source = source.substring(source.indexOf("来源：") + "来源：".length).trim();
+        if (item.source.indexOf("虎扑") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + item.source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + item.source);
+            }
+        }
+
+        var content_elem = dom.byClass("artical-content-read");
+        item.content = Bee.htmlToJson(content_elem);
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+    
+</script>
+</body>
+</html>
