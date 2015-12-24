@@ -19,7 +19,9 @@
     Bee.requestNoScript();
     Bee.onListLoaded = function(dom) {
         var threadlisttableid = dom.byId("threadlisttableid");
+        Bee.log(threadlisttableid);
         var tbodys = threadlisttableid.byTags("tbody");
+        Bee.log(tbodys + " " + tbodys.length);
         var items = [];
         for (var i = 0; i < tbodys.length; i++) {
             var tbody = tbodys[i];
@@ -27,6 +29,7 @@
             if (id.indexOf("normalthread") == 0) {
                 var item = {};
                 var common = tbody.byClass("common", true);
+                Bee.log(common);
                 if (common) {
                     common.removeClass("showcontent");
                     common.removeTag("em");
