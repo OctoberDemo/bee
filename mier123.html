@@ -55,7 +55,11 @@
             return;
         }
 
-        var attach_tips = dom.byClass("attach_tips");
+        var attach_tips = dom.byClass("attach_tips", true);
+        if (attach_tips == undefined) {
+            this.passItem(item);
+            return;
+        }
         var cntDiv = attach_tips.parentNode;
         cntDiv.removeChild(attach_tips);
         item.content = Bee.htmlToJson(cntDiv, ["注册后可看大图"]);
