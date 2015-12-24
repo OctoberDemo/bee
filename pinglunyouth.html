@@ -9,17 +9,16 @@
 <script>
     Bee.setType("pinglun.youth.cn");
     Bee.setImgReferer("http://pinglun.youth.cn/");
-    Bee.addChannel("热点", "http://pinglun.youth.cn/wztt/");
-    Bee.addChannel("时事", "http://pinglun.youth.cn/shsz/");
-    Bee.addChannel("国际", "http://pinglun.youth.cn/cjkj/");
-    Bee.addChannel("财经", "http://pinglun.youth.cn/cjkd/");
-    Bee.addChannel("文娱", "http://pinglun.youth.cn/wysh/");
-    Bee.addChannel("政策", "http://pinglun.youth.cn/zc/");
-    Bee.addChannel("理论", "http://pinglun.youth.cn/ll/");
-    Bee.setRefreshTime(1000 * 60 * 60 * 4);
+    Bee.addChannel("", "评论|热点", "http://pinglun.youth.cn/wztt/");
+    Bee.addChannel("", "评论|时事", "http://pinglun.youth.cn/shsz/");
+    Bee.addChannel("国际", "评论", "http://pinglun.youth.cn/cjkj/");
+    Bee.addChannel("财经", "评论", "http://pinglun.youth.cn/cjkd/");
+    Bee.addChannel("", "评论|文化|娱乐", "http://pinglun.youth.cn/wysh/");
+    Bee.addChannel("", "评论|政策", "http://pinglun.youth.cn/zc/");
+    Bee.addChannel("", "评论|理论", "http://pinglun.youth.cn/ll/");
 
     Bee.onListLoaded = function(dom) {
-        if (Bee.getCurCategory() == "理论") {
+        if (Bee.getCurTag().indexOf("理论") >= 0) {
             var news = dom.byClasses("pl_news xline pl_ative");
             var items = [];
             for (var i = 0; i < news.length; i++) {
@@ -51,16 +50,16 @@
         var cont = dom.byClass("article");
         var content = Bee.htmlToJson(cont);
         item.content = content;
-        item.tag = "网评 时评 评论";
-        item.category = Bee.getCurCategory()
         var source = dom.byId("source_baidu").innerText;
         source = source.substring(source.indexOf("：")+1).trim();
         item.source = source;
-        if (item.source == "中国青年网" || Bee.knownSource.indexOf(item.source) < 0) {
-            item.category = Bee.getCurCategory();
-            Bee.finishExtractItem(item);
-        } else {
-            Bee.passItem(item);
+        if (item.source.indexOf("中国青年网") < 0) {
+            if (Bee.existSource(item.source)) {
+                console.log("跳过来源：" + item.source);
+                Bee.passItem(item);
+                return;
+            }
+            console.log("未知来源：" + item.source);
         }
         var create_time = dom.byId("pubtime_baidu").innerText;
         create_time = create_time.substring(create_time.indexOf("：")+1).trim();
@@ -69,6 +68,7 @@
     };
 
     Bee.start();
+
 </script>
 </body>
 </html>

@@ -8,11 +8,11 @@
 <body>
 <script>
 
-//    Bee.addChannel("", "观点", "http://news.huaxi100.com/list-228-1.html");
-//    Bee.addChannel("国内", "成都", "http://news.huaxi100.com/list-227-1.html");
-//    Bee.addChannel("国内", "四川", "http://news.huaxi100.com/list-226-1.html");
-//    Bee.addChannel("文娱", "http://news.huaxi100.com/list-248-1.html");
-//    Bee.addChannel("财经", "http://news.huaxi100.com/list-242-1.html");
+    Bee.addChannel("", "观点", "http://news.huaxi100.com/list-228-1.html");
+    Bee.addChannel("国内", "成都", "http://news.huaxi100.com/list-227-1.html");
+    Bee.addChannel("国内", "四川", "http://news.huaxi100.com/list-226-1.html");
+    Bee.addChannel("文娱", "http://news.huaxi100.com/list-248-1.html");
+    Bee.addChannel("财经", "http://news.huaxi100.com/list-242-1.html");
     Bee.addChannel("教育", "http://news.huaxi100.com/list-239-1.html");
     Bee.setType("news.huaxi100.com");
     Bee.setImgReferer("news.huaxi100.com");
@@ -36,7 +36,6 @@
                 }
                 item.url = a.href;
                 item.title = a.byClass("title").innerText;
-                console.log(item);
                 var timeString = a.byClass("down").innerHTML.split(/&nbsp;&nbsp;&nbsp;&nbsp;/)[1];
                 item.created_at = Bee.convertTime(timeString);
                 var listImg = a.byClass("list_img");
