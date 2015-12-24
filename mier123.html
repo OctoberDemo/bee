@@ -15,7 +15,7 @@
     Bee.addChannel("历史", "军事", "http://bbs.mier123.com/forum-333-1.html");
     Bee.addChannel("", "环球 杂谈", "http://bbs.mier123.com/forum-700-1.html");
     Bee.addChannel("搞笑", "", "http://bbs.mier123.com/forum-754-1.html");
-    
+
     Bee.onListLoaded = function(dom) {
         var threadlisttableid = dom.byId("threadlisttableid");
         Bee.log(threadlisttableid);
@@ -27,8 +27,8 @@
             var id = tbody.attr("id");
             if (id.indexOf("normalthread") == 0) {
                 var item = {};
+                Bee.log(tbody.innerHTML);
                 var common = tbody.byClass("common", true);
-                Bee.log(common);
                 if (common) {
                     common.removeClass("showcontent");
                     common.removeTag("em");
