@@ -28,12 +28,15 @@
             if (id.indexOf("normalthread") == 0) {
                 var item = {};
                 Bee.log(tbody.innerHTML);
-                var common = tbody.byClass("common", true);
-                if (common) {
-                    common.removeClass("showcontent");
-                    common.removeTag("em");
-                    item.title = common.byTag("a").innerText;
-                    item.url = common.byTag("a").href;
+                var node = tbody.byClass("common", true);
+                if (node == undefined) {
+                    node = tbody.byClass("new", true);
+                }
+                if (node) {
+                    node.removeClass("showcontent");
+                    node.removeTag("em");
+                    item.title = node.byTag("a").innerText;
+                    item.url = node.byTag("a").href;
                     item.source = "米谈天下";
 
                     var by = tbody.byClass("by");
@@ -42,6 +45,8 @@
 
                     items.push(item);
                 }
+
+
             }
         }
         console.log(items);
