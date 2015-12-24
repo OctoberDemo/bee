@@ -18,16 +18,13 @@
 
     Bee.onListLoaded = function(dom) {
         var threadlisttableid = dom.byId("threadlisttableid");
-        Bee.log(threadlisttableid);
         var tbodys = threadlisttableid.byTags("tbody");
-        Bee.log(tbodys + " " + tbodys.length);
         var items = [];
         for (var i = 0; i < tbodys.length; i++) {
             var tbody = tbodys[i];
             var id = tbody.attr("id");
             if (id.indexOf("normalthread") == 0) {
                 var item = {};
-                Bee.log(tbody.innerHTML);
                 var node = tbody.byClass("common", true);
                 if (node == undefined) {
                     node = tbody.byClass("new", true);
@@ -49,7 +46,6 @@
 
             }
         }
-        console.log(items);
         Bee.finishExtractList(items);
     };
 
