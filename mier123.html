@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>米谈天下蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("bbs.mier123.com");
+    Bee.setImgReferer("http://bbs.mier123.com/");
+
+    Bee.addChannel("军事", "军情观察", "http://bbs.mier123.com/forum-5-1.html");
+    Bee.addChannel("军事", "军迷谈兵", "http://bbs.mier123.com/forum-683-1.html");
+    Bee.addChannel("历史", "军事", "http://bbs.mier123.com/forum-333-1.html");
+    Bee.addChannel("", "环球 杂谈", "http://bbs.mier123.com/forum-700-1.html");
+    Bee.addChannel("搞笑", "", "http://bbs.mier123.com/forum-754-1.html");
+
+    Bee.onListLoaded = function(dom) {
+        var threadlisttableid = dom.byId("threadlisttableid");
+        var tbodys = threadlisttableid.byTags("tbody");
+        var items = [];
+        for (var i = 0; i < tbodys.length; i++) {
+            var tbody = tbodys[i];
+            var id = tbody.attr("id");
+            if (id.indexOf("normalthread") == 0) {
+                var item = {};
+                var node = tbody.byClass("common", true);
+                if (node == undefined) {
+                    node = tbody.byClass("new", true);
+                }
+                if (node) {
+                    node.removeClass("showcontent");
+                    node.removeTag("em");
+                    item.title = node.byTag("a").innerText;
+                    item.url = node.byTag("a").href;
+                    item.source = "米谈天下";
+
+                    var by = tbody.byClass("by");
+                    item.author = by.byTag("cite").innerText;
+                    item.created_at = Bee.convertTime(by.byTag("em").innerText);
+
+                    items.push(item);
+                }
+
+
+            }
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        if (item.title.indexOf("***") >= 0 || item.title.indexOf("一字千军") >= 0) {
+            Bee.passItem(item);
+            return;
+        }
+
+        var attach_tips = dom.byClass("attach_tips");
+        var cntDiv = attach_tips.parentNode;
+        cntDiv.removeChild(attach_tips);
+        item.content = Bee.htmlToJson(cntDiv, ["注册后可看大图"]);
+        var cntString = JSON.stringify(item.content);
+        if (cntString.length < 500) {
+            console.log("内容过短，跳过");
+            Bee.passItem(item);
+            return;
+        }
+
+        item.class = "tiezi";
+        Bee.finishExtractItem(item);
+    };
+
+
+    Bee.start();
+
+</script>
+</body>
+</html>

@@ -445,6 +445,7 @@ function _Bee() {
                 loadItem();
             }
         } else {
+            self.warning(item.source + "来源文章上传失败");
             if (oneByone != true) {
                 loadItem();
             }
