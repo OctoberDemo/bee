@@ -38,11 +38,11 @@
     Bee.addChannel("社会", "http://legal.gmw.cn/node_12330.htm");
     Bee.addChannel("法制", "http://legal.gmw.cn/node_9017.htm");
 
-//    Bee.addChannel("军事", "http://mil.gmw.cn/node_8986.htm");
-//    Bee.addChannel("军事", "http://mil.gmw.cn/node_8981.htm");
-//    Bee.addChannel("军事", "中国" ,"http://mil.gmw.cn/node_8984.htm");
-//    Bee.addChannel("军事", "台海" ,"http://mil.gmw.cn/node_11179.htm");
-//    Bee.addChannel("军事", "国际" ,"http://mil.gmw.cn/node_8982.htm");
+    Bee.addChannel("军事", "http://mil.gmw.cn/node_8986.htm");
+    Bee.addChannel("军事", "http://mil.gmw.cn/node_8981.htm");
+    Bee.addChannel("军事", "中国" ,"http://mil.gmw.cn/node_8984.htm");
+    Bee.addChannel("军事", "台海" ,"http://mil.gmw.cn/node_11179.htm");
+    Bee.addChannel("军事", "国际" ,"http://mil.gmw.cn/node_8982.htm");
 
     Bee.addChannel("女性", "服饰" ,"http://lady.gmw.cn/node_33669.htm");
     Bee.addChannel("女性", "时尚" ,"http://lady.gmw.cn/node_33725.htm");
@@ -103,7 +103,12 @@
         var pubTime = dom.byId("pubTime");
         item.created_at = Bee.convertTime(pubTime.innerText);
 
-        var imgs = dom.byId("contentMain").byTags("img");
+        var contentMain = dom.byId("contentMain", true);
+        if (contentMain == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var imgs = contentMain.byTags("img", true);
         for (var i = 0; i < imgs.length; i++) {
             if (imgs[i].src == "http://img.gmw.cn/pic/content_logo.png") {
                 imgs[i].parentNode.removeChild(imgs[i]);
@@ -112,7 +117,6 @@
         }
 
         item.class = "news";
-        item.tag = "人大 政协 要闻";
 
         var displaypagenum = dom.byId("displaypagenum", true);
         if (displaypagenum) {
@@ -122,7 +126,11 @@
                 urls.push(links[i].href);
             }
 
-            var contentMain = dom.byId("contentMain");
+            var contentMain = dom.byId("contentMain", true);
+            if (contentMain == null) {
+                Bee.passItem(item);
+                return;
+            }
             dom.removeId("contentLiability");
             dom.removeId("displaypagenum");
 
