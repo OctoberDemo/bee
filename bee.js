@@ -505,7 +505,7 @@ function _Bee() {
 
     this.convertTime = function(timeString) {
         var date = BeeUtils.formatTime(timeString);
-        return date.getTime() / 1000;
+        return parseInt(date.getTime() / 1000);
     };
 
     this.convertImg = function(imgNode) {
