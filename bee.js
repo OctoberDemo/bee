@@ -56,6 +56,8 @@ function _Bee() {
     var itemWebView = null;
     var subItemWebView = null;
     var noScript = false;
+    var noCss = false;
+    var noIframe = false;
 
     this.onListLoaded = null;
     this.onItemLoaded = null;
@@ -91,6 +93,14 @@ function _Bee() {
 
     this.requestNoScript = function() {
         noScript = true;
+    };
+
+    this.requestNoCss = function() {
+        noCss = true;
+    };
+
+    this.requestNoIframe = function() {
+        noIframe = true;
     };
 
     this.addChannel = function(category, tagOrUrl, url) {
@@ -325,6 +335,23 @@ function _Bee() {
                 var script = scripts[0];
                 script.parentNode.removeChild(script);
             }
+
+            if (noCss) {
+                var links = html.getElementsByTagName("link");
+                while (links.length > 0) {
+                    var link = links[0];
+                    link.parentNode.removeChild(link);
+                }
+            }
+
+            if (noIframe) {
+                var iframes = html.getElementsByTagName("iframe");
+                while (iframes.length > 0) {
+                    var iframe = iframes[0];
+                    iframe.parentNode.removeChild(iframe);
+                }
+            }
+
             var host = getHost(url);
             var as = html.getElementsByTagName("a");
             for (var i = 0; i < as.length; i++) {
