@@ -11,12 +11,45 @@
     Bee.setImgReferer("cri.cn");
     Bee.addChannel("国际", "http://gb.cri.cn/world/");
     Bee.addChannel("国际", "http://gb.cri.cn/42071/more/42148/more42148.htm");
-    Bee.addChannel("外媒看中国", "http://gb.cri.cn/42071/more/42169/more42169.htm");
+    Bee.addChannel("国际", "外媒看中国", "http://gb.cri.cn/42071/more/42169/more42169.htm");
     Bee.addChannel("国内", "http://gb.cri.cn/china/");
+    Bee.addChannel("国内", "四川", "http://sc.cri.cn/421/more/450/more450.htm");
+    Bee.addChannel("国内", "四川 要闻", "http://sc.cri.cn/421/more/445/more445.htm");
+    Bee.addChannel("国内", "四川", "http://sc.cri.cn/421/more/456/more456.htm");
+    Bee.addChannel("国内", "四川", "http://sc.cri.cn/421/more/452/more452.htm");
+    Bee.addChannel("国内", "四川 成都", "http://sc.cri.cn/421/more/454/more454.htm");
+    Bee.addChannel("国内", "四川 评论", "http://sc.cri.cn/421/more/468/more468.htm");
+    Bee.addChannel("社会", "四川", "http://sc.cri.cn/421/more/475/more475.htm");
+    Bee.addChannel("民生", "四川", "http://sc.cri.cn/421/more/477/more477.htm");
+    Bee.addChannel("国内", "陕西 热点", "http://sn.cri.cn/201/more/206/more206.htm");
+    Bee.addChannel("国内", "陕西 时政", "http://sn.cri.cn/201/more/208/more208.htm");
+    Bee.addChannel("国内", "陕西", "http://sn.cri.cn/201/more/216/more216.htm");
+    Bee.addChannel("国内", "陕西 文化", "http://sn.cri.cn/201/more/223/more223.htm");
+    Bee.addChannel("国内", "广东", "http://gd.cri.cn/1/more/16/more16.htm");
+    Bee.addChannel("国内", "广东 要闻", "http://gd.cri.cn/1/more/95/more95.htm");
+    Bee.addChannel("国内", "广东", "http://gd.cri.cn/1/more/22/more22.htm");
+    Bee.addChannel("国内", "重庆 要闻", "http://cq.cri.cn/161/more/176/more176.htm");
+    Bee.addChannel("国内", "重庆", "http://cq.cri.cn/161/more/179/more179.htm");
+    Bee.addChannel("国内", "重庆", "http://cq.cri.cn/161/more/185/more185.htm");
+    Bee.addChannel("国内", "黑龙江", "http://hlj.cri.cn/183/more/193/more193.htm");
+    Bee.addChannel("国内", "南京", "http://js.cri.cn/93/more/97/more97.htm");
+    Bee.addChannel("国内", "无锡", "http://js.cri.cn/93/more/98/more98.htm");
+    Bee.addChannel("国内", "常州", "http://js.cri.cn/93/more/100/more100.htm");
+    Bee.addChannel("国内", "苏州", "http://js.cri.cn/93/more/101/more101.htm");
+    Bee.addChannel("国内", "连云港", "http://js.cri.cn/93/more/103/more103.htm");
+    Bee.addChannel("国内", "淮安", "http://js.cri.cn/93/more/104/more104.htm");
+    Bee.addChannel("国内", "镇江", "http://js.cri.cn/93/more/107/more107.htm");
+    Bee.addChannel("国内", "泰州", "http://js.cri.cn/93/more/108/more108.htm");
 
-    Bee.setRefreshTime(1000 * 60 * 10);
+
+
+
+//    Bee.setRefreshTime(1000 * 60 * 10);
 
     Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
     Bee.onListLoaded = function(dom) {
         var items = [];
 
@@ -65,12 +98,6 @@
         item.source = source;
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
         item.class = "news";
-        if (Bee.getCurCategory() == "外媒看中国") {
-            item.category = "国际";
-            item.tag = Bee.getCurCategory();
-        } else {
-            item.category = Bee.getCurCategory();
-        }
 
         var ccontent = dom.byId("ccontent");
 
