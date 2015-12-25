@@ -27,6 +27,9 @@
         }
         var d = new Date();
         console.log(d.toLocaleString() + " | " + args);
+        if (logs.length >= 1000) {
+            logs.shift();
+        }
         logs.push(args);
         prompt("success", token);
     }
