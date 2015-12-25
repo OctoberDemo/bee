@@ -108,7 +108,7 @@
         item.class = "news";
         item.tag = "人大 政协 要闻";
 
-        var displaypagenum = dom.byId("displaypagenum");
+        var displaypagenum = dom.byId("displaypagenum", true);
         if (displaypagenum) {
             var links = displaypagenum.byTags("a");
             var urls = [];
