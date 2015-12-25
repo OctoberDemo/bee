@@ -28,7 +28,6 @@
     Bee.addChannel("体育", "综合", "http://www.jiemian.com/lists/91.html");
     Bee.addChannel("体育", "场外", "http://www.jiemian.com/lists/92.html");
     Bee.addChannel("体育", "装备", "http://www.jiemian.com/lists/93.html");
-    Bee.addChannel("体育", "速递", "http://www.jiemian.com/lists/110.html");
     Bee.addChannel("时尚", "时尚要闻", "http://www.jiemian.com/lists/42.html");
     Bee.addChannel("时尚", "潮流", "http://www.jiemian.com/lists/96.html");
     Bee.addChannel("时尚", "设计", "http://www.jiemian.com/lists/97.html");
@@ -105,13 +104,13 @@
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byClass("article-main");
+        var article = dom.byClass("article-main", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();
             return;
         }
-        var outSource = dom.byClass("article-source");
+        var outSource = dom.byClass("article-source", true);
         var sourceString = "界面";
         if (outSource) {
             sourceString = outSource.byTag("p").innerText.replace("来源：", "");
@@ -135,7 +134,7 @@
         article.removeClass("article-source");
         article.removeTag("iframe");
         var content = Bee.htmlToJson(article, addTexts, addImgs);
-        var descItem = dom.byClass("article-header").byTag("p");
+        var descItem = dom.byClass("article-header", true).byTag("p");
         if (descItem && descItem.innerText.length > 0) {
             var desc = {};
             desc.desc = descItem.innerText;

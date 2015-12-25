@@ -44,7 +44,7 @@
     Bee.onItemLoaded = function(dom, item) {
 
         setTimeout(function() {
-            var article = dom.byTag("article");
+            var article = dom.byTag("article", true);
             if (article == undefined) {
                 Bee.finishExtractItem();
                 return;

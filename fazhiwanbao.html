@@ -84,7 +84,7 @@
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byId("articleContnet");
+        var article = dom.byId("articleContnet", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();
