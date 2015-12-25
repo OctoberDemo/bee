@@ -20,7 +20,7 @@
             item.url = itemDivs[i].byTag("strong").byTag("a").href;
             item.key = Bee.hashCode(item.url);
             var image = {};
-            var img = itemDivs[i].byTag("p").byTag("img");
+            var img = itemDivs[i].byTag("p").byTag("img", true);
             if (img != null) {
                 image.src = img.src;
                 image.width = img.clientWidth;
@@ -33,7 +33,7 @@
     }
 
     Bee.onItemLoaded = function(dom, item) {
-        var src = dom.byId("p_origin");
+        var src = dom.byId("p_origin", true);
         if (src == null) {
             Bee.passItem(item);
         }

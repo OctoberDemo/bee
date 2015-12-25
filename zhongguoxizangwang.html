@@ -20,7 +20,7 @@
     Bee.setRefreshTime(60 * 60 * 1000);
     Bee.onListLoaded = function(dom) {
         var items = [];
-        var list1 = dom.byClasses("list_box_one");
+        var list1 = dom.byClasses("list_box_one", true);
         if (list1 != null) {
             for (var i = 0; i < list1.length; i++) {
                 var item = {};
@@ -39,7 +39,7 @@
                 items.push(item);
             }
         }
-        if (dom.byClass("contact list_contact") != null) {
+        if (dom.byClass("contact list_contact", true) != null) {
             var list2 = dom.byClass("contact list_contact").byClasses("txt_box");
             if (list2 != null) {
                 for (var i = 0; i < list2.length; i++) {
@@ -48,7 +48,7 @@
                     item.title = info.title;
                     item.url = info.href;
                     item.key = Bee.hashCode(item.url);
-                    if (list2[i].byClass("pic") != null) {
+                    if (list2[i].byClass("pic", true) != null) {
                         var image = list2[i].byClass("pic").byTag("img");
                         var img = {};
                         img.src = image.src;
@@ -65,7 +65,7 @@
 
     Bee.onItemLoaded = function(dom, item) {
         setTimeout(function() {
-            if (dom.byClass("info") == null) {
+            if (dom.byClass("info", true) == null) {
                 Bee.passItem(item);
                 return;
             }
