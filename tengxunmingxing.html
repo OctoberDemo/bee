@@ -20,7 +20,7 @@
             item.title = shadow.innerText;
             item.url = shadow.href;
             item.key = Bee.hashCode(item.url);
-            if (fcons[i].byTag("img") != null) {
+            if (fcons[i].byTag("img", true) != null) {
                 var image = fcons[i].byTag("img");
                 var img = {};
                 img.src = image.src;
@@ -38,7 +38,7 @@
             item.title = info.innerText;
             item.url = info.href;
             item.key = Bee.hashCode(item.url);
-            if (itemDivs[i].byClass("pic") != null) {
+            if (itemDivs[i].byClass("pic", true) != null) {
                 var image = itemDivs[i].byClass("pic").byTag("img");
                 var img = {};
                 img.src = image.src;
@@ -49,7 +49,7 @@
             items.push(item);
         }
 
-        if (dom.byClass("count") != null) {
+        if (dom.byClass("count", true) != null) {
             itemDivs = dom.byClass("count").byClasses("split");
             for (var i = 0; i < itemDivs.length; i++) {
                 item.title = itemDivs[i].byClass("title").innerText;
@@ -69,7 +69,7 @@
     }
 
     Bee.onItemLoaded = function(dom, item) {
-        if (dom.byClass("a_source") == null ) {
+        if (dom.byClass("a_source", true) == null ) {
             Bee.passItem(item);
             return;
         }
