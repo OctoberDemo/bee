@@ -79,7 +79,13 @@
             Bee.passItem(item);
             return;
         }
-        var source = dom.byId("source").innerText;
+        var sourceNode = dom.byId("source", true);
+        if (sourceNode == null || sourceNode == undefined) {
+            console.log("test:" + sourceNode);
+            Bee.passItem(item);
+            return;
+        }
+        var source = source.innerText;
         if (source.indexOf("光明") < 0) {
             if (Bee.existSource(source)) {
                 console.log(source + " 非光明网内容");
