@@ -29,7 +29,7 @@
             for (var i = 0; i < lis.length; i++) {
                 var li = lis[i];
                 var item = {};
-                var head = li.byTag("a");
+                var head = li.byTag("a", true);
                 if (head) {
                     item.url = head.href;
                     item.title = head.innerText;
@@ -45,13 +45,13 @@
     Bee.onItemDomLoaded = function(dom, item) {
 
         setTimeout(function() {
-            var article = dom.byClass("text clear");
+            var article = dom.byClass("text clear", true);
             if (article == undefined) {
                 console.log("article == undefined");
                 Bee.finishExtractItem();
                 return;
             }
-            var attrib = dom.byClass("time-source");
+            var attrib = dom.byId("pubtime_baidu");
             var sourceString = attrib.byId("media_span").byTag("span").innerText;
             if (sourceString.indexOf("搜狐娱乐") < 0) {
                 if (Bee.existSource(sourceString)) {

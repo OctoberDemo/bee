@@ -30,7 +30,7 @@
             var lis = contList.byTags("li");
             for (var i = 0; i <lis.length; i++) {
                 var item = {};
-                var a = lis[i].byTag("a");
+                var a = lis[i].byTag("a", true);
                 if (a == undefined) {
                     continue;
                 }
@@ -38,7 +38,7 @@
                 item.title = a.byClass("title").innerText;
                 var timeString = a.byClass("down").innerHTML.split(/&nbsp;&nbsp;&nbsp;&nbsp;/)[1];
                 item.created_at = Bee.convertTime(timeString);
-                var listImg = a.byClass("list_img");
+                var listImg = a.byClass("list_img", true);
                 if (listImg) {
                     item.cover_img = Bee.htmlToJson(listImg)[0].img;
                 }

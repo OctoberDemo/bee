@@ -45,7 +45,7 @@
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byClass("news_part");
+        var article = dom.byClass("news_part", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();
