@@ -9,8 +9,26 @@
 <script>
     Bee.setType("news.cjn.cn");
     Bee.setImgReferer("news.cjn.cn");
-    Bee.addChannel("", "http://news.cjn.cn/24hour/wh24/index.htm");
+
+    Bee.addChannel("国内", "武汉", "http://news.cjn.cn/24hour/wh24/index.htm");
+    Bee.addChannel("国内", "武汉", "http://news.cjn.cn/sywh/");
+    Bee.addChannel("国内", "湖北", "http://news.cjn.cn/hbxw/");
+    Bee.addChannel("国内", "评论", "http://news.cjn.cn/cjsp/ssdj/");
+    Bee.addChannel("国内", "评论", "http://news.cjn.cn/cjsp/sxzt/");
+    Bee.addChannel("国内", "评论", "http://news.cjn.cn/cjsp/gdzl/");
+    Bee.addChannel("国内", "评论", "http://news.cjn.cn/cjsp/gdzl/");
+    Bee.addChannel("民生", "评论", "http://news.cjn.cn/cjsp/msgc/");
+    Bee.addChannel("财经", "评论", "http://news.cjn.cn/cjsp/cjzb/");
+    Bee.addChannel("财经", "评论", "http://finance.cjn.cn/cjdt/");
+    Bee.addChannel("财经", "武汉", "http://finance.cjn.cn/whjjzx/");
+    Bee.addChannel("社会", "", "http://news.cjn.cn/shxw/");
+    Bee.addChannel("文化", "", "http://wenhua.cjn.cn/rd/");
+    Bee.addChannel("文化", "评论", "http://wenhua.cjn.cn/whsp/");
+
+
     Bee.setRefreshTime(1000 * 60 * 30);
+    Bee.requestNoScript();
+
     Bee.onListLoaded = function(dom) {
         var art_lis = dom.byClasses("art-li");
         var items = [];
@@ -26,13 +44,33 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
+        var sourNode = dom.byClass("sour", true);
+        var sour = "";
+        if (sourNode != undefined) {
+            sour = sourNode.innerText.trim();
+        }
+        if (sour.indexOf("来源：") >= 0 || sour.indexOf("来源:") >= 0) {
+            sour = sour.substring(3).trim();
+        }
+        if (sour == "") {
+            sour = "长江网";
+        }
+        if (sour.indexOf("长江") < 0) {
+            if (Bee.existSource(sour)) {
+                Bee.passItem(item);
+                console.log("跳过来源：" + sour);
+                return;
+            } else {
+                console.log("未知来源：" + sour);
+            }
+        }
+        item.source = sour;
+
         var pub_time = dom.byClass("pub-time").innerText;
         item.created_at = Bee.convertTime(pub_time);
-        item.source = "长江网";
         item.content = Bee.htmlToJson(dom.byClass("art-main"), ["点击查看高清原图"]);
         item.class = "news";
-        item.category = "国内";
-        item.tag = "武汉";
+        item.status = 2;
         Bee.finishExtractItem(item);
 
     };
