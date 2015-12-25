@@ -93,7 +93,6 @@
             source = source.substring(3);
         }
         item.source = source;
-        item.status = 5;
 
         var pubTime = dom.byId("pubTime");
         item.created_at = Bee.convertTime(pubTime.innerText);
@@ -127,7 +126,7 @@
             var contentMain = dom.byId("contentMain");
             contentMain.removeId("contentLiability");
             item.content = Bee.htmlToJson(contentMain);
-            Bee.finishExtractItem(item, true);
+            Bee.finishExtractItem(item);
         }
     };
 
@@ -139,7 +138,7 @@
         item.content = item.content.concat(Bee.htmlToJson(contentMain));
         var hasNext = Bee.continueSubItem(item);
         if (hasNext == false) {
-            Bee.finishExtractItem(item, true);
+            Bee.finishExtractItem(item);
         }
     };
 
