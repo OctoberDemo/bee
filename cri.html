@@ -9,6 +9,7 @@
 <script>
     Bee.setType("cri.cn");
     Bee.setImgReferer("cri.cn");
+
     Bee.addChannel("国际", "http://gb.cri.cn/world/");
     Bee.addChannel("国际", "http://gb.cri.cn/42071/more/42148/more42148.htm");
     Bee.addChannel("国际", "外媒看中国", "http://gb.cri.cn/42071/more/42169/more42169.htm");
@@ -41,8 +42,18 @@
     Bee.addChannel("国内", "镇江", "http://js.cri.cn/93/more/107/more107.htm");
     Bee.addChannel("国内", "泰州", "http://js.cri.cn/93/more/108/more108.htm");
 
+    Bee.addChannel("体育", "篮球", "http://gb.cri.cn/41280/more/41293/more41293.htm");
+    Bee.addChannel("体育", "足球", "http://gb.cri.cn/41280/more/41297/more41297.htm");
+    Bee.addChannel("体育", "综合", "http://gb.cri.cn/41280/more/41303/more41303.htm");
 
+    Bee.addChannel("汽车", "", "http://auto.cri.cn/261/more/267/more267.htm");
+    Bee.addChannel("汽车", "", "http://auto.cri.cn/261/more/275/more275.htm");
+    Bee.addChannel("汽车", "", "http://auto.cri.cn/261/more/274/more274.htm");
+    Bee.addChannel("汽车", "", "http://auto.cri.cn/261/more/276/more276.htm");
 
+    Bee.addChannel("旅游", "", "http://gb.cri.cn/48271/more/48287/more48287.htm");
+
+    Bee.addChannel("生态", "", "http://eco.cri.cn/492/more/507/more507.htm");
 
 //    Bee.setRefreshTime(1000 * 60 * 10);
 
@@ -93,6 +104,12 @@
                 return;
             } else {
                 console.log("未知来源：" + source);
+            }
+        }
+        if (item.title.length < 10) {
+            var titleNode = dom.byId("ctitle", true);
+            if (titleNode) {
+                item.title = titleNode.innerText;
             }
         }
         item.source = source;
