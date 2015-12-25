@@ -38,6 +38,7 @@
         }
         if (sour.indexOf("长江") < 0) {
             if (Bee.existSource(sour)) {
+                Bee.passItem(item);
                 console.log("跳过来源：" + sour);
                 return;
             } else {
