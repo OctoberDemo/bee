@@ -53,6 +53,19 @@
     Bee.addChannel("", "河南|经济", "http://henan.sina.com.cn/news/economy/list.shtml");
     Bee.addChannel("", "河南|金融", "http://henan.sina.com.cn/news/finance/list.shtml");
 
+    Bee.addChannel("", "四川|成都", "http://sc.sina.com.cn/news/b/list.shtml");
+    Bee.addChannel("", "四川|各地", "http://sc.sina.com.cn/news/m/list.shtml");
+    Bee.addChannel("", "四川|社会", "http://sc.sina.com.cn/news/s/list.shtml");
+    Bee.addChannel("", "四川|综合", "http://sc.sina.com.cn/news/z/list.shtml");
+    Bee.addChannel("", "四川|评论", "http://sc.sina.com.cn/news/r/list.shtml");
+    Bee.addChannel("", "四川|调查", "http://sc.sina.com.cn/news/d/list.shtml");
+    Bee.addChannel("", "四川|评论", "http://sc.sina.com.cn/news/p/list.shtml");
+    Bee.addChannel("", "四川|体育|娱乐", "http://sc.sina.com.cn/news/tiyu/list.shtml");
+    Bee.addChannel("", "四川|经济", "http://sc.sina.com.cn/news/economy/list.shtml");
+    Bee.addChannel("", "四川|金融", "http://sc.sina.com.cn/news/finance/list.shtml");
+    Bee.addChannel("", "四川|城市", "http://sc.sina.com.cn/news/c/list.shtml");
+    Bee.addChannel("", "四川|爱心", "http://sc.sina.com.cn/news/ymax/list.shtml");
+
     Bee.setType("http://www.sina.com.cn/");
     Bee.setImgReferer("http://www.sina.com.cn/");
 
@@ -98,7 +111,7 @@
         }
         var content_elem = dom.byClass("article-body main-body", true);
         if (content_elem) { } else {
-            Bee.passItem(content_elem);
+            Bee.passItem(item);
             return;
         }
         var page_elem = dom.byClass("page");
@@ -109,16 +122,17 @@
                 suburls.push(next_pages[i].href);
             }
             content_elem.removeClass("page");
-            content_elem.removeClass("article-video");
-            content_elem.removeClass("artice-pic");
+            content_elem.removeClasses("article-video");
+            content_elem.removeClasses("artice-pic");
             content_elem.removeClass("news_weixin_ercode clear tc");
             item.content = Bee.htmlToJson(content_elem);
             Bee.finishExtractSubUrls(suburls, item);
         } else {
+            content_elem.removeClasses("article-video");
+            content_elem.removeClasses("artice-pic");
             content_elem.removeClass("news_weixin_ercode clear tc");
             item.content = Bee.htmlToJson(content_elem);
             Bee.finishExtractItem(item);
-            return;
         }
     };
 
