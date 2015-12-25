@@ -44,7 +44,11 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var sour = dom.byClass("sour").innerText.trim();
+        var sourNode = dom.byClass("sour", true);
+        var sour = "";
+        if (sourNode != undefined) {
+            sour = sourNode.innerText.trim();
+        }
         if (sour.indexOf("来源：") >= 0 || sour.indexOf("来源:") >= 0) {
             sour = sour.substring(3).trim();
         }
