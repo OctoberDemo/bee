@@ -135,7 +135,7 @@ function _PeopleBee() {
             contentNode.removeClass("editor");
 
             var zdfy = dom.byClass("zdfy", true);
-            if (zdfy) {
+            if (zdfy && zdfy.byTags("a").length > 0) {
                 var urls = [];
                 var links = zdfy.byTags("a");
                 for (var i = 1; i < links.length; i++) {
