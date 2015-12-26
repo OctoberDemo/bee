@@ -89,7 +89,7 @@
     Bee.addChannel("健康", "安徽", "http://ah.people.com.cn/GB/358322/358325/index.html");
     Bee.addChannel("娱乐", "安徽", "http://ah.people.com.cn/GB/358328/index.html");
 
-
+    Bee.debug("http://ln.people.com.cn/n/2015/1222/c346197-27375085.html ");
 
 
     Bee.requestNoScript();
@@ -170,7 +170,12 @@
 
             Bee.finishExtractItem(item);
         } else {
-            var contentNode = dom.byClass("text");
+            var contentNode = dom.byClass("text", true);
+            if (contentNode == null) {
+                console.log("未知格式，跳过");
+                Bee.passItem(item)
+                return;
+            }
             item.title = contentNode.byTag("h1").innerText;
             contentNode.removeTag("h1");
 
