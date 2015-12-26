@@ -3,243 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>人民网地方蜜蜂</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="jndroid/jndroid.layout.js"></script>
+    <script src="jndroid/jndroid.widget.js"></script>
+    <script src="beeutils.js"></script>
     <script src="bee.js"></script>
+    <script src="people.bee.js"></script>
 </head>
 <body>
 <script>
-    Bee.setType("people.com.cn");
-    Bee.setImgReferer("people.com.cn");
+    PeopleBee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233115/index.html");
+    PeopleBee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233088/index.html");
+    PeopleBee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/82838/index.html");
+    PeopleBee.addChannel("时政", "北京", "http://bj.people.com.cn/GB/82837/index.html");
+    PeopleBee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233086/index.html");
+    PeopleBee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/82840/index.html");
+    PeopleBee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/14545/index.html");
+    PeopleBee.addChannel("文化", "北京", "http://bj.people.com.cn/GB/82846/index.html");
+    PeopleBee.addChannel("财经", "北京", "http://bj.people.com.cn/GB/82839/index.html");
+    PeopleBee.addChannel("科技", "北京", "http://bj.people.com.cn/GB/349239/index.html");
+    PeopleBee.addChannel("娱乐", "北京", "http://bj.people.com.cn/GB/233082/index.html");
+    PeopleBee.addChannel("旅游", "北京", "http://bj.people.com.cn/GB/233080/index.html");
+    PeopleBee.addChannel("教育", "北京", "http://bj.people.com.cn/GB/82841/index.html");
+    PeopleBee.addChannel("健康", "北京", "http://bj.people.com.cn/GB/233081/index.html");
 
-    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233115/index.html");
-    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233088/index.html");
-    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/82838/index.html");
-    Bee.addChannel("时政", "北京", "http://bj.people.com.cn/GB/82837/index.html");
-    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233086/index.html");
-    Bee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/82840/index.html");
-    Bee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/14545/index.html");
-    Bee.addChannel("文化", "北京", "http://bj.people.com.cn/GB/82846/index.html");
-    Bee.addChannel("财经", "北京", "http://bj.people.com.cn/GB/82839/index.html");
-    Bee.addChannel("科技", "北京", "http://bj.people.com.cn/GB/349239/index.html");
-    Bee.addChannel("娱乐", "北京", "http://bj.people.com.cn/GB/233082/index.html");
-    Bee.addChannel("旅游", "北京", "http://bj.people.com.cn/GB/233080/index.html");
-    Bee.addChannel("教育", "北京", "http://bj.people.com.cn/GB/82841/index.html");
-    Bee.addChannel("健康", "北京", "http://bj.people.com.cn/GB/233081/index.html");
+    PeopleBee.addChannel("国内", "河北", "http://he.people.com.cn/GB/337249/index.html");
+    PeopleBee.addChannel("时政", "河北", "http://he.people.com.cn/GB/197034/index.html");
+    PeopleBee.addChannel("经济", "河北", "http://he.people.com.cn/GB/197037/index.html");
+    PeopleBee.addChannel("社会", "河北", "http://he.people.com.cn/GB/197039/index.html");
+    PeopleBee.addChannel("法制", "河北", "http://he.people.com.cn/GB/197043/index.html");
+    PeopleBee.addChannel("教育", "河北", "http://he.people.com.cn/GB/197046/index.html");
+    PeopleBee.addChannel("国内", "河北", "http://he.people.com.cn/GB/338626/index.html");
+    PeopleBee.addChannel("国内", "河北", "http://he.people.com.cn/GB/338627/index.html");
+    PeopleBee.addChannel("国内", "河北", "http://he.people.com.cn/GB/200202/index.html");
 
-    Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/337249/index.html");
-    Bee.addChannel("时政", "河北", "http://he.people.com.cn/GB/197034/index.html");
-    Bee.addChannel("经济", "河北", "http://he.people.com.cn/GB/197037/index.html");
-    Bee.addChannel("社会", "河北", "http://he.people.com.cn/GB/197039/index.html");
-    Bee.addChannel("法制", "河北", "http://he.people.com.cn/GB/197043/index.html");
-    Bee.addChannel("教育", "河北", "http://he.people.com.cn/GB/197046/index.html");
-    Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/338626/index.html");
-    Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/338627/index.html");
-    Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/200202/index.html");
+    PeopleBee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189132/index.html");
+    PeopleBee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189130/index.html");
+    PeopleBee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189133/index.html");
+    PeopleBee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189141/index.html");
+    PeopleBee.addChannel("社会", "山西", "http://sx.people.com.cn/GB/189147/index.html");
 
-    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189132/index.html");
-    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189130/index.html");
-    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189133/index.html");
-    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189141/index.html");
-    Bee.addChannel("社会", "山西", "http://sx.people.com.cn/GB/189147/index.html");
+    PeopleBee.addChannel("国内", "内蒙古", "http://nm.people.com.cn/GB/196667/index.html");
+    PeopleBee.addChannel("国内", "内蒙古", "http://nm.people.com.cn/GB/196689/index.html");
+    PeopleBee.addChannel("时政", "内蒙古", "http://nm.people.com.cn/GB/196693/index.html");
 
-    Bee.addChannel("国内", "内蒙古", "http://nm.people.com.cn/GB/196667/index.html");
-    Bee.addChannel("国内", "内蒙古", "http://nm.people.com.cn/GB/196689/index.html");
-    Bee.addChannel("时政", "内蒙古", "http://nm.people.com.cn/GB/196693/index.html");
-
-    Bee.addChannel("国内", "辽宁", "http://ln.people.com.cn/GB/340418/index.html");
-    Bee.addChannel("国内", "辽宁", "http://ln.people.com.cn/GB/340421/index.html");
-    Bee.addChannel("国内", "辽宁", "http://ln.people.com.cn/GB/353908/index.html");
-    Bee.addChannel("国内", "辽宁", "http://ln.people.com.cn/GB/340345/index.html");
-    Bee.addChannel("社会", "辽宁", "http://ln.people.com.cn/GB/339824/index.html");
-
-    Bee.addChannel("国内", "吉林", "http://jl.people.com.cn/GB/351793/index.html");
-    Bee.addChannel("国内", "吉林", "http://jl.people.com.cn/GB/351549/index.html");
-    Bee.addChannel("国内", "吉林", "http://jl.people.com.cn/GB/351113/index.html");
-    Bee.addChannel("社会", "吉林", "http://jl.people.com.cn/GB/351118/index.html");
-    Bee.addChannel("时政", "吉林", "http://jl.people.com.cn/GB/351109/index.html");
-    Bee.addChannel("时政", "吉林", "http://jl.people.com.cn/GB/351109/index.html");
-    Bee.addChannel("民生", "吉林", "http://jl.people.com.cn/GB/351119/index.html");
-
-    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220024/index.html");
-    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220027/index.html");
-    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220027/index.html");
-    Bee.addChannel("娱乐", "黑龙江", "http://hlj.people.com.cn/GB/220036/index.html");
-    Bee.addChannel("健康", "黑龙江", "http://hlj.people.com.cn/GB/220036/index.html");
-
-    Bee.addChannel("国内", "上海", "http://sh.people.com.cn/GB/138654/index.html");
-    Bee.addChannel("时政", "上海", "http://sh.people.com.cn/GB/137168/index.html");
-    Bee.addChannel("财经", "上海", "http://sh.people.com.cn/GB/176738/index.html");
-    Bee.addChannel("社会", "上海", "http://sh.people.com.cn/GB/176737/index.html");
-    Bee.addChannel("文化", "上海", "http://sh.people.com.cn/GB/137167/index.html");
-    Bee.addChannel("教育", "上海", "http://sh.people.com.cn/GB/176739/index.html");
-    Bee.addChannel("", "上海 创意", "http://sh.people.com.cn/GB/357188/index.html");
-
-    Bee.addChannel("国内", "浙江", "http://zj.people.com.cn/GB/186929/index.html");
-    Bee.addChannel("经济", "浙江", "http://zj.people.com.cn/GB/186930/index.html");
-    Bee.addChannel("社会", "浙江", "http://zj.people.com.cn/GB/186935/index.html");
-    Bee.addChannel("文化", "浙江", "http://zj.people.com.cn/GB/186936/index.html");
-    Bee.addChannel("国内", "杭州", "http://zj.people.com.cn/GB/186938/186949/index.html");
-
-    Bee.debug("http://ln.people.com.cn/n/2015/1222/c346197-27375085.html ");
-
-
-    Bee.requestNoScript();
-    Bee.requestNoCss();
-    Bee.requestNoIframe();
-
-    Bee.onListLoaded = function(dom) {
-        var items = [];
-        var lists = dom.byClasses("list_14", true);
-        for (var i = 0; i < lists.length; i++) {
-            var links = lists[i].byTags("a");
-            getItems(links);
-        }
-        dom.removeClasses("t2_title");
-        var dot_14s = dom.byClasses("dot_14", true);
-        for (var i = 0; i < dot_14s.length; i++) {
-            var links = dot_14s[i].byTags("a");
-            getItems(links);
-        }
-        var ej_right = dom.byClass("ej_right", true);
-        if (ej_right) {
-            var uls = ej_right.byTags("ul");
-            for (var i = 0; i < uls.length; i++) {
-                var links = uls[i].byTags("a");
-                getItems(links);
-            }
-        }
-
-        Bee.finishExtractList(items);
-
-        function getItems(links) {
-            for (var i = 0; i < links.length; i++) {
-                var item = {};
-                item.title = links[i].innerText;
-                item.url = links[i].href;
-                item.key = Bee.hashCode(item.url);
-                item.class = "news";
-//                item.status = 5;
-                items.push(item);
-            }
-        }
-    };
-
-    Bee.onItemLoaded = function(dom, item) {
-        var p_title = dom.byId("p_title", true);
-        if (p_title) {
-            item.title = dom.byId("p_title").innerText;
-            item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
-
-            var source = dom.byId("p_origin").innerText;
-            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
-                source = source.substring(3);
-            }
-            if (source.indexOf("人民") < 0) {
-                if (Bee.existSource(source)) {
-                    console.log("已知来源：" + source);
-                    Bee.passItem(item);
-                    return;
-                } else {
-                    console.log("未知来源：" + source);
-                }
-            } else {
-                console.log("source:" + source);
-                source = "人民网";
-            }
-            item.source = source;
-
-            var contentNode = dom.byId("p_content");
-            contentNode.removeClass("otitle");
-            item.content = Bee.htmlToJson(contentNode);
-
-            var zdfy = dom.byClass("zdfy", true);
-            if (zdfy) {
-                console.log("需要分页，后续采集");
-                Bee.passItem(item);
-                return;
-            }
-
-            Bee.finishExtractItem(item);
-        } else {
-            var contentNode = dom.byClass("text", true);
-            if (contentNode == null) {
-                console.log("未知格式，跳过");
-                Bee.passItem(item)
-                return;
-            }
-            item.title = contentNode.byTag("h1").innerText;
-            contentNode.removeTag("h1");
-
-            var pubText = contentNode.byTag("h2").innerText;
-            var time = pubText.substring(pubText.lastIndexOf(" "));
-            item.created_at = Bee.convertTime(time);
-
-            var source = pubText.substring(0, pubText.length - time.length).trim();
-            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
-                source = source.substring(3);
-            }
-            if (source.indexOf("人民") < 0) {
-                if (Bee.existSource(source)) {
-                    console.log("已知来源：" + source);
-                    Bee.passItem(item);
-                    return;
-                } else {
-                    console.log("未知来源：" + source);
-                }
-            }
-            item.source = source;
-            contentNode.removeTag("h2");
-            contentNode.removeClass("editor");
-
-            var zdfy = dom.byClass("zdfy", true);
-            if (zdfy) {
-                var urls = [];
-                var links = zdfy.byTags("a");
-                for (var i = 1; i < links.length; i++) {
-                    urls.push(links[i].href);
-                }
-                contentNode.removeClass("zdfy");
-                item.content = Bee.htmlToJson(contentNode);
-                Bee.finishExtractSubUrls(urls, item);
-            } else {
-                item.content = Bee.htmlToJson(contentNode);
-                Bee.finishExtractItem(item);
-            }
-
-        }
-    };
-
-    Bee.onSubItemDomLoaded = function(dom, item) {
-        var p_title = dom.byId("p_title", true);
-        if (p_title) {
-
-        } else {
-            var contentNode = dom.byClass("text");
-            contentNode.removeTag("h1");
-            contentNode.removeTag("h2");
-            contentNode.removeClass("zdfy");
-            contentNode.removeClass("editor");
-            item.content = item.content.concat(Bee.htmlToJson(contentNode));
-            var hasNext = Bee.continueSubItem(item);
-            if (hasNext == false) {
-                var deleteImgs = [];
-                for (var i = 0; i < item.content.length; i++) {
-                    if (item.content[i].img) {
-                        var img = item.content[i].img;
-                        if (img.width < 100 || img.height < 100) {
-                            deleteImgs.push(item.content[i]);
-                        }
-                    }
-                }
-                for (var i = 0; i < deleteImgs.length; i++) {
-                    item.content.remove(deleteImgs[i]);
-                }
-
-                Bee.finishExtractItem(item);
-            }
-        }
-    };
-
-    Bee.start();
+    PeopleBee.start();
 </script>
 </body>
 </html>
