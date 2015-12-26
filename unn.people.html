@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>人民网地方蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("people.com.cn");
+    Bee.setImgReferer("people.com.cn");
+
+    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233115/index.html");
+    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233088/index.html");
+    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/82838/index.html");
+    Bee.addChannel("时政", "北京", "http://bj.people.com.cn/GB/82837/index.html");
+    Bee.addChannel("国内", "北京", "http://bj.people.com.cn/GB/233086/index.html");
+    Bee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/82840/index.html");
+    Bee.addChannel("社会", "北京", "http://bj.people.com.cn/GB/14545/index.html");
+    Bee.addChannel("文化", "北京", "http://bj.people.com.cn/GB/82846/index.html");
+    Bee.addChannel("财经", "北京", "http://bj.people.com.cn/GB/82839/index.html");
+    Bee.addChannel("科技", "北京", "http://bj.people.com.cn/GB/349239/index.html");
+    Bee.addChannel("娱乐", "北京", "http://bj.people.com.cn/GB/233082/index.html");
+    Bee.addChannel("旅游", "北京", "http://bj.people.com.cn/GB/233080/index.html");
+    Bee.addChannel("教育", "北京", "http://bj.people.com.cn/GB/82841/index.html");
+    Bee.addChannel("健康", "北京", "http://bj.people.com.cn/GB/233081/index.html");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var lists = dom.byClasses("list_14");
+        for (var i = 0; i < lists.length; i++) {
+            var links = lists[i].byTags("a");
+            getItems(links);
+        }
+
+        Bee.finishExtractList(items);
+
+        function getItems(links) {
+            for (var i = 0; i < links.length; i++) {
+                var item = {};
+                item.title = links[i].innerText;
+                item.url = links[i].href;
+                item.key = Bee.hashCode(item.url);
+                item.class = "news";
+                items.push(item);
+            }
+        }
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var p_title = dom.byId("p_title", true);
+        if (p_title) {
+            item.title = dom.byId("p_title").innerText;
+            item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
+
+            var source = dom.byId("p_origin").innerText;
+            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+                source = source.substring(3);
+            }
+            if (source.indexOf("人民") < 0) {
+                if (Bee.existSource(source)) {
+                    console.log("已知来源：" + source);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + source);
+                }
+            }
+            item.source = source;
+
+            var contentNode = dom.byId("p_content");
+            contentNode.removeClass("otitle");
+            item.content = Bee.htmlToJson(contentNode);
+
+            var zdfy = dom.byClass("zdfy", true);
+            if (zdfy) {
+                console.log("需要分页，后续采集");
+                Bee.passItem(item);
+                return;
+            }
+
+            Bee.finishExtractItem(item);
+        } else {
+            var contentNode = dom.byClass("text");
+            item.title = contentNode.byTag("h1").innerText;
+            contentNode.removeTag("h1");
+
+            var pubText = contentNode.byTag("h2").innerText;
+            var time = pubText.substring(pubText.lastIndexOf(" "));
+            item.created_at = Bee.convertTime(time);
+
+            var source = pubText.substring(0, pubText.length - time.length).trim();
+            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+                source = source.substring(3);
+            }
+            if (source.indexOf("人民") < 0) {
+                if (Bee.existSource(source)) {
+                    console.log("已知来源：" + source);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + source);
+                }
+            }
+            item.source = source;
+            contentNode.removeTag("h2");
+            contentNode.removeClass("editor");
+
+            var zdfy = dom.byClass("zdfy", true);
+            if (zdfy) {
+                var urls = [];
+                var links = zdfy.byTags("a");
+                for (var i = 1; i < links.length; i++) {
+                    urls.push(links[i].href);
+                }
+                contentNode.removeClass("zdfy");
+                item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractSubUrls(urls, item);
+            } else {
+                item.content = Bee.htmlToJson(contentNode);
+            }
+
+        }
+    };
+
+    Bee.onSubItemDomLoaded = function(dom, item) {
+        var p_title = dom.byId("p_title", true);
+        if (p_title) {
+
+        } else {
+            var contentNode = dom.byClass("text");
+            contentNode.removeTag("h1");
+            contentNode.removeTag("h2");
+            contentNode.removeClass("zdfy");
+            contentNode.removeClass("editor");
+            item.content = item.content.concat(Bee.htmlToJson(contentNode));
+            var hasNext = Bee.continueSubItem(item);
+            if (hasNext == false) {
+                var deleteImgs = [];
+                for (var i = 0; i < item.content.length; i++) {
+                    if (item.content[i].img) {
+                        var img = item.content[i].img;
+                        if (img.width < 100 || img.height < 100) {
+                            deleteImgs.push(item.content[i]);
+                        }
+                    }
+                }
+                for (var i = 0; i < deleteImgs.length; i++) {
+                    item.content.remove(deleteImgs[i]);
+                }
+
+                Bee.finishExtractItem(item);
+            }
+        }
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>
