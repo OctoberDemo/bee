@@ -46,7 +46,7 @@ function _PeopleBee() {
                 item.url = links[i].href;
                 item.key = self.hashCode(item.url);
                 item.class = "news";
-//                item.status = 5;
+                //item.status = 5;
                 items.push(item);
             }
         }
@@ -81,16 +81,22 @@ function _PeopleBee() {
 
             var contentNode = dom.byId("p_content");
             contentNode.removeClass("otitle");
-            item.content = self.htmlToJson(contentNode);
 
             var zdfy = dom.byClass("zdfy", true);
             if (zdfy) {
-                console.log("需要分页，后续采集");
-                self.passItem(item);
-                return;
+                var urls = [];
+                var links = zdfy.byTags("a");
+                for (var i = 1; i < links.length; i++) {
+                    urls.push(links[i].href);
+                }
+                contentNode.removeClass("zdfy");
+                contentNode.removeTags("table");
+                item.content = self.htmlToJson(contentNode);
+                self.finishExtractSubUrls(urls, item);
+            } else {
+                item.content = self.htmlToJson(contentNode);
+                self.finishExtractItem(item);
             }
-
-            self.finishExtractItem(item);
         } else {
             var contentNode = dom.byClass("text", true);
             if (contentNode == null) {
@@ -149,7 +155,15 @@ function _PeopleBee() {
     this.onSubItemDomLoaded = function(dom, item) {
         var p_title = dom.byId("p_title", true);
         if (p_title) {
-
+            var contentNode = dom.byId("p_content");
+            contentNode.removeClass("otitle");
+            contentNode.removeClass("zdfy");
+            contentNode.removeTags("table");
+            item.content = item.content.concat(self.htmlToJson(contentNode));
+            var hasNext = self.continueSubItem(item);
+            if (hasNext == false) {
+                self.finishExtractItem(item);
+            }
         } else {
             var contentNode = dom.byClass("text", true);
             if (contentNode == null) {
