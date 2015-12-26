@@ -35,6 +35,12 @@
     Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/338627/index.html");
     Bee.addChannel("国内", "河北", "http://he.people.com.cn/GB/200202/index.html");
 
+    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189132/index.html");
+    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189130/index.html");
+    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189133/index.html");
+    Bee.addChannel("国内", "山西", "http://sx.people.com.cn/GB/189141/index.html");
+    Bee.addChannel("社会", "山西", "http://sx.people.com.cn/GB/189147/index.html");
+
     Bee.requestNoScript();
     Bee.requestNoCss();
     Bee.requestNoIframe();
@@ -139,6 +145,7 @@
                 Bee.finishExtractSubUrls(urls, item);
             } else {
                 item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractItem(item);
             }
 
         }
