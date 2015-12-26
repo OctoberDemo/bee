@@ -228,7 +228,7 @@ function _Bee() {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             if (item.key == undefined) {
-                item.key = Bee.hashCode(item.url);
+                item.key = self.hashCode(item.url);
             }
             if (debug == false && item.key && BeeUtils.exist(type, item.key)) {
                 continue;
@@ -424,7 +424,7 @@ function _Bee() {
             for (var i = 0; i < item.content.length; i++) {
                 var img = item.content[i].img;
                 if (img && img.src.indexOf("fw.mb.lenovomm.com") < 0) {
-                    item.content[i].img.src = Bee.makeImgJumpUrl(img.src, imgReferer);
+                    item.content[i].img.src = self.makeImgJumpUrl(img.src, imgReferer);
                 }
             }
         }
@@ -439,10 +439,10 @@ function _Bee() {
         }
 
         if (item.category == undefined) {
-            item.category = Bee.getCurCategory();
+            item.category = self.getCurCategory();
         }
 
-        var tag = Bee.getCurTag();
+        var tag = self.getCurTag();
         if (tag != "") {
             if (item.tag == undefined) {
                 item.tag = tag;
@@ -511,7 +511,7 @@ function _Bee() {
     this.convertImg = function(imgNode) {
         var img = {};
         if (imgReferer) {
-            img.src = Bee.makeImgJumpUrl(imgNode.src, imgReferer);
+            img.src = self.makeImgJumpUrl(imgNode.src, imgReferer);
         } else {
             img.src = imgNode.src;
         }
