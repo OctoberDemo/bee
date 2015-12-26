@@ -59,6 +59,39 @@
     Bee.addChannel("时政", "吉林", "http://jl.people.com.cn/GB/351109/index.html");
     Bee.addChannel("民生", "吉林", "http://jl.people.com.cn/GB/351119/index.html");
 
+    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220024/index.html");
+    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220027/index.html");
+    Bee.addChannel("国内", "黑龙江", "http://hlj.people.com.cn/GB/220027/index.html");
+    Bee.addChannel("娱乐", "黑龙江", "http://hlj.people.com.cn/GB/220036/index.html");
+    Bee.addChannel("健康", "黑龙江", "http://hlj.people.com.cn/GB/220036/index.html");
+
+    Bee.addChannel("国内", "上海", "http://sh.people.com.cn/GB/138654/index.html");
+    Bee.addChannel("时政", "上海", "http://sh.people.com.cn/GB/137168/index.html");
+    Bee.addChannel("财经", "上海", "http://sh.people.com.cn/GB/176738/index.html");
+    Bee.addChannel("社会", "上海", "http://sh.people.com.cn/GB/176737/index.html");
+    Bee.addChannel("文化", "上海", "http://sh.people.com.cn/GB/137167/index.html");
+    Bee.addChannel("教育", "上海", "http://sh.people.com.cn/GB/176739/index.html");
+    Bee.addChannel("", "上海 创意", "http://sh.people.com.cn/GB/357188/index.html");
+
+    Bee.addChannel("国内", "浙江", "http://zj.people.com.cn/GB/186929/index.html");
+    Bee.addChannel("经济", "浙江", "http://zj.people.com.cn/GB/186930/index.html");
+    Bee.addChannel("社会", "浙江", "http://zj.people.com.cn/GB/186935/index.html");
+    Bee.addChannel("文化", "浙江", "http://zj.people.com.cn/GB/186936/index.html");
+    Bee.addChannel("国内", "杭州", "http://zj.people.com.cn/GB/186938/186949/index.html");
+
+    Bee.addChannel("国内", "安徽", "http://ah.people.com.cn/GB/358073/358266/index.html");
+    Bee.addChannel("国内", "安徽", "http://ah.people.com.cn/GB/358073/358428/index.html");
+    Bee.addChannel("国内", "安徽", "http://ah.people.com.cn/GB/227130/358314/index.html");
+    Bee.addChannel("财经", "安徽", "http://ah.people.com.cn/GB/358333/index.html");
+    Bee.addChannel("历史", "安徽", "http://ah.people.com.cn/GB/358322/358327/index.html");
+    Bee.addChannel("教育", "安徽", "http://ah.people.com.cn/GB/358322/358324/index.html");
+    Bee.addChannel("体育", "安徽", "http://ah.people.com.cn/GB/358322/358323/index.html");
+    Bee.addChannel("健康", "安徽", "http://ah.people.com.cn/GB/358322/358325/index.html");
+    Bee.addChannel("娱乐", "安徽", "http://ah.people.com.cn/GB/358328/index.html");
+
+
+
+
     Bee.requestNoScript();
     Bee.requestNoCss();
     Bee.requestNoIframe();
@@ -75,6 +108,14 @@
         for (var i = 0; i < dot_14s.length; i++) {
             var links = dot_14s[i].byTags("a");
             getItems(links);
+        }
+        var ej_right = dom.byClass("ej_right", true);
+        if (ej_right) {
+            var uls = ej_right.byTags("ul");
+            for (var i = 0; i < uls.length; i++) {
+                var links = uls[i].byTags("a");
+                getItems(links);
+            }
         }
 
         Bee.finishExtractList(items);
@@ -110,6 +151,9 @@
                 } else {
                     console.log("未知来源：" + source);
                 }
+            } else {
+                console.log("source:" + source);
+                source = "人民网";
             }
             item.source = source;
 
