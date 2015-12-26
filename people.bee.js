@@ -69,6 +69,9 @@ function _PeopleBee() {
                 console.log("source:" + source);
                 source = "人民网";
             }
+            if (source == "") {
+                source = "人民网";
+            }
             item.source = source;
 
             var contentNode = dom.byId("p_content");
@@ -90,7 +93,13 @@ function _PeopleBee() {
                 self.passItem(item)
                 return;
             }
-            item.title = contentNode.byTag("h1").innerText;
+            var titleNode = contentNode.byTag("h1", true);
+            if (titleNode == null) {
+                console.log("未知格式，跳过");
+                self.passItem(item)
+                return;
+            }
+            item.title = titleNode.innerText;
             contentNode.removeTag("h1");
 
             var pubText = contentNode.byTag("h2").innerText;
