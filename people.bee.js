@@ -12,9 +12,9 @@ function _PeopleBee() {
 
     this.onListLoaded = function(dom) {
         var items = [];
-        var lists = dom.byClasses("list_14", true);
-        for (var i = 0; i < lists.length; i++) {
-            var links = lists[i].byTags("a");
+        var list_14s = dom.byClasses("list_14", true);
+        for (var i = 0; i < list_14s.length; i++) {
+            var links = list_14s[i].byTags("a");
             getItems(links);
         }
         dom.removeClasses("t2_title");
@@ -30,6 +30,11 @@ function _PeopleBee() {
                 var links = uls[i].byTags("a");
                 getItems(links);
             }
+        }
+        var hg_4s = dom.byClasses("hg_4");
+        for (var i = 0; i < hg_4s.length; i++) {
+            var links = hg_4s[i].byTags("a");
+            getItems(links);
         }
 
         self.finishExtractList(items);
@@ -146,7 +151,11 @@ function _PeopleBee() {
         if (p_title) {
 
         } else {
-            var contentNode = dom.byClass("text");
+            var contentNode = dom.byClass("text", true);
+            if (contentNode == null) {
+                self.passItem(item);
+                return;
+            }
             contentNode.removeTag("h1");
             contentNode.removeTag("h2");
             contentNode.removeClass("zdfy");
