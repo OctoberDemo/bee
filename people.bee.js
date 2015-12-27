@@ -50,6 +50,8 @@ function _PeopleBee() {
 
         getItemsFromList("dot_14");
         getItemsFromList("list_14");
+        getItemsFromList("list14");
+        getItemsFromList("list");
         getItemsFromList("hg_4");
         getItemsFromList("list06");
 
@@ -65,13 +67,15 @@ function _PeopleBee() {
 
         function getItems(links) {
             for (var i = 0; i < links.length; i++) {
-                var item = {};
-                item.title = links[i].innerText;
-                item.url = links[i].href;
-                item.key = self.hashCode(item.url);
-                item.class = "news";
-                //item.status = 5;
-                items.push(item);
+                if (links[i].innerText != "") {
+                    var item = {};
+                    item.title = links[i].innerText;
+                    item.url = links[i].href;
+                    item.key = self.hashCode(item.url);
+                    item.class = "news";
+                    //item.status = 5;
+                    items.push(item);
+                }
             }
         }
     };
