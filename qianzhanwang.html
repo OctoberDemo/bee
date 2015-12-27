@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>前瞻网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://www.qianzhan.com/");
+    Bee.addChannel("明星", "http://ent.qianzhan.com/list/323.html");
+    Bee.addChannel("电影", "http://ent.qianzhan.com/list/324.html");
+    Bee.addChannel("电视剧", "http://ent.qianzhan.com/list/325.html");
+    Bee.addChannel("音乐", "http://ent.qianzhan.com/list/326.html");
+    Bee.addChannel("综艺", "http://ent.qianzhan.com/list/327.html");
+    Bee.addChannel("盘点", "http://ent.qianzhan.com/list/462.html");
+    Bee.addChannel("新闻", "http://mil.qianzhan.com/list/499.html");
+    Bee.addChannel("历史", "http://mil.qianzhan.com/list/502.html");
+    Bee.addChannel("竞技", "http://mil.qianzhan.com/list/503.html");
+    Bee.addChannel("探索", "http://mil.qianzhan.com/list/500.html");
+    Bee.addChannel("大咖", "http://mil.qianzhan.com/list/501.html");
+    Bee.addChannel("音乐", "http://ent.qianzhan.com/list/326.html");
+    Bee.addChannel("综艺", "http://ent.qianzhan.com/list/327.html");
+    Bee.addChannel("盘点", "http://ent.qianzhan.com/list/462.html");
+    Bee.addChannel("财经", "http://www.qianzhan.com/indynews/list/255.html");
+    Bee.addChannel("财经", "http://www.qianzhan.com/indynews/list/214.html");
+    Bee.addChannel("财经", "http://www.qianzhan.com/indynews/list/242.html");
+    Bee.addChannel("财经", "http://www.qianzhan.com/indynews/list/150.html");
+    Bee.addChannel("金融", "http://www.qianzhan.com/indynews/list/257.html");
+    Bee.addChannel("地产", "http://www.qianzhan.com/indynews/list/258.html");
+    Bee.addChannel("汽车", "http://www.qianzhan.com/indynews/list/282.html");
+    Bee.addChannel("互联网", "http://www.qianzhan.com/indynews/list/283.html");
+    Bee.addChannel("游戏", "http://www.qianzhan.com/game/list/381.html");
+    Bee.addChannel("游戏", "http://www.qianzhan.com/game/list/384.html");
+
+    Bee.setImgReferer("www.qianzhan.com");
+    Bee.requestNoScript();
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var itemDivs = dom.byId("ulNewsList").byTags("li", true);
+        if (itemDivs) {
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                if (itemDivs[i].byClass("graphic_tit", true) != null) {
+                    item.title = itemDivs[i].byClass("graphic_tit").byTag("a").innerText;
+                    item.url = itemDivs[i].byClass("graphic_tit").byTag("a").href;
+                    item.key = Bee.hashCode(item.url);
+                    items.push(item);
+                } else if (itemDivs[i].byTag("dt", true) != null) {
+                    item.title = itemDivs[i].byTag("dt").byTag("a").innerText;
+                    item.url = itemDivs[i].byTag("dt").byTag("a").href;
+                    item.key = Bee.hashCode(item.url);
+                    items.push(item);
+                }
+
+            }
+            Bee.finishExtractList(items);
+        }
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var srcTag = dom.byId("source_baidu", true);
+        if (srcTag) {
+            var src = srcTag.innerText;
+            src.replace("来源：","");
+            if (src.search("头条前瞻") >= 0) {
+                Bee.passItem(item);
+                return;
+            }
+            if (src.search("前瞻网") < 0) {
+                if (Bee.existSource(src)) {
+                    console.log("跳过来源：" + src);
+                    Bee.passItem(item);
+                    return;
+                } else {
+                    console.log("未知来源：" + src);
+                }
+            }
+            item.source = src;
+            item.status = 3;
+            item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
+            item.category = Bee.getCurCategory();
+            if (dom.byClass("art_con clearfix", true) != null) {
+                var img = dom.byClass("art_con clearfix").byTag("img", true);
+                if (img != null) {
+                    var image = {};
+                    image.width = img.clientWidth;
+                    image.height = img.clientHeight;
+                    image.src = img.src;
+                    item.cover_img = image;
+                }
+                var content = Bee.htmlToJson(dom.byClass("art_con clearfix"));
+                item.content = JSON.stringify(content);
+            } else if (dom.byId("div_content", true) != null) {
+                var img = dom.byId("div_content", true).byTag("img", true);
+                if (img != null) {
+                    var image = {};
+                    image.width = img.clientWidth;
+                    image.height = img.clientHeight;
+                    image.src = img.src;
+                    item.cover_img = image;
+                }
+                var content = Bee.htmlToJson(dom.byId("div_content"));
+                item.content = JSON.stringify(content);
+            }
+            Bee.finishExtractItem(item);
+        } else {
+            Bee.passItem(item);
+        }
+    }
+    Bee.start();
+</script>
+</body>
+</html>

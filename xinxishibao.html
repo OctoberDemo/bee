@@ -19,25 +19,33 @@
         var items = [];
         var itemDivs = dom.byClasses("l_w b-bor h_10");
         for (var i = 0; i < itemDivs.length; i++) {
-            var src = itemDivs[i].byClass("fl w460 thr_txt").byTag("h4").innerText;
-            if (src.search("信息时报") > 0) {
-                var item = {};
-                item.url = itemDivs[i].byTag("a").href;
-                item.title = itemDivs[i].byClass("fl w460 thr_txt").byTag("h2").innerText;
-                item.source = "信息时报";
-                item.key = Bee.hashCode(item.url);
-                var img = itemDivs[i].byClass("fr w160").byTag("img");
-                if (img != null) {
-                    var image = {};
-                    image.width = img.clientWidth;
-                    image.height = img.clientHeight;
-                    image.src = img.src;
-                    item.cover_img = image;
-                }
-                items.push(item);
-            } else {
-                console.log("来源不正确");
+            var src = itemDivs[i].byClass("fl w460 thr_txt").byTag("h4").byTags("a", true);
+            if (src == null) {
+                continue;
             }
+            var s = src[1].innerText;
+            if (s.search("信息时报") < 0) {
+                if (Bee.existSource(s)) {
+                    console.log("跳过来源：" + s);
+                    continue;
+                } else {
+                    console.log("未知来源：" + s);
+                }
+            }
+            var item = {};
+            item.url = itemDivs[i].byTag("a").href;
+            item.title = itemDivs[i].byClass("fl w460 thr_txt").byTag("h2").innerText;
+            item.source = s;
+            item.key = Bee.hashCode(item.url);
+            var img = itemDivs[i].byClass("fr w160").byTag("img");
+            if (img != null) {
+                var image = {};
+                image.width = img.clientWidth;
+                image.height = img.clientHeight;
+                image.src = img.src;
+                item.cover_img = image;
+            }
+            items.push(item);
         }
         Bee.finishExtractList(items);
     }
