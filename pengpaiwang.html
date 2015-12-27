@@ -51,7 +51,7 @@
             Bee.finishExtractItem();
             return;
         }
-        if (dom.byTag("video")) {
+        if (dom.byTag("video", true)) {
             Bee.passItem(item);
             return;
         }

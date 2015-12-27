@@ -44,6 +44,11 @@
     Bee.addChannel("娱乐", "http://www.fawan.com/ent/");
     Bee.addChannel("体育", "http://www.fawan.com/sports/");
     Bee.addChannel("教育", "http://www.fawan.com/Article/Youthszk/");
+    Bee.addChannel("时尚", "http://www.fawan.com/fashion/");
+    Bee.addChannel("健康", "http://www.fawan.com/health/");
+    Bee.addChannel("数码", "http://www.fawan.com/Article/fw3czk/");
+    Bee.addChannel("汽车", "http://auto.fawan.com/");
+    Bee.addChannel("地产", "http://house.fawan.com/");
     Bee.setType("www.fawan.com");
     Bee.setImgReferer("www.fawan.com");
     Bee.setRefreshTime(1000 * 60 * 10);
@@ -53,17 +58,19 @@
         var divs = contList.byTags("div");
         var lis = getLis(divs, 660, 189);
 
-
         for (var i = 0; i < lis.length; i++) {
             var item = {};
             var title = getLis(lis[i].byTags("div"), 660, 46)[0];
             if (title) {
                 item.url = title.byTag("a").href;
                 item.title = title.byTag("a").innerText;
+            } else {
+                continue;
             }
             var sourceItem = getLis(lis[i].byTags("div"), 495, 30)[0];
             if (sourceItem) {
                 var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
+                sourceString = sourceString.replace(/^\s+|\s+$/g,"");
                 if (sourceString.indexOf("法制晚报") < 0) {
                     if (Bee.existSource(sourceString)) {
                         console.log("跳过来源：" + sourceString);
@@ -76,6 +83,15 @@
                 item.source = sourceString;
                 var timeString = sourceItem.byTags("div")[1].innerText;
                 item.created_at = Bee.convertTime(timeString);
+            } else {
+                continue;
+            }
+            var des = getLis(lis[i].byTags("div"), 524, 87)[0];
+            if (des && des.innerText.length > 0) {
+                item.content = [];
+                var desc = {};
+                desc.desc =  des.innerText;
+                item.content.add(desc);
             }
             items.push(item);
         }
@@ -91,9 +107,12 @@
             return;
         }
         var content = Bee.htmlToJson(article, addText);
-        item.content = content;
+        if (item.content == undefined) {
+            item.content = content;
+        } else {
+            item.content = item.content.concat(content);
+        }
         item.class = "";
-
         Bee.finishExtractItem(item);
     };
 

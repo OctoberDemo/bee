@@ -8,60 +8,137 @@
 <body>
 <script>
 
-    Bee.addChannel("国内", "http://roll.cnr.cn/china/");
-    Bee.addChannel("财经", "http://roll.cnr.cn/finance/");
+    Bee.addChannel("", "全球新闻联播", "http://china.cnr.cn/NewsFeeds/");
+    Bee.addChannel("", "新闻和报纸摘要", "http://china.cnr.cn/news/");
+    Bee.addChannel("", "新闻纵横", "http://china.cnr.cn/yaowen/");
+    Bee.addChannel("", "央广新闻", "http://china.cnr.cn/ygxw/");
+    Bee.addChannel("", "新闻晚高峰", "http://china.cnr.cn/xwwgf/");
+    Bee.addChannel("", "夜新闻", "http://china.cnr.cn/yxw/");
+    Bee.addChannel("", "全球华语广播网", "http://china.cnr.cn/qqhygbw/");
+    Bee.addChannel("国内", "地方新闻", "http://news.cnr.cn/native/city/");
+    Bee.addChannel("国内", "", "http://news.cnr.cn/native/gd/");
+    Bee.addChannel("国内", "要闻", "http://news.cnr.cn/native/news/");
+    Bee.addChannel("国内", "热点评论", "http://news.cnr.cn/native/comment/");
+    Bee.addChannel("", "时评", "http://news.cnr.cn/comment/sp/");
+    Bee.addChannel("", "观察", "http://news.cnr.cn/comment/latest/");
+    Bee.addChannel("", "理论前沿", "http://news.cnr.cn/theory/qy/");
+    Bee.addChannel("", "理论观察", "http://news.cnr.cn/theory/gc/");
+    Bee.addChannel("国际", "即时要闻", "http://news.cnr.cn/gjxw/gnews/");
+    Bee.addChannel("财经", "天下财经", "http://finance.cnr.cn/txcj/");
+    Bee.addChannel("财经", "交易实况", "http://finance.cnr.cn/jysk/");
+    Bee.addChannel("财经", "天下公司", "http://finance.cnr.cn/gs/");
+    Bee.addChannel("财经", "评论", "http://finance.cnr.cn/jjpl/");
+    Bee.addChannel("财经", "315", "http://finance.cnr.cn/315/gz/");
+    Bee.addChannel("财经", "要闻", "http://finance.cnr.cn/2014jingji/yw/");
+    Bee.addChannel("财经", "财经滚动", "http://finance.cnr.cn/gundong/");
+    Bee.addChannel("财经", "今日推荐", "http://finance.cnr.cn/jrtj/");
+    Bee.addChannel("科技", "推荐阅读", "http://tech.cnr.cn/techtj/");
+    Bee.addChannel("科技", "滚动新闻", "http://tech.cnr.cn/techgd/");
+    Bee.addChannel("科技", "数码", "http://tech.cnr.cn/digi/");
+    Bee.addChannel("科技", "IT业界", "http://tech.cnr.cn/techit/");
+    Bee.addChannel("科技", "互联网", "http://tech.cnr.cn/techhlw/");
+    Bee.addChannel("科技", "前沿", "http://tech.cnr.cn/techqyqs/");
+    Bee.addChannel("科技", "手机", "http://tech.cnr.cn/techtx/");
+    Bee.addChannel("科技", "移动互联", "http://tech.cnr.cn/techyd/");
+    Bee.addChannel("教育", "出国留学", "http://edu.cnr.cn/lxcg/");
+    Bee.addChannel("教育", "考试高考", "http://edu.cnr.cn/kaos/");
+    Bee.addChannel("教育", "外语", "http://edu.cnr.cn/wy/");
+    Bee.addChannel("教育", "中小学", "http://edu.cnr.cn/zxx/");
+    Bee.addChannel("教育", "职场", "http://edu.cnr.cn/zhic/");
+    Bee.addChannel("教育", "校园", "http://edu.cnr.cn/xy/");
+    Bee.addChannel("教育", "滚动新闻", "http://edu.cnr.cn/list/");
+    Bee.addChannel("娱乐", "要闻", "http://ent.cnr.cn/yaowen/");
+    Bee.addChannel("娱乐", "星八卦", "http://ent.cnr.cn/top/");
+    Bee.addChannel("娱乐", "原创", "http://ent.cnr.cn/yc/");
+    Bee.addChannel("娱乐", "电影", "http://ent.cnr.cn/movie/");
+    Bee.addChannel("娱乐", "电视", "http://ent.cnr.cn/tv/");
+    Bee.addChannel("娱乐", "影评", "http://ent.cnr.cn/cinecism/");
+    Bee.addChannel("娱乐", "音乐", "http://ent.cnr.cn/music/");
+    Bee.addChannel("体育", "滚动新闻", "http://sports.cnr.cn/sportsnews/");
+    Bee.addChannel("体育", "NBA", "http://sports.cnr.cn/basket_ball/NBAnews/");
+    Bee.addChannel("体育", "CBA", "http://sports.cnr.cn/basket_ball/CBAnews/");
+    Bee.addChannel("体育", "篮球热点", "http://sports.cnr.cn/basket_ball/basketballhot/");
+    Bee.addChannel("体育", "国足", "http://sports.cnr.cn/internal/China/");
+    Bee.addChannel("体育", "中超", "http://sports.cnr.cn/internal/csl/");
+    Bee.addChannel("体育", "亚冠", "http://sports.cnr.cn/internal/afc/");
+    Bee.addChannel("体育", "国足热点", "http://sports.cnr.cn/internal/news/");
+    Bee.addChannel("体育", "英超", "http://sports.cnr.cn/international/England/");
+    Bee.addChannel("体育", "西甲", "http://sports.cnr.cn/international/spanish/");
+    Bee.addChannel("体育", "意甲", "http://sports.cnr.cn/international/italy/");
+    Bee.addChannel("体育", "国际足球热点", "http://sports.cnr.cn/international/news/");
+    Bee.addChannel("体育", "网球", "http://sports.cnr.cn/synthesize/tennis/");
+    Bee.addChannel("体育", "乒羽", "http://sports.cnr.cn/synthesize/pb/");
+    Bee.addChannel("体育", "田径", "http://sports.cnr.cn/synthesize/athletics/");
+    Bee.addChannel("体育", "综合热点", "http://sports.cnr.cn/synthesize/news/");
+    Bee.addChannel("体育", "体坛花絮", "http://sports.cnr.cn/gossipcnr/");
+    Bee.addChannel("体育", "体育产业", "http://sports.cnr.cn/Industry/");
+    Bee.addChannel("", "公益资讯", "http://gongyi.cnr.cn/news/");
+    Bee.addChannel("", "明星公益", "http://gongyi.cnr.cn/star/");
+    Bee.addChannel("", "公益故事", "http://gongyi.cnr.cn/story/");
+    Bee.addChannel("", "公益观点", "http://gongyi.cnr.cn/point/");
+    Bee.addChannel("健康", "滚动新闻", "http://health.cnr.cn/jkgdxw/");
+    Bee.addChannel("健康", "今日要闻", "http://health.cnr.cn/jkjryw/");
+    Bee.addChannel("健康", "健康问答", "http://health.cnr.cn/jkxywy/jkwd/");
+    Bee.addChannel("健康", "用药须知", "http://health.cnr.cn/jkxywy/yyxz/");
+    Bee.addChannel("健康", "心灵鸡汤", "http://health.cnr.cn/xljt/xwpx/");
+    Bee.addChannel("健康", "老年心情", "http://health.cnr.cn/xljt/lnbj/");
+    Bee.addChannel("健康", "政策", "http://health.cnr.cn/zc/");
+    Bee.addChannel("健康", "曝光台", "http://health.cnr.cn/jkbgt/");
+    Bee.addChannel("健康", "义诊", "http://health.cnr.cn/yz/");
+    Bee.addChannel("健康", "前沿", "http://health.cnr.cn/qy/");
+    Bee.addChannel("", "三农", "http://country.cnr.cn/tjxw/");
+    Bee.addChannel("", "三农焦点", "http://country.cnr.cn/focus/");
+    Bee.addChannel("", "三农时评", "http://country.cnr.cn/snsp/");
+    Bee.addChannel("", "市场透视", "http://country.cnr.cn/market/");
+
     Bee.setType("www.cnr.cn");
     Bee.setImgReferer("www.cnr.cn");
     Bee.setRefreshTime(1000 * 60 * 5);
-    Bee.onListLoaded = function(dom) {
-        setTimeout(function() {
-            var items = [];
-            var contList = dom.byClass("wh740 left lh24 f14");
-            var lis = contList.byTags("li");
-            for (var i = 0; i < lis.length; i++) {
-                var item = {};
-                var a = lis[i].byClass("ml15 ds f14 wh580").byTag("a");
-                item.url = a.href;
-                item.title = a.innerText;
-                item.key = Bee.hashCode(item.url);
-                items.push(item);
-            }
-            console.log(items);
-            Bee.finishExtractList(items);
-        }, 500);
+    Bee.onListDomLoaded = function (dom) {
+        var items = [];
+        var contList = dom.byClass("wh690 left");
+        var lis = contList.byTags("li");
+        for (var i = 0; i < lis.length; i++) {
+            var item = {};
+            var a = lis[i].byClass("left ml20").byTag("a");
+            item.url = a.href;
+            item.title = a.innerText;
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
 
-        setTimeout(function() {
-            var article = dom.byClass("TRS_Editor");
-            if (article == undefined) {
-                console.log("article == undefined");
-                Bee.finishExtractItem();
-                return;
-            }
-            var attrib = dom.byClass("lh30 left f14 yahei");
-            if (attrib == undefined) {
+        var article = dom.byClass("TRS_Editor", true);
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
+        var attrib = dom.byClass("lh30 left f14 yahei", true);
+        if (attrib == undefined) {
+            Bee.passItem(item);
+            return;
+        }
+        var sourceString = attrib.byTag("a").innerText;
+        if (sourceString.indexOf("央广网") < 0) {
+            if (Bee.existSource(sourceString)) {
+                console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
                 return;
-            }
-            var sourceString = attrib.byTag("a").innerText;
-            console.log(sourceString);
-            if (sourceString.indexOf("央广") >= 0) {
-                item.source = sourceString;
             } else {
-                Bee.passItem(item);
-                return;
+                console.log("未知来源：" + sourceString);
             }
-            var timeString = attrib.innerText.split(" ")[0] + " " + attrib.innerText.split(" ")[1];
-            console.log(sourceString + "  " + timeString);
-            item.created_at = Bee.convertTime(timeString);
-            var content = Bee.htmlToJson(article);
-            item.content = content;
-            item.class = "";
+        }
+        item.source = sourceString;
+        var timeString = attrib.innerText.split(" ")[0] + " " + attrib.innerText.split(" ")[1];
+        item.created_at = Bee.convertTime(timeString);
+        var content = Bee.htmlToJson(article, ["拨打热线电话即可将您手中的新闻线索第 一时间反馈"]);
+        item.content = content;
+        item.class = "";
 
-            Bee.finishExtractItem(item);
-        }, 1000);
+        Bee.finishExtractItem(item);
     };
 
     Bee.start();
