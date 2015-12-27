@@ -17,6 +17,38 @@
     Bee.addChannel("国际", "http://world.gmw.cn/node_4485.htm");
     Bee.addChannel("国际", "http://world.gmw.cn/node_24177.htm");
     Bee.addChannel("国际", "http://world.gmw.cn/node_22316.htm");
+    Bee.addChannel("国内", "http://news.gmw.cn/node_4108.htm");
+    Bee.addChannel("国内", "http://news.gmw.cn/node_4108_2.htm");
+    Bee.addChannel("时政", "http://news.gmw.cn/node_23548.htm");
+    Bee.addChannel("国际", "http://news.gmw.cn/node_23547.htm");
+    Bee.addChannel("军事", "http://news.gmw.cn/node_23546.htm");
+    Bee.addChannel("财经", "http://news.gmw.cn/node_23545.htm");
+    Bee.addChannel("社会", "http://news.gmw.cn/node_23708.htm");
+    Bee.addChannel("教育", "http://edu.gmw.cn/node_10810.htm");
+    Bee.addChannel("理论", "http://theory.gmw.cn/node_10133.htm");
+    Bee.addChannel("理论", "http://theory.gmw.cn/node_47530.htm");
+    Bee.addChannel("文化", "http://culture.gmw.cn/node_10570.htm");
+    Bee.addChannel("文化", "http://culture.gmw.cn/node_10576.htm");
+    Bee.addChannel("财经", "http://economy.gmw.cn/node_59269.htm");
+    Bee.addChannel("财经", "金融", "http://finance.gmw.cn/node_42534.htm");
+    Bee.addChannel("生活", "http://life.gmw.cn/node_9268.htm");
+    Bee.addChannel("生活", "http://life.gmw.cn/node_9682.htm");
+    Bee.addChannel("社会", "http://life.gmw.cn/node_9178.htm");
+    Bee.addChannel("法制", "http://legal.gmw.cn/node_9020.htm");
+    Bee.addChannel("社会", "http://legal.gmw.cn/node_12330.htm");
+    Bee.addChannel("法制", "http://legal.gmw.cn/node_9017.htm");
+
+    Bee.addChannel("军事", "http://mil.gmw.cn/node_8986.htm");
+    Bee.addChannel("军事", "http://mil.gmw.cn/node_8981.htm");
+    Bee.addChannel("军事", "中国" ,"http://mil.gmw.cn/node_8984.htm");
+    Bee.addChannel("军事", "台海" ,"http://mil.gmw.cn/node_11179.htm");
+    Bee.addChannel("军事", "国际" ,"http://mil.gmw.cn/node_8982.htm");
+
+    Bee.addChannel("女性", "服饰" ,"http://lady.gmw.cn/node_33669.htm");
+    Bee.addChannel("女性", "时尚" ,"http://lady.gmw.cn/node_33725.htm");
+    Bee.addChannel("女性","http://lady.gmw.cn/node_41429.htm");
+
+    Bee.addChannel("娱乐","http://e.gmw.cn/node_10798.htm");
 
     Bee.onListLoaded = function(dom) {
         var news_list = dom.byClass("channelLeftPart");
@@ -43,15 +75,25 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        if (dom.title == "页面没有找到") {
+        if (dom.title == "页面没有找到" || dom.title.indexOf("出错") >= 0) {
             Bee.passItem(item);
             return;
         }
-        var source = dom.byId("source").innerText;
-        if (source.indexOf("光明") < 0) {
-            console.log(source + " 非光明网内容");
+        var sourceNode = dom.byId("source", true);
+        if (sourceNode == null || sourceNode == undefined) {
+            console.log("test:" + sourceNode);
             Bee.passItem(item);
             return;
+        }
+        var source = sourceNode.innerText;
+        if (source.indexOf("光明") < 0) {
+            if (Bee.existSource(source)) {
+                console.log(source + " 非光明网内容");
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + source);
+            }
         }
         if (source.indexOf("来源") == 0) {
             source = source.substring(3);
@@ -61,7 +103,12 @@
         var pubTime = dom.byId("pubTime");
         item.created_at = Bee.convertTime(pubTime.innerText);
 
-        var imgs = dom.byId("contentMain").byTags("img");
+        var contentMain = dom.byId("contentMain", true);
+        if (contentMain == null) {
+            Bee.passItem(item);
+            return;
+        }
+        var imgs = contentMain.byTags("img", true);
         for (var i = 0; i < imgs.length; i++) {
             if (imgs[i].src == "http://img.gmw.cn/pic/content_logo.png") {
                 imgs[i].parentNode.removeChild(imgs[i]);
@@ -69,13 +116,44 @@
             }
         }
 
-        var contentMain = dom.byId("contentMain");
-        item.content = Bee.htmlToJson(contentMain);
-
         item.class = "news";
-        item.tag = "人大 政协 要闻";
 
-        Bee.finishExtractItem(item);
+        var displaypagenum = dom.byId("displaypagenum", true);
+        if (displaypagenum) {
+            var links = displaypagenum.byTags("a");
+            var urls = [];
+            for (var i = 0; i < links.length - 2; i++) {
+                urls.push(links[i].href);
+            }
+
+            var contentMain = dom.byId("contentMain", true);
+            if (contentMain == null) {
+                Bee.passItem(item);
+                return;
+            }
+            dom.removeId("contentLiability");
+            dom.removeId("displaypagenum");
+
+            item.content = Bee.htmlToJson(contentMain);
+            Bee.finishExtractSubUrls(urls, item);
+        } else {
+            var contentMain = dom.byId("contentMain");
+            contentMain.removeId("contentLiability");
+            item.content = Bee.htmlToJson(contentMain);
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        var contentMain = dom.byId("contentMain");
+        dom.removeId("contentLiability");
+        dom.removeId("displaypagenum");
+
+        item.content = item.content.concat(Bee.htmlToJson(contentMain));
+        var hasNext = Bee.continueSubItem(item);
+        if (hasNext == false) {
+            Bee.finishExtractItem(item);
+        }
     };
 
     Bee.start();

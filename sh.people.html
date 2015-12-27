@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>人民网江浙沪蜜蜂</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="jndroid/jndroid.layout.js"></script>
+    <script src="jndroid/jndroid.widget.js"></script>
+    <script src="beeutils.js"></script>
+    <script src="bee.js"></script>
+    <script src="people.bee.js"></script>
+</head>
+<body>
+<script>
+    PeopleBee.addChannel("国内", "上海", "http://sh.people.com.cn/GB/138654/index.html");
+    PeopleBee.addChannel("时政", "上海", "http://sh.people.com.cn/GB/137168/index.html");
+    PeopleBee.addChannel("财经", "上海", "http://sh.people.com.cn/GB/176738/index.html");
+    PeopleBee.addChannel("社会", "上海", "http://sh.people.com.cn/GB/176737/index.html");
+    PeopleBee.addChannel("文化", "上海", "http://sh.people.com.cn/GB/137167/index.html");
+    PeopleBee.addChannel("教育", "上海", "http://sh.people.com.cn/GB/176739/index.html");
+    PeopleBee.addChannel("", "上海 创意", "http://sh.people.com.cn/GB/357188/index.html");
+
+    PeopleBee.addChannel("国内", "浙江", "http://zj.people.com.cn/GB/186929/index.html");
+    PeopleBee.addChannel("经济", "浙江", "http://zj.people.com.cn/GB/186930/index.html");
+    PeopleBee.addChannel("社会", "浙江", "http://zj.people.com.cn/GB/186935/index.html");
+    PeopleBee.addChannel("文化", "浙江", "http://zj.people.com.cn/GB/186936/index.html");
+    PeopleBee.addChannel("国内", "杭州", "http://zj.people.com.cn/GB/186938/186949/index.html");
+
+    PeopleBee.start();
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>国际在线理财蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("money.cri.cn");
+    Bee.setImgReferer("cri.cn");
+
+    Bee.addChannel("理财", "http://money.cri.cn/303/more/325/more325.htm");
+    Bee.addChannel("理财", "股市", "http://money.cri.cn/221/more/248/more248.htm");
+    Bee.addChannel("理财", "基金", "http://money.cri.cn/221/more/250/more250.htm");
+    Bee.addChannel("理财", "保险", "http://money.cri.cn/221/more/252/more252.htm");
+    Bee.addChannel("理财", "信托", "http://money.cri.cn/221/more/258/more258.htm");
+    Bee.addChannel("理财", "贵金属", "http://money.cri.cn/221/more/256/more256.htm");
+    Bee.addChannel("理财", "消费", "http://money.cri.cn/221/more/244/more244.htm");
+
+
+//    Bee.setRefreshTime(1000 * 60 * 10);
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var articleList = dom.byClass("articleList");
+        getItems(articleList.byTags("a"));
+
+        function getItems(as) {
+            for (var i = 0; i < as.length; i++) {
+                var item = {};
+                item.title = as[i].innerText;
+                item.url = as[i].href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+
+        var source = dom.byClass("source").innerText.trim();
+        if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+            source = source.substring(3);
+        }
+        if (source.indexOf("国际在线") < 0) {
+            if (Bee.existSource(source)) {
+                console.log("跳过来源：" + source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + source);
+            }
+        }
+        item.source = source;
+        item.title = dom.byClass("title").innerText;
+        item.created_at = Bee.convertTime(dom.byClass("date").innerText);
+        item.class = "news";
+
+        var ccontent = dom.byId("ccontent");
+
+
+        var center = ccontent.byTag("center", true);
+        if (center) {
+            ccontent.removeTag("center");
+            item.content = Bee.htmlToJson(ccontent);
+            var as = center.byTags("a");
+            var subUrls = [];
+            for (var i = 0; i < as.length; i++) {
+                subUrls.push(as[i].href);
+            }
+            Bee.finishExtractSubUrls(subUrls, item);
+        } else {
+            item.content = Bee.htmlToJson(ccontent);
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        var ccontent = dom.byId("ccontent");
+        ccontent.removeTag("center");
+        var content = Bee.htmlToJson(ccontent);
+        for (var i = 0; i < content.length; i++) {
+            item.content.push(content[i]);
+        }
+        var result = Bee.continueSubItem(item);
+        if (result == false) {
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

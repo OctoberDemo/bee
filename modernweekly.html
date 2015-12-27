@@ -105,7 +105,7 @@
             sourceStr = "周末画报";
         }
         if (sourceStr != "周末画报" && sourceStr != "modernweekly") {
-            if (Bee.isKnownSource(sourceStr)) {
+            if (Bee.existSource(sourceStr)) {
                 console.log("跳过来源：" + sourceStr);
                 Bee.passItem();
                 return;
