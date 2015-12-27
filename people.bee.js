@@ -12,17 +12,9 @@ function _PeopleBee() {
 
     this.onListLoaded = function(dom) {
         var items = [];
-        var list_14s = dom.byClasses("list_14", true);
-        for (var i = 0; i < list_14s.length; i++) {
-            var links = list_14s[i].byTags("a");
-            getItems(links);
-        }
+
         dom.removeClasses("t2_title");
-        var dot_14s = dom.byClasses("dot_14", true);
-        for (var i = 0; i < dot_14s.length; i++) {
-            var links = dot_14s[i].byTags("a");
-            getItems(links);
-        }
+
         var ej_right = dom.byClass("ej_right", true);
         if (ej_right) {
             var uls = ej_right.byTags("ul");
@@ -31,13 +23,21 @@ function _PeopleBee() {
                 getItems(links);
             }
         }
-        var hg_4s = dom.byClasses("hg_4");
-        for (var i = 0; i < hg_4s.length; i++) {
-            var links = hg_4s[i].byTags("a");
-            getItems(links);
-        }
+
+        getItemsFromList("dot_14");
+        getItemsFromList("list_14");
+        getItemsFromList("hg_4");
+        getItemsFromList("list06");
 
         self.finishExtractList(items);
+
+        function getItemsFromList(listclass) {
+            var lists = dom.byClasses(listclass, true);
+            for (var i = 0; i < lists.length; i++) {
+                var links = lists[i].byTags("a");
+                getItems(links);
+            }
+        }
 
         function getItems(links) {
             for (var i = 0; i < links.length; i++) {
