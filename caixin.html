@@ -123,10 +123,12 @@
         var sourceLink = artInfo.byTag("a");
         var source = sourceLink.innerText.trim();
         if (source != "财新网" && source != "《财新周刊》" && source != "观点网") {
-            if (Bee.isKnownSource(source)) {
+            if (Bee.existSource(source)) {
                 console.log("跳过来源：" + source);
                 Bee.passItem(item);
                 return;
+            } else {
+                console.log("未知来源：" + source);
             }
         }
         item.source = source;
