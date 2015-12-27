@@ -39,6 +39,14 @@ function _PeopleBee() {
                 getItems(links);
             }
         }
+        var d2_left = dom.byClass("d2_left", true);
+        if (d2_left) {
+            var uls = d2_left.byTags("ul");
+            for (var i = 0; i < uls.length; i++) {
+                var links = uls[i].byTags("a");
+                getItems(links);
+            }
+        }
 
         getItemsFromList("dot_14");
         getItemsFromList("list_14");
