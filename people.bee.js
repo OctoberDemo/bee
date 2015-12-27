@@ -23,6 +23,22 @@ function _PeopleBee() {
                 getItems(links);
             }
         }
+        var newslist = dom.byClass("newslist", true);
+        if (newslist) {
+            var uls = newslist.byTags("ul");
+            for (var i = 0; i < uls.length; i++) {
+                var links = uls[i].byTags("a");
+                getItems(links);
+            }
+        }
+        var one_5 = dom.byClass("one_5", true);
+        if (one_5) {
+            var uls = one_5.byTags("ul");
+            for (var i = 0; i < uls.length; i++) {
+                var links = uls[i].byTags("a");
+                getItems(links);
+            }
+        }
 
         getItemsFromList("dot_14");
         getItemsFromList("list_14");
