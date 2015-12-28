@@ -47,7 +47,6 @@ function _ChinaFinanceBee() {
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
                 item.created_at = Bee.convertTime(time);
-                item.status = 3;
                 if (dom.byId("content", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("content"));
                     item.content = JSON.stringify(content);

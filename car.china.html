@@ -65,7 +65,6 @@
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
                 item.created_at = Bee.convertTime(time);
-                item.status = 3;
                 if (dom.byClass("art_nr", true) != null) {
                     var content = Bee.htmlToJson(dom.byClass("art_nr", true));
                     item.content = JSON.stringify(content);
