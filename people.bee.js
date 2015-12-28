@@ -1,16 +1,13 @@
 var PeopleBee = new _PeopleBee();
 function _PeopleBee() {
-    _Bee.apply(this);
 
-    var self = this;
+    Bee.setType("people.com.cn");
+    Bee.setImgReferer("people.com.cn");
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
 
-    this.setType("people.com.cn");
-    this.setImgReferer("people.com.cn");
-    this.requestNoScript();
-    this.requestNoCss();
-    this.requestNoIframe();
-
-    this.onListLoaded = function(dom) {
+    Bee.onListLoaded = function(dom) {
         var items = [];
 
         dom.removeClasses("t2_title");
@@ -55,7 +52,8 @@ function _PeopleBee() {
         getItemsFromList("hg_4");
         getItemsFromList("list06");
 
-        self.finishExtractList(items);
+        console.log("共得到列表数据" + items.length + "条");
+        Bee.finishExtractList(items);
 
         function getItemsFromList(listclass) {
             var lists = dom.byClasses(listclass, true);
@@ -71,7 +69,7 @@ function _PeopleBee() {
                     var item = {};
                     item.title = links[i].innerText;
                     item.url = links[i].href;
-                    item.key = self.hashCode(item.url);
+                    item.key = Bee.hashCode(item.url);
                     item.class = "news";
                     //item.status = 5;
                     items.push(item);
@@ -80,20 +78,20 @@ function _PeopleBee() {
         }
     };
 
-    this.onItemLoaded = function(dom, item) {
+    Bee.onItemLoaded = function(dom, item) {
         var p_title = dom.byId("p_title", true);
         if (p_title) {
             item.title = dom.byId("p_title").innerText;
-            item.created_at = self.convertTime(dom.byId("p_publishtime").innerText);
+            item.created_at = Bee.convertTime(dom.byId("p_publishtime").innerText);
 
             var source = dom.byId("p_origin").innerText;
             if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
                 source = source.substring(3);
             }
             if (source.indexOf("人民") < 0) {
-                if (self.existSource(source)) {
+                if (Bee.existSource(source)) {
                     console.log("已知来源：" + source);
-                    self.passItem(item);
+                    Bee.passItem(item);
                     return;
                 } else {
                     console.log("未知来源：" + source);
@@ -119,23 +117,23 @@ function _PeopleBee() {
                 }
                 contentNode.removeClass("zdfy");
                 contentNode.removeTags("table");
-                item.content = self.htmlToJson(contentNode);
-                self.finishExtractSubUrls(urls, item);
+                item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractSubUrls(urls, item);
             } else {
-                item.content = self.htmlToJson(contentNode);
-                self.finishExtractItem(item);
+                item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractItem(item);
             }
         } else {
             var contentNode = dom.byClass("text", true);
             if (contentNode == null) {
                 console.log("未知格式，跳过");
-                self.passItem(item)
+                Bee.passItem(item)
                 return;
             }
             var titleNode = contentNode.byTag("h1", true);
             if (titleNode == null) {
                 console.log("未知格式，跳过");
-                self.passItem(item)
+                Bee.passItem(item)
                 return;
             }
             item.title = titleNode.innerText;
@@ -143,16 +141,16 @@ function _PeopleBee() {
 
             var pubText = contentNode.byTag("h2").innerText;
             var time = pubText.substring(pubText.lastIndexOf(" "));
-            item.created_at = self.convertTime(time);
+            item.created_at = Bee.convertTime(time);
 
             var source = pubText.substring(0, pubText.length - time.length).trim();
             if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
                 source = source.substring(3);
             }
             if (source.indexOf("人民") < 0) {
-                if (self.existSource(source)) {
+                if (Bee.existSource(source)) {
                     console.log("已知来源：" + source);
-                    self.passItem(item);
+                    Bee.passItem(item);
                     return;
                 } else {
                     console.log("未知来源：" + source);
@@ -170,40 +168,40 @@ function _PeopleBee() {
                     urls.push(links[i].href);
                 }
                 contentNode.removeClass("zdfy");
-                item.content = self.htmlToJson(contentNode);
-                self.finishExtractSubUrls(urls, item);
+                item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractSubUrls(urls, item);
             } else {
-                item.content = self.htmlToJson(contentNode);
-                self.finishExtractItem(item);
+                item.content = Bee.htmlToJson(contentNode);
+                Bee.finishExtractItem(item);
             }
 
         }
     };
 
-    this.onSubItemDomLoaded = function(dom, item) {
+    Bee.onSubItemDomLoaded = function(dom, item) {
         var p_title = dom.byId("p_title", true);
         if (p_title) {
             var contentNode = dom.byId("p_content");
             contentNode.removeClass("otitle");
             contentNode.removeClass("zdfy");
             contentNode.removeTags("table");
-            item.content = item.content.concat(self.htmlToJson(contentNode));
-            var hasNext = self.continueSubItem(item);
+            item.content = item.content.concat(Bee.htmlToJson(contentNode));
+            var hasNext = Bee.continueSubItem(item);
             if (hasNext == false) {
-                self.finishExtractItem(item);
+                Bee.finishExtractItem(item);
             }
         } else {
             var contentNode = dom.byClass("text", true);
             if (contentNode == null) {
-                self.passItem(item);
+                Bee.passItem(item);
                 return;
             }
             contentNode.removeTag("h1");
             contentNode.removeTag("h2");
             contentNode.removeClass("zdfy");
             contentNode.removeClass("editor");
-            item.content = item.content.concat(self.htmlToJson(contentNode));
-            var hasNext = self.continueSubItem(item);
+            item.content = item.content.concat(Bee.htmlToJson(contentNode));
+            var hasNext = Bee.continueSubItem(item);
             if (hasNext == false) {
                 var deleteImgs = [];
                 for (var i = 0; i < item.content.length; i++) {
@@ -218,8 +216,17 @@ function _PeopleBee() {
                     item.content.remove(deleteImgs[i]);
                 }
 
-                self.finishExtractItem(item);
+                Bee.finishExtractItem(item);
             }
         }
     };
+
+
+    this.addChannel = function(category, tag, url) {
+        Bee.addChannel(category, tag, url);
+    };
+
+    this.start = function() {
+        Bee.start();
+    }
 }
