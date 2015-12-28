@@ -221,7 +221,7 @@ function _Bee() {
         if (parentWin) {
             parentWin.postMessage("finish", "*");
         }
-        window.close();
+        //window.close();
     }
 
     this.finishExtractList = function(items) {
@@ -566,11 +566,10 @@ function _Bee() {
     var beeJsTotal = 0;
     var beeJsCount = 0;
 
-
-    includeJs("/bee/jndroid/jndroid.core.js");
-    includeJs("/bee/jndroid/jndroid.layout.js");
-    includeJs("/bee/jndroid/jndroid.widget.js");
-    includeJs("/bee/beeutils.js");
+    includeJs("jndroid/jndroid.core.js");
+    includeJs("jndroid/jndroid.layout.js");
+    includeJs("jndroid/jndroid.widget.js");
+    includeJs("beeutils.js");
 
     function includeJs(path) {
         beeJsTotal++;
