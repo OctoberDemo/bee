@@ -52,7 +52,7 @@ var SinaLocalBee = (function () {
             Bee.passItem(item);
             return;
         }
-        var page_elem = dom.byClass("page");
+        var page_elem = dom.byClass("page", true);
         if (page_elem) {
             var suburls = [];
             var next_pages = page_elem.byTags("a");
@@ -102,10 +102,16 @@ var SinaLocalBee = (function () {
 
     function refineItemContent(content_json) {
         for (var i = 0; i < content_json.length; ++i) {
-            if (content_json[i].p && (content_json[i].p.indexOf("热点新闻：") >= 0 || content_json[i].p.indexOf("延伸阅读：") >=0))
-                break;
+            if (content_json[i].p) {
+                var ignoreKeywords = ['热点新闻：', '相关报道：', '延伸阅读：'];
+                for (var j = 0; j < ignoreKeywords.length; ++j) {
+                    if (content_json[i].p.indexOf(ignoreKeywords[j]) >= 0) {
+                        return content_json.slice(0, i);
+                    }
+                }
+            }
         }
-        return content_json.slice(0, i);
+        return content_json;
     }
 
     return {
