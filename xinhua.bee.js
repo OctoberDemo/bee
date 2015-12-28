@@ -31,7 +31,9 @@ function _XinhuaBee() {
                         image.src = listImg.src;
                         image.height = listImg.clientHeight;
                         image.width = listImg.clientWidth;
-                        item.cover_img = image;
+                        if (image.height != "0px" && image.width != "0px") {
+                            item.cover_img = image;
+                        }
                     }
                     var des = lis[i].byClass("summary", true);
                     if (des && des.innerText.length > 0) {
@@ -74,9 +76,7 @@ function _XinhuaBee() {
         } else {
             sourceString = attrib.byClass("sourceText").innerText;
         }
-        if (sourceString.indexOf("新华") >= 0) {
-            sourceString = "新华网";
-        } else {
+        if (sourceString.indexOf("新华") < 0) {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
