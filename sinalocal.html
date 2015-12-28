@@ -91,7 +91,10 @@
         }
         time_elem = time_elem.byTag("span");
         var time_string = time_elem.innerText.trim();
-        time_string = time_string.split(/\s/g)[1] + ":00" + " " + time_string.split(/\s/g)[0];
+        var date_string = time_string.split(/\s/g)[0];
+        var clock_string = time_string.split(/\s/g)[1];
+        new Date(date_string.split('-')[0], date_string.split('-')[0], date_string.split('-')[0],)
+        console.log(time_string);
         item.created_at = Bee.convertTime(time_string);
 
         var source_elem = time_elem.nextSibling.firstChild;
@@ -149,8 +152,8 @@
             Bee.finishExtractItem(item);
         }
     };
-
-    Bee.start();
+    Bee.debug("http://henan.sina.com.cn/news/z/2015-12-24/detail-ifxmxxsr3584878.shtml")
+//    Bee.start();
 </script>
 </body>
 </html>
