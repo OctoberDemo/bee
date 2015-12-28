@@ -9,6 +9,9 @@
 <script>
 
     Bee.addChannel("", "时事", "http://www.thepaper.cn/channel_25950");
+    Bee.addChannel("财经", "", "http://www.thepaper.cn/channel_25951");
+    Bee.addChannel("", "思想", "http://www.thepaper.cn/channel_25952");
+    Bee.addChannel("", "生活", "http://www.thepaper.cn/channel_25953");
     Bee.setType("www.thepaper.cn");
     Bee.setImgReferer("www.thepaper.cn");
     Bee.setRefreshTime(1000 * 60 * 10);
@@ -85,7 +88,8 @@
             item.content = content;
         }
         item.class = "";
-        Bee.finishExtractItem(item);
+        item.status = 5
+        Bee.finishExtractItem(item, true);
     };
 
     Bee.start();
