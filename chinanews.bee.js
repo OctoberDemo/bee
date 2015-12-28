@@ -72,10 +72,12 @@ function _ChinanewsBee() {
             var left_ph = con.byClass("left_ph");
             while (left_ph != null) {
                 item.content = item.content.concat(Bee.htmlToJson(left_ph, [], [], imgConverter));
-                var left_pt = con.byClass("left_pt");
-                item.content = item.content.concat(Bee.htmlToJson(left_pt, [], [], imgConverter));
                 left_ph.parentNode.removeChild(left_ph);
-                left_pt.parentNode.removeChild(left_pt);
+                var left_pt = con.byClass("left_pt", true);
+                if (left_pt) {
+                    item.content = item.content.concat(Bee.htmlToJson(left_pt, [], [], imgConverter));
+                    left_pt.parentNode.removeChild(left_pt);
+                }
                 left_ph = con.byClass("left_ph");
             }
 
