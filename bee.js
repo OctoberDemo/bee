@@ -567,10 +567,10 @@ function _Bee() {
     var beeJsCount = 0;
 
 
-    includeJs("jndroid/jndroid.core.js");
-    includeJs("jndroid/jndroid.layout.js");
-    includeJs("jndroid/jndroid.widget.js");
-    includeJs("beeutils.js");
+    includeJs("/bee/jndroid/jndroid.core.js");
+    includeJs("/bee/jndroid/jndroid.layout.js");
+    includeJs("/bee/jndroid/jndroid.widget.js");
+    includeJs("/bee/beeutils.js");
 
     function includeJs(path) {
         beeJsTotal++;
