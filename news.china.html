@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中国网新闻频道</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://news.china.com.cn/");
+    Bee.addChannel("新闻", "独家", "http://news.china.com.cn/node_7065221.htm");
+    Bee.addChannel("新闻", "要闻", "http://news.china.com.cn/node_7115409.htm");
+    Bee.addChannel("新闻", "时政要闻", "http://news.china.com.cn/politics/node_7184914.htm");
+    Bee.addChannel("新闻", "国际最新", "http://news.china.com.cn/world/node_7208703.htm");
+    Bee.addChannel("新闻", "国际独家", "http://news.china.com.cn/world/node_7208704.htm");
+    Bee.addChannel("新闻", "社会", "http://shehui.china.com.cn/index.htm");
+    Bee.setImgReferer("http://news.china.com.cn/");
+    Bee.setRefreshTime(60 * 60 * 1000);
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        if (dom.byClass("Headlines", true) != null) {
+            var itemDivs = dom.byTags("li");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                if (itemDivs[i].byTag("a", true) != null) {
+                    item.title = itemDivs[i].byTag("a").innerText;
+                    item.url = itemDivs[i].byTag("a").href;
+                    item.key = Bee.hashCode(item.url);
+                    items.push(item);
+                }
+            }
+        } else if (dom.byClass("c_list", true) != null) {
+            var itemDivs = dom.byTags("li");
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                var className = "c_title fl";
+                item.title = itemDivs[i].byClass(className).byTag("a").innerText;
+                item.url = itemDivs[i].byClass(className).byTag("a").href;
+                item.key = Bee.hashCode(item.url);
+                items.push(item);
+            }
+        }
+        Bee.finishExtractList(items);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        setTimeout(function() {
+            var srcTag = dom.byId("source_baidu", true);
+            if (srcTag != null && srcTag.byTag("a", true) != null) {
+                var src = srcTag.byTag("a").innerText;
+                if (src.search("中国网") < 0) {
+                    if (Bee.existSource(src)) {
+                        console.log("跳过来源：" + src);
+                        Bee.passItem(item);
+                        return;
+                    } else {
+                        console.log("未知来源：" + src);
+                    }
+                }
+                item.source = src;
+                var time = dom.byId("pubtime_baidu").innerText;
+                time = time.replace("发布时间：","");
+                item.created_at = Bee.convertTime(time);
+                item.status = 3;
+                if (dom.byId("artbody", true) != null) {
+                    var content = Bee.htmlToJson(dom.byId("artbody"));
+                    item.content = JSON.stringify(content);
+                } else if (dom.byId("bigpic", true) != null) {
+                    var content = Bee.htmlToJson(dom.byId("bigpic"));
+                    item.content = JSON.stringify(content);
+                }
+
+                Bee.finishExtractItem(item);
+            } else {
+                Bee.passItem(item);
+            }
+        }, 1000)
+    }
+    Bee.start();
+</script>
+</body>
+</html>
