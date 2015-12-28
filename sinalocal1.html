@@ -2,16 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>新浪本地(浙江、安徽、江苏)蜜蜂</title>
+    <title>新浪本地(上海、浙江、安徽、江苏)蜜蜂</title>
     <script src="bee.js"></script>
     <script src="sinalocal.bee.js"></script>
 </head>
 <body>
 <script>
+    SinaLocalBee.addChannel("国内", "上海|本地", "http://sh.sina.com.cn/news/b/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|各地", "http://sh.sina.com.cn/news/g/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|民生", "http://sh.sina.com.cn/news/m/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|社会", "http://sh.sina.com.cn/news/s/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|娱乐", "http://sh.sina.com.cn/news/w/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|体育", "http://sh.sina.com.cn/news/t/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|财经", "http://sh.sina.com.cn/news/economy/list.shtml");
+    SinaLocalBee.addChannel("国内", "上海|科教卫", "http://sh.sina.com.cn/news/k/list.shtml");
+
     SinaLocalBee.addChannel("国内", "浙江|民生", "http://zj.sina.com.cn/news/m/list.shtml");
     SinaLocalBee.addChannel("国内", "浙江|社会", "http://zj.sina.com.cn/news/s/list.shtml");
     SinaLocalBee.addChannel("国内", "浙江|地区热点", "http://zj.sina.com.cn/news/d/list.shtml");
-
     SinaLocalBee.addChannel("国内", "浙江|宁波", "http://nb.sina.com.cn/news/zhzx/list.shtml");
     SinaLocalBee.addChannel("国内", "浙江|宁波|评论", "http://nb.sina.com.cn/news/p/list.shtml");
     SinaLocalBee.addChannel("国内", "浙江|宁波|金融", "http://nb.sina.com.cn/news/finance/list.shtml");
@@ -39,7 +47,6 @@
     SinaLocalBee.addChannel("国内", "江苏|经济", "http://jiangsu.sina.com.cn/news/economy/list.shtml");
     SinaLocalBee.addChannel("国内", "江苏|金融", "http://jiangsu.sina.com.cn/news/finance/list.shtml");
     SinaLocalBee.addChannel("国内", "江苏|组织|人事", "http://jiangsu.sina.com.cn/news/renshi/list.shtml");
-
     SinaLocalBee.addChannel("国内", "江苏|无锡", "http://wx.sina.com.cn/news/wxnews/list.shtml");
     SinaLocalBee.addChannel("国内", "江苏|无锡|民生", "http://wx.sina.com.cn/news/m/list.shtml");
     SinaLocalBee.addChannel("国内", "江苏|无锡|社会", "http://wx.sina.com.cn/news/s/list.shtml");
