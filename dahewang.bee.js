@@ -1,31 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>大河网蜜蜂</title>
-    <script src="bee.js"></script>
-</head>
-<body>
-<script>
+var DaHeBee = new _DaHeBee();
+function _DaHeBee() {
 
-    Bee.addChannel("国内", "河南", "http://news.dahe.cn/sz/index.html");
     Bee.setType("http://news.dahe.cn/");
     Bee.setImgReferer("http://news.dahe.cn/");
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListDomLoaded = function (dom) {
-            var items = [];
-            var contList = dom.byClass("ulTxtList clearfix");
-            var lis = contList.byTags("li");
-            for (var i = 0; i < lis.length; i++) {
-                var item = {};
-                var header = lis[i];
-                item.url = header.byTag("a").href;
-                item.title = header.byTag("a").innerText;
-                var createdAt = header.byTag("span").innerHTML;
-                item.created_at = Bee.convertTime(createdAt);
-                items.push(item);
-            }
-            Bee.finishExtractList(items);
+        var items = [];
+        var contList = dom.byClass("ulTxtList clearfix");
+        var lis = contList.byTags("li");
+        for (var i = 0; i < lis.length; i++) {
+            var item = {};
+            var header = lis[i];
+            item.url = header.byTag("a").href;
+            item.title = header.byTag("a").innerText;
+            var createdAt = header.byTag("span").innerHTML;
+            item.created_at = Bee.convertTime(createdAt);
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
     };
 
     Bee.onItemDomLoaded = function (dom, item) {
@@ -51,10 +43,14 @@
         var content = Bee.htmlToJson(article);
         item.content = content;
         item.class = "";
-        Bee.finishExtractItem(item);
+        Bee.finishExtractItem(item, true, true);
     };
 
-    Bee.start();
-</script>
-</body>
-</html>
+    this.addChannel = function(category, tag, url) {
+        Bee.addChannel(category, tag, url);
+    };
+
+    this.start = function() {
+        Bee.start();
+    }
+}
