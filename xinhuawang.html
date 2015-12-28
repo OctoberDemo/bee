@@ -8,49 +8,147 @@
 <body>
 <script>
 
-    Bee.addChannel("", "http://m.news.cn/html/channel-27.html");
-    Bee.addChannel("", "时政", "http://m.news.cn/html/channel-43.html");
-    Bee.addChannel("财经", "http://m.news.cn/html/channel-29.html");
-    Bee.addChannel("", "炫观点", "http://m.news.cn/html/channel-48.html");
-    Bee.setType("m.news.cn");
-    Bee.setImgReferer("m.news.cn");
+//    Bee.addChannel("", "时政 新观察", "http://www.news.cn/politics/xgc.htm");
+//    Bee.addChannel("", "时政 独家", "http://www.news.cn/politics/djyc.htm");
+//    Bee.addChannel("", "时政 要闻", "http://www.news.cn/politics/yw.htm");
+//    Bee.addChannel("", "时政 政策解读", "http://www.news.cn/politics/zj.htm");
+//    Bee.addChannel("", "时政 一图观政", "http://www.news.cn/politics/ytgz.htm");
+//    Bee.addChannel("国际", "评论", "http://www.news.cn/world/pl.htm");
+//    Bee.addChannel("国际", "外媒言论", "http://www.news.cn/world/wmyl.htm");
+//    Bee.addChannel("国际", "全球播报", "http://www.news.cn/world/qqbb.htm");
+//    Bee.addChannel("国际", "寰球博览", "http://www.news.cn/world/hqbl.htm");
+//    Bee.addChannel("", "华人", "http://www.news.cn/overseas/djyc.htm");
+//    Bee.addChannel("", "华人故事", "http://www.news.cn/overseas/hrgs.htm");
+//    Bee.addChannel("", "海归就业", "http://www.news.cn/overseas/hgjy.htm");
+//    Bee.addChannel("", "华人报摘", "http://www.news.cn/overseas/hwbz.htm");
+//    Bee.addChannel("", "留学", "http://www.news.cn/overseas/lxzxs.htm");
+//    Bee.addChannel("财经", "宏观", "http://www.news.cn/fortune/hglist.htm");
+//    Bee.addChannel("财经", "证券", "http://www.news.cn/finance/");
+//    Bee.addChannel("财经", "公司", "http://www.news.cn/fortune/gslist.htm");
+//    Bee.addChannel("财经", "别出新财", "http://www.news.cn/fortune/bcxc.htm");
+//    Bee.addChannel("", "理论 要闻", "http://www.news.cn/politics/lldyw.htm");
+//    Bee.addChannel("", "理论", "http://www.news.cn/politics/xhll.htm");
+//    Bee.addChannel("", "港澳", "http://www.news.cn/gangao/");
+//    Bee.addChannel("", "港澳点睛", "http://www.news.cn/gangao/gadj.htm");
+//    Bee.addChannel("", "港澳叮叮车", "http://www.news.cn/gangao/gaddc.htm");
+//    Bee.addChannel("", "港澳 大家谈", "http://www.news.cn/gangao/djt.htm");
+//    Bee.addChannel("", "港澳 名人坊", "http://www.news.cn/gangao/gtmrf.htm");
+//    Bee.addChannel("", "港澳来电", "http://www.news.cn/gangao/gald.htm");
+//    Bee.addChannel("", "台湾", "http://www.news.cn/tw/");
+//    Bee.addChannel("娱乐", "资讯", "http://ent.news.cn/zx.htm");
+//    Bee.addChannel("娱乐", "明星", "http://ent.news.cn/mx.htm");
+//    Bee.addChannel("娱乐", "电影", "http://ent.news.cn/dy.htm");
+//    Bee.addChannel("娱乐", "电视", "http://ent.news.cn/ds.htm");
+//    Bee.addChannel("娱乐", "演出", "http://ent.news.cn/yc.htm");
+//    Bee.addChannel("娱乐", "音乐", "http://ent.news.cn/yy.htm");
+//    Bee.addChannel("娱乐", "评论", "http://ent.news.cn/pl.htm");
+//    Bee.addChannel("时尚", "搭配", "http://www.news.cn/fashion/dp2015.htm");
+//    Bee.addChannel("时尚", "街拍", "http://www.news.cn/fashion/jp2015.htm");
+//    Bee.addChannel("时尚", "男尚", "http://www.news.cn/fashion/ns2015.htm");
+//    Bee.addChannel("时尚", "护肤", "http://www.news.cn/fashion/hf2015.htm");
+//    Bee.addChannel("时尚", "彩妆", "http://www.news.cn/fashion/cz2015.htm");
+//    Bee.addChannel("时尚", "美发", "http://www.news.cn/fashion/mf2015.htm");
+//    Bee.addChannel("时尚", "香氛", "http://www.news.cn/fashion/xf2015.htm");
+//    Bee.addChannel("时尚", "塑形", "http://www.news.cn/fashion/suxing2015.htm");
+//    Bee.addChannel("时尚", "养生", "http://www.news.cn/fashion/yangsheng2015.htm");
+//    Bee.addChannel("时尚", "星闻", "http://www.news.cn/fashion/xw2015.htm");
+//    Bee.addChannel("时尚", "人物", "http://www.news.cn/fashion/rw2015.htm");
+//    Bee.addChannel("时尚", "潮流", "http://www.news.cn/fashion/cl2015.htm");
+//    Bee.addChannel("时尚", "话题", "http://www.news.cn/fashion/ht2015.htm");
+//    Bee.addChannel("时尚", "创意", "http://www.news.cn/fashion/cy2015.htm");
+//    Bee.addChannel("时尚", "艺术", "http://www.news.cn/fashion/ys2015.htm");
+//    Bee.addChannel("时尚", "花嫁", "http://www.news.cn/fashion/hj2015.htm");
+//    Bee.addChannel("时尚", "情感", "http://www.news.cn/fashion/qg2015.htm");
+//    Bee.addChannel("时尚", "乐游", "http://www.news.cn/fashion/ly2015.htm");
+//    Bee.addChannel("时尚", "私享", "http://www.news.cn/fashion/sx2015.htm");
+//    Bee.addChannel("时尚", "购物", "http://www.news.cn/fashion/gw2015.htm");
+//    Bee.addChannel("时尚", "珠宝", "http://www.news.cn/fashion/zb2015.htm");
+//    Bee.addChannel("时尚", "腕表", "http://www.news.cn/fashion/wb2015.htm");
+//    Bee.addChannel("体育", "", "http://www.news.cn/sports/");
+//    Bee.addChannel("汽车", "新闻", "http://www.news.cn/auto/xw.htm");
+//    Bee.addChannel("汽车", "新车", "http://www.news.cn/auto/xc.htm");
+//    Bee.addChannel("汽车", "导购", "http://www.news.cn/auto/dg.htm");
+//    Bee.addChannel("汽车", "试驾", "http://www.news.cn/auto/sj.htm");
+//    Bee.addChannel("汽车", "名人堂", "http://www.news.cn/auto/mrt.htm");
+//    Bee.addChannel("汽车", "召回", "http://www.news.cn/auto/zwtx.htm");
+//    Bee.addChannel("汽车", "车智慧", "http://www.news.cn/auto/czh.htm");
+//    Bee.addChannel("汽车", "百科", "http://www.news.cn/auto/bk.htm");
+//    Bee.addChannel("汽车", "商用车", "http://www.news.cn/auto/syc.htm");
+//    Bee.addChannel("科技", "互联网+", "http://www.news.cn/tech/hlwj.htm");
+//    Bee.addChannel("科技", "E言堂", "http://www.news.cn/tech/Eyt.htm");
+//    Bee.addChannel("科技", "思享家", "http://www.news.cn/tech/sxj.htm");
+//    Bee.addChannel("科技", "创业邦", "http://www.news.cn/tech/cyb.htm");
+//    Bee.addChannel("科技", "云追访", "http://www.news.cn/tech/yzf.htm");
+//    Bee.addChannel("食品", "今日要闻", "http://www.news.cn/food/jryw.htm");
+//    Bee.addChannel("食品", "食话实说", "http://www.news.cn/food/shss.htm");
+//    Bee.addChannel("食品", "独家", "http://www.news.cn/food/dj.htm");
+//    Bee.addChannel("食品", "红黑榜", "http://www.news.cn/food/hhb.htm");
+//    Bee.addChannel("食品", "食品舆情", "http://www.news.cn/food/spyq.htm");
+//    Bee.addChannel("食品", "食品辟谣", "http://www.news.cn/food/sppy.htm");
+//    Bee.addChannel("食品", "智库", "http://www.news.cn/food/zk.htm");
+    Bee.addChannel("法治", "法眼", "http://www.news.cn/legal/fy.htm");
+    Bee.addChannel("法治", "真相", "http://www.news.cn/legal/zx.htm");
+    Bee.setType("www.news.cn");
+    Bee.setImgReferer("www.news.cn");
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function (dom) {
-        var pageButton = dom.byClass("ChmoreBtn", true);
+        var pageButton = dom.byClass("moreBtn", true);
         if (pageButton) {
-            pageButton.click();
-            pageButton.click();
             pageButton.click();
         }
         setTimeout(function () {
             var items = [];
-            var contList = dom.byClass("newlist");
-            var lis = contList.byTags("li");
-            for (var i = 0; i < lis.length; i++) {
-                var a = lis[i].byTag("a");
-                var item = {};
-                item.url = a.href;
-                item.title = a.innerText;
-                item.key = Bee.hashCode(item.url);
-                items.push(item);
+            var dataList = dom.byClasses("dataList");
+            for (var j = 0; j < dataList.length; j++) {
+                var lis = dataList[j].byClasses("clearfix", true);
+                if (lis == undefined) {
+                    continue;
+                }
+                for (var i = 0; i < lis.length; i++) {
+                    var a = lis[i].byTag("a", true);
+                    if (a == undefined) {
+                        continue;
+                    }
+                    var item = {};
+                    item.url = a.href;
+                    item.title = a.innerText;
+                    var listImg = lis[i].byTag("img", true);
+                    if (listImg) {
+                        var image = {};
+                        image.src = listImg.src;
+                        image.height = listImg.clientHeight;
+                        image.width = listImg.clientWidth;
+                        item.cover_img = image;
+                    }
+                    var des = lis[i].byClass("summary", true);
+                    if (des && des.innerText.length > 0) {
+                        item.content = [];
+                        var desc = {};
+                        desc.desc =  des.innerText;
+                        item.content.add(desc);
+                    }
+                    items.push(item);
+                }
             }
-            console.log(items);
+
             Bee.finishExtractList(items);
-        }, 500);
+        }, 1000);
     };
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byClass("wenzhangblock", true);
-        if (article == undefined) {
+        var article = dom.byClass("article", true);
+        if (article == undefined || article.byId("div_currpage", true)) {
             console.log("article == undefined");
             Bee.finishExtractItem();
             return;
         }
-        var attrib = article.byClass("news_source").innerHTML.split(/&nbsp;&nbsp;/);
-        var sourceString = attrib[0];
-        var sourceString = sourceItem.byTags("div")[0].innerText.replace("来源：", "");
-        if (sourceString.indexOf("新华网") < 0) {
+        article.removeId("videoArea");
+        var attrib = dom.byClass("source");
+        var sourceString = attrib.byId("source").innerText;
+        if (sourceString.indexOf("新华") >= 0) {
+            sourceString = "新华网";
+        } else {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
@@ -60,16 +158,19 @@
             }
         }
         item.source = sourceString;
-        var timeString = (new Date()).getFullYear() + "-" + attrib[1];
+        var timeString = attrib.byClass("time").innerText;
         item.created_at = Bee.convertTime(timeString);
         item.category = Bee.getCurCategory();
-        article.removeClass("news_my");
-        article.removeClass("news_source");
         var content = Bee.htmlToJson(article);
-        item.content = content;
+        if (item.content) {
+            item.content = item.content.concat(content);
+        } else {
+            item.content = content;
+        }
         item.class = "";
+        item.status = 5;
 
-        Bee.finishExtractItem(item);
+        Bee.finishExtractItem(item, true, true);
     };
 
     Bee.start();
