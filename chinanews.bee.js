@@ -110,6 +110,11 @@ function _ChinanewsBee() {
 
     function onJSItemLoaded(dom, item) {
         var cont = dom.byId("cont");
+        if (cont == null) {
+            console.log("未知格式，跳过");
+            Bee.passItem(item);
+            return;
+        }
         item.title = cont.byTag("h1").innerText;
         item.created_at = Bee.convertTime(cont.byId("time").innerText);
         var source = cont.byId("come").innerText;
