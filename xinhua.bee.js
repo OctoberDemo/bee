@@ -68,7 +68,12 @@ function _XinhuaBee() {
             return;
         }
         var attrib = dom.byClass("source");
-        var sourceString = attrib.byId("source").innerText;
+        var sourceString = attrib.byId("source");
+        if (sourceString) {
+            sourceString = sourceString.innerText;
+        } else {
+            sourceString = attrib.byClass("sourceText").innerText;
+        }
         if (sourceString.indexOf("新华") >= 0) {
             sourceString = "新华网";
         } else {
@@ -114,5 +119,9 @@ function _XinhuaBee() {
 
     this.start = function() {
         Bee.start();
+    };
+
+    this.debug = function (url) {
+        Bee.debug(url);
     }
 }
