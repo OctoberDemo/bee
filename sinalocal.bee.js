@@ -96,22 +96,30 @@ var SinaLocalBee = (function () {
 
         var result = Bee.continueSubItem(item);
         if (result == false) {
+            console.log(JSON.stringify(item.content));
             Bee.finishExtractItem(item);
         }
     };
 
     function refineItemContent(content_json) {
+        var new_content_json = [];
         for (var i = 0; i < content_json.length; ++i) {
-            if (content_json[i].p) {
+            if (content_json[i].img) {
+                var img_src = content_json[i].img.src;
+                if (img_src.endsWith("_h60.jpg")) {
+                    continue;
+                }
+            } else if (content_json[i].p) {
                 var ignoreKeywords = ['热点新闻：', '相关报道：', '延伸阅读：'];
                 for (var j = 0; j < ignoreKeywords.length; ++j) {
                     if (content_json[i].p.indexOf(ignoreKeywords[j]) >= 0) {
-                        return content_json.slice(0, i);
+                        return new_content_json;
                     }
                 }
             }
+            new_content_json.push(content_json[i]);
         }
-        return content_json;
+        return new_content_json;
     }
 
     return {
