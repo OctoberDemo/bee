@@ -14,6 +14,11 @@
     Bee.addChannel("文娱", "http://news.huaxi100.com/list-248-1.html");
     Bee.addChannel("财经", "http://news.huaxi100.com/list-242-1.html");
     Bee.addChannel("教育", "http://news.huaxi100.com/list-239-1.html");
+    Bee.addChannel("科技", "http://news.huaxi100.com/list-253-1.html");
+    Bee.addChannel("汽车","汽车前沿", "http://news.huaxi100.com/list-112-1.html");
+    Bee.addChannel("汽车","新车试驾", "http://news.huaxi100.com/list-114-1.html");
+    Bee.addChannel("地产","", "http://news.huaxi100.com/list-235-1.html");
+    Bee.addChannel("娱乐","", "http://news.huaxi100.com/list-248-1.html");
     Bee.setType("news.huaxi100.com");
     Bee.setImgReferer("news.huaxi100.com");
     Bee.setRefreshTime(1000 * 60 * 10);
@@ -46,7 +51,7 @@
                 if (des && des.innerText.length > 0) {
                     item.content = [];
                     var desc = {};
-                    desc.desc =  des.innerText;
+                    desc.desc =  des.innerText.replace("[详情]", "");
                     item.content.add(desc);
                 }
                 items.push(item);
@@ -83,8 +88,9 @@
             item.content = item.content.concat(content);
         }
         item.class = "";
+        item.status = 5;
 
-        Bee.finishExtractItem(item);
+        Bee.finishExtractItem(item, true);
     };
 
     Bee.start();
