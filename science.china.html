@@ -2,30 +2,35 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>中国网旅游频道蜜蜂</title>
+    <title>中国网科学频道蜜蜂</title>
     <script src="bee.js"></script>
 </head>
 <body>
 <script>
-    Bee.setType("http://travel.china.com.cn/");
+    Bee.setType("http://science.china.com.cn/");
     Bee.requestNoScript();
     Bee.requestNoIframe();
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211766.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211764.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211768.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7085313.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211761.htm");
-    Bee.setImgReferer("http://travel.china.com.cn/");
+    Bee.addChannel("新闻", "滚动新闻_科学中国", "http://science.china.com.cn/node_544674.htm");
+    Bee.addChannel("新闻", "热点关注_科学中国", "http://science.china.com.cn/node_544672.htm");
+    Bee.addChannel("新闻", "深度报道_科学中国", "http://science.china.com.cn/node_544671.htm");
+    Bee.addChannel("新闻", "科学技术_科学中国", "http://science.china.com.cn/node_545498.htm");
+    Bee.addChannel("新闻", "科学医疗_科学中国", "http://science.china.com.cn/node_544688.htm");
+    Bee.addChannel("新闻", "生命科学_科学中国", "http://science.china.com.cn/node_544679.htm");
+    Bee.addChannel("新闻", "科技生活_科学中国", "http://science.china.com.cn/node_544677.htm");
+    Bee.addChannel("新闻", "自然科学_科学中国", "http://science.china.com.cn/node_544675.htm");
+    Bee.addChannel("新闻", "科学公益_科学中国", "http://science.china.com.cn/node_545492.htm");
+    Bee.setImgReferer("http://science.china.com.cn/");
     Bee.setRefreshTime(60 * 60 * 1000);
     Bee.onListLoaded = function(dom) {
         var items = [];
-        if (dom.byClass("List", true) != null) {
-            var itemDivs = dom.byTags("li");
+        if (dom.byClass("left", true) != null) {
+            var itemDivs = dom.byTags("dl");
             for (var i = 0; i < itemDivs.length; i++) {
                 var item = {};
-                if (itemDivs[i].byTag("a", true) != null) {
-                    item.title = itemDivs[i].byTag("a").innerText;
-                    item.url = itemDivs[i].byTag("a").href;
+                var infoTag = itemDivs[i].byTag("dd").byTag("h3").byTag("a", true);
+                if (infoTag != null) {
+                    item.title = infoTag.innerText;
+                    item.url = infoTag.href;
                     item.key = Bee.hashCode(item.url);
                     items.push(item);
                 }
@@ -57,6 +62,10 @@
                     var content = Bee.htmlToJson(dom.byId("fontzoom"));
                     item.content = JSON.stringify(content);
                     Bee.finishExtractItem(item);
+                } else if (dom.byClass("Content", true) != null) {
+                    var content = Bee.htmlToJson(dom.byClass("Content"));
+                    item.content = JSON.stringify(content);
+                    Bee.finishExtractItem(item);
                 } else {
                     Bee.passItem(item);
                 }
@@ -65,8 +74,7 @@
             }
         }, 1000)
     }
-
     Bee.start();
-</Script>
+</script>
 </body>
 </html>

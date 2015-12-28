@@ -33,7 +33,6 @@
                 if (item.title.search("视频") < 0) {
                     item.url = tag.href;
                     item.key = Bee.hashCode(item.url);
-                    item.status = 3;
                     items.push(item);
                 }
             }
