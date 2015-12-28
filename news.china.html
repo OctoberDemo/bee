@@ -8,6 +8,7 @@
 <body>
 <script>
     Bee.setType("http://news.china.com.cn/");
+    Bee.requestNoScript();
     Bee.addChannel("新闻", "独家", "http://news.china.com.cn/node_7065221.htm");
     Bee.addChannel("新闻", "要闻", "http://news.china.com.cn/node_7115409.htm");
     Bee.addChannel("新闻", "时政要闻", "http://news.china.com.cn/politics/node_7184914.htm");
@@ -65,12 +66,12 @@
                 if (dom.byId("artbody", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("artbody"));
                     item.content = JSON.stringify(content);
+                    Bee.finishExtractItem(item);
                 } else if (dom.byId("bigpic", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("bigpic"));
                     item.content = JSON.stringify(content);
+                    Bee.finishExtractItem(item);
                 }
-
-                Bee.finishExtractItem(item);
             } else {
                 Bee.passItem(item);
             }
