@@ -106,6 +106,11 @@ function _XinhuaBee() {
 
     Bee.onSubItemLoaded = function(dom, item) {
         var article = dom.byClass("article", true);
+        if (article == undefined) {
+            console.log("article == undefined");
+            Bee.passItem(item);
+            return;
+        }
         item = creatContent(article, item);
         var result = Bee.continueSubItem(item);
         if (result == false) {
