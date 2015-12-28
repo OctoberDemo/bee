@@ -1,26 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+<head lang="en">
     <meta charset="UTF-8">
-    <title>中国网新闻频道</title>
+    <title>中国网娱乐频道</title>
     <script src="bee.js"></script>
 </head>
 <body>
-<script>
-    Bee.setType("http://news.china.com.cn/");
+<Script>
+    Bee.setType("http://ent.china.com.cn/");
     Bee.requestNoScript();
     Bee.requestNoIframe();
-    Bee.addChannel("新闻", "独家", "http://news.china.com.cn/node_7065221.htm");
-    Bee.addChannel("新闻", "要闻", "http://news.china.com.cn/node_7115409.htm");
-    Bee.addChannel("新闻", "时政要闻", "http://news.china.com.cn/politics/node_7184914.htm");
-    Bee.addChannel("新闻", "国际最新", "http://news.china.com.cn/world/node_7208703.htm");
-    Bee.addChannel("新闻", "国际独家", "http://news.china.com.cn/world/node_7208704.htm");
-    Bee.addChannel("新闻", "社会", "http://shehui.china.com.cn/index.htm");
-    Bee.setImgReferer("http://news.china.com.cn/");
+    Bee.addChannel("头条新闻", "http://ent.china.com.cn/node_7153390.htm");
+    Bee.addChannel("原创独家", "http://ent.china.com.cn/node_7153395.htm");
+    Bee.addChannel("滚动新闻", "http://ent.china.com.cn/node_7153394.htm");
+    Bee.addChannel("海外明星", "http://ent.china.com.cn/node_7153385.htm");
+    Bee.addChannel("星闻动态", "http://ent.china.com.cn/node_7153384.htm");
+    Bee.addChannel("国际影讯", "http://ent.china.com.cn/node_7153378.htm");
+    Bee.addChannel("华语影坛", "http://ent.china.com.cn/node_7153377.htm");
+    Bee.addChannel("欧美荧屏", "http://ent.china.com.cn/node_7153370.htm");
+    Bee.addChannel("亚洲荧屏", "http://ent.china.com.cn/node_7153371.htm");
+    Bee.addChannel("大陆荧屏", "http://ent.china.com.cn/node_7153369.htm");
+    Bee.addChannel("乐坛资讯", "http://ent.china.com.cn/node_7153357.htm");
+    Bee.setImgReferer("http://ent.china.com.cn/");
     Bee.setRefreshTime(60 * 60 * 1000);
     Bee.onListLoaded = function(dom) {
         var items = [];
-        if (dom.byClass("Headlines", true) != null) {
+        if (dom.byId("newslist", true) != null) {
             var itemDivs = dom.byTags("li");
             for (var i = 0; i < itemDivs.length; i++) {
                 var item = {};
@@ -31,16 +36,6 @@
                     items.push(item);
                 }
             }
-        } else if (dom.byClass("c_list", true) != null) {
-            var itemDivs = dom.byTags("li");
-            for (var i = 0; i < itemDivs.length; i++) {
-                var item = {};
-                var className = "c_title fl";
-                item.title = itemDivs[i].byClass(className).byTag("a").innerText;
-                item.url = itemDivs[i].byClass(className).byTag("a").href;
-                item.key = Bee.hashCode(item.url);
-                items.push(item);
-            }
         }
         Bee.finishExtractList(items);
     }
@@ -48,8 +43,9 @@
     Bee.onItemLoaded = function(dom, item) {
         setTimeout(function() {
             var srcTag = dom.byId("source_baidu", true);
-            if (srcTag != null && srcTag.byTag("a", true) != null) {
-                var src = srcTag.byTag("a").innerText;
+            if (srcTag != null) {
+                var src = srcTag.innerText;
+                src.replace("来源：","");
                 if (src.search("中国网") < 0) {
                     if (Bee.existSource(src)) {
                         console.log("跳过来源：" + src);
@@ -68,10 +64,6 @@
                     var content = Bee.htmlToJson(dom.byId("artbody"));
                     item.content = JSON.stringify(content);
                     Bee.finishExtractItem(item);
-                } else if (dom.byId("bigpic", true) != null) {
-                    var content = Bee.htmlToJson(dom.byId("bigpic"));
-                    item.content = JSON.stringify(content);
-                    Bee.finishExtractItem(item);
                 } else {
                     Bee.passItem(item);
                 }
@@ -80,7 +72,7 @@
             }
         }, 1000)
     }
-    Bee.start();
-</script>
+    Bee.start()
+</Script>
 </body>
 </html>
