@@ -102,7 +102,8 @@ var SinaLocalBee = (function () {
 
     function refineItemContent(content_json) {
         for (var i = 0; i < content_json.length; ++i) {
-            if (content_json[i].p && content_json[i].p.indexOf("热点新闻：") >= 0) break;
+            if (content_json[i].p && (content_json[i].p.indexOf("热点新闻：") >= 0 || content_json[i].p.indexOf("延伸阅读：") >=0))
+                break;
         }
         return content_json.slice(0, i);
     }
