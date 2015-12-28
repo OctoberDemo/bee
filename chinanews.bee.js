@@ -27,6 +27,11 @@ function _ChinanewsBee() {
             links = recomNews.byTags("a");
             getItems(links);
         }
+        var branch_list_ul = dom.byClass("branch_list_ul", true);
+        if (branch_list_ul) {
+            links = branch_list_ul.byTags("a");
+            getItems(links);
+        }
 
         Bee.finishExtractList(items);
 
@@ -50,6 +55,10 @@ function _ChinanewsBee() {
             onJSItemLoaded(dom, item);
             return;
         }
+        if (item.url.indexOf("www.bj.chinanews") >= 0) {
+            onBJItemLoaded(dom, item);
+            return;
+        };
         var con = dom.byId("con", true);
         if (con == null) {
             console.log("未知页面格式：" + item.url);
@@ -109,7 +118,7 @@ function _ChinanewsBee() {
     };
 
     function onJSItemLoaded(dom, item) {
-        var cont = dom.byId("cont");
+        var cont = dom.byId("cont", true);
         if (cont == null) {
             console.log("未知格式，跳过");
             Bee.passItem(item);
@@ -126,6 +135,27 @@ function _ChinanewsBee() {
         cont.removeId("come");
         item.content = Bee.htmlToJson(cont);
 
+        Bee.finishExtractItem(item);
+    }
+
+    function onBJItemLoaded(dom, item) {
+        var branch_neirong_left_con = dom.byClass("branch_neirong_left_con", true);
+        if (branch_neirong_left_con == null) {
+            console.log("未知内容，跳过");
+            Bee.passItem(item);
+            return;
+        }
+        var branch_con_title = dom.byClass("branch_con_title");
+        item.title = branch_con_title.byTag("h1").innerText;
+        branch_con_title.removeTag("h1");
+        var pubString = branch_con_title.innerText;
+        var source = pubString.substring(pubString.lastIndexOf("来源"));
+        if (convertSource(item, source) == false) {
+            return;
+        }
+        var timeString = pubString.substring(0, pubString.lastIndexOf("来源")).trim();
+        item.created_at = Bee.convertTime(timeString);
+        item.content = Bee.htmlToJson(branch_neirong_left_con.byClass(" branch_con_text"));
         Bee.finishExtractItem(item);
     }
 
