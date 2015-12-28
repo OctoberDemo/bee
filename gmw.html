@@ -86,6 +86,9 @@
             return;
         }
         var source = sourceNode.innerText;
+        if (source.indexOf("来源") == 0) {
+            source = source.substring(3);
+        }
         if (source.indexOf("光明") < 0) {
             if (Bee.existSource(source)) {
                 console.log(source + " 非光明网内容");
@@ -94,9 +97,6 @@
             } else {
                 console.log("未知来源：" + source);
             }
-        }
-        if (source.indexOf("来源") == 0) {
-            source = source.substring(3);
         }
         item.source = source;
 
