@@ -19,7 +19,7 @@ function _HuanqiuBee() {
             item.title = link.innerText;
             item.url = link.href;
             item.class = "news";
-            item.status = 5;
+            //item.status = 5;
 
             var descNode = itemNode.byTag("h5");
             descNode.removeTag("em");
@@ -89,7 +89,7 @@ function _HuanqiuBee() {
             item.content.add(0, desc);
             delete item.desc;
         }
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     }
 
     function convertSource(item, source) {
