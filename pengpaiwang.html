@@ -62,8 +62,8 @@
         }
         var attrib = dom.byClass("news_about").byTags("p");
         var sourceString = attrib[0].innerText;
-        if (sourceString.indexOf("澎湃新闻") >= 0) {
-            sourceString = "澎湃新闻";
+        if (sourceString.indexOf("澎湃") >= 0) {
+            sourceString = "澎湃新闻网";
         } else {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
