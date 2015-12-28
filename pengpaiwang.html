@@ -8,56 +8,60 @@
 <body>
 <script>
 
-    Bee.addChannel("", "时事", "http://m.thepaper.cn/channel_25950");
-    Bee.addChannel("财经", "http://m.thepaper.cn/channel_25951");
-    Bee.addChannel("", "思想", "http://m.thepaper.cn/channel_25952");
-    Bee.addChannel("", "生活", "http://m.thepaper.cn/channel_25953");
-    Bee.setType("m.thepaper.cn");
-    Bee.setImgReferer("m.thepaper.cn");
+    Bee.addChannel("", "时事", "http://www.thepaper.cn/channel_25950");
+    Bee.setType("www.thepaper.cn");
+    Bee.setImgReferer("www.thepaper.cn");
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function(dom) {
-        var pageButton = dom.byClass("more_bt", true);
-        if (pageButton) {
-            pageButton.click();
-            pageButton.click();
-            pageButton.click();
-        }
+        Bee.scrollToBottom(dom);
         setTimeout(function() {
             var items = [];
-            var contList = dom.byClass("list_hp");
-            var lis = contList.byClasses("txt_t");
+            var contList = dom.byClass("newsbox");
+            var lis = contList.byClasses("news_li");
             for (var i = 0; i < lis.length; i++) {
                 var li = lis[i];
-                if (li.byClass("t_label", true)) {
+                var item = {};
+                var title = li.byTag("h2", true);
+                if (title) {
+                    item.url = title.byTag("a").href;
+                    item.title = title.byTag("a").innerText;
+                } else {
                     continue;
                 }
-                var item = {};
-                var head = li.byClass("news_tit02").byTag("a");
-                item.url = head.href;
-                item.title = head.innerText;
-                item.key = Bee.hashCode(item.url +"test12");
+                var listImg = li.byTag("img", true);
+                if (listImg) {
+                    var image = {};
+                    image.src = listImg.src;
+                    image.height = listImg.clientHeight;
+                    image.width = listImg.clientWidth;
+                    item.cover_img = image;
+                }
+                var des = li.byTag("p", true);
+                if (des && des.innerText.length > 0) {
+                    item.content = [];
+                    var desc = {};
+                    desc.desc =  des.innerText;
+                    item.content.add(desc);
+                }
                 items.push(item);
             }
-            console.log(items);
             Bee.finishExtractList(items);
         }, 500);
     };
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byClass("news_part", true);
+        var article = dom.byClass("news_txt", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();
             return;
         }
-        if (dom.byTag("video", true)) {
-            Bee.passItem(item);
-            return;
-        }
-        var attrib = dom.byClasses("about_news");
-        var sourceString = attrib[0].innerText.split(" ")[0];
-        if (sourceString.indexOf("澎湃") < 0) {
+        var attrib = dom.byClass("news_about").byTags("p");
+        var sourceString = attrib[0].innerText;
+        if (sourceString.indexOf("澎湃新闻") >= 0) {
+            sourceString = "澎湃新闻";
+        } else {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
                 Bee.passItem(item);
@@ -66,17 +70,21 @@
                 console.log("未知来源：" + sourceString);
             }
         }
-        if (sourceString.indexOf("澎湃新闻") >= 0 && sourceString.indexOf("记者") >= 0) {
-            item.source = "澎湃新闻网";
-        } else {
-            item.source = sourceString;
-        }
-        var timeString = attrib[1].innerText;
-        item.created_at = Bee.convertTime(timeString);
-        var content = Bee.htmlToJson(article);
-        item.content = content;
-        item.class = "";
+        item.source = sourceString;
 
+        var timeString = attrib[1].innerText.split("来自")[0];
+        item.created_at = Bee.convertTime(timeString);
+        var tag = attrib[1].innerText.split("来自")[1];
+        if (tag.length > 0 ) {
+            item.tag = tag;
+        }
+        var content = Bee.htmlToJson(article);
+        if (item.content) {
+            item.content = item.content.concat(content);
+        } else {
+            item.content = content;
+        }
+        item.class = "";
         Bee.finishExtractItem(item);
     };
 
