@@ -566,7 +566,6 @@ function _Bee() {
     var beeJsTotal = 0;
     var beeJsCount = 0;
 
-
     includeJs("jndroid/jndroid.core.js");
     includeJs("jndroid/jndroid.layout.js");
     includeJs("jndroid/jndroid.widget.js");

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中新网(一)蜜蜂</title>
+    <script src="bee.js"></script>
+    <script src="chinanews.bee.js"></script>
+</head>
+<body>
+<script>
+    ChinanewsBee.addChannel("要闻", "http://www.chinanews.com/importnews.html");
+    ChinanewsBee.addChannel("国内", "http://www.chinanews.com/china.shtml");
+    ChinanewsBee.addChannel("地方", "http://www.chinanews.com/df/news.shtml");
+    ChinanewsBee.addChannel("国际", "http://www.chinanews.com/world.shtml");
+    ChinanewsBee.addChannel("社会", "http://www.chinanews.com/society.shtml");
+    ChinanewsBee.addChannel("军事", "http://www.chinanews.com/mil/news.shtml");
+    ChinanewsBee.addChannel("港澳", "http://www.chinanews.com/compatriot.shtml");
+    ChinanewsBee.addChannel("台湾", "http://www.chinanews.com/taiwan.shtml");
+    ChinanewsBee.addChannel("华人", "http://www.chinanews.com/huaren.shtml");
+
+    ChinanewsBee.start();
+</script>
+</body>
+</html>
