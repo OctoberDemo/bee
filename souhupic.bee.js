@@ -60,10 +60,13 @@ function _SohuPicBee() {
             var imgInfo = pics.shift();
             var img = {};
             img.desc = imgInfo.desc;
-            img.src = Bee.makeImgJumpUrl(imgInfo.pic3, "163.com");
+            img.src = Bee.makeImgJumpUrl(imgInfo.pic3, "www.sohu.com");
             var imgNode = document.createElement("img");
             dom.body.appendChild(imgNode);
             imgNode.src = img.src;
+            imgNode.onerror = function() {
+                loadImage();
+            };
             imgNode.onload = function() {
                 img.width = imgNode.clientWidth;
                 img.height = imgNode.clientHeight;
@@ -79,5 +82,9 @@ function _SohuPicBee() {
 
     this.start = function() {
         Bee.start();
+    };
+
+    this.debug = function(url) {
+      Bee.debug(url);
     }
 }
