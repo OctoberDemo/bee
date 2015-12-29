@@ -63,12 +63,14 @@ var SinaLocalBee = (function () {
             content_elem.removeClasses("article-video");
             content_elem.removeClasses("artice-pic");
             content_elem.removeClass("news_weixin_ercode clear tc");
+            content_elem.removeClass("weiboListBox otherContent_01");
             item.content = refineItemContent(Bee.htmlToJson(content_elem));
             Bee.finishExtractSubUrls(suburls, item);
         } else {
             content_elem.removeClasses("article-video");
             content_elem.removeClasses("artice-pic");
             content_elem.removeClass("news_weixin_ercode clear tc");
+            content_elem.removeClass("weiboListBox otherContent_01");
             item.content = refineItemContent(Bee.htmlToJson(content_elem));
             Bee.finishExtractItem(item);
         }
