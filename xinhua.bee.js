@@ -64,7 +64,7 @@ function _XinhuaBee() {
     }
 
     function finishExtractItem(item) {
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     }
 
     Bee.onItemDomLoaded = function (dom, item) {
@@ -95,7 +95,6 @@ function _XinhuaBee() {
         var timeString = attrib.byClass("time").innerText;
         item.created_at = Bee.convertTime(timeString);
         item.class = "";
-        item.status = 5;
         var isPages = article.byId("div_currpage", true);
         item = creatContent(article, item);
         if (isPages) {
