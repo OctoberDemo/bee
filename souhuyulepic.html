@@ -4,100 +4,67 @@
     <meta charset="UTF-8">
     <title>搜狐图片蜜蜂</title>
     <script src="bee.js"></script>
+    <script src="souhupic.bee.js"></script>
 </head>
 <body>
 <script>
 
-//    Bee.addChannel("", "独家新闻", "http://pic.yule.sohu.com/cate-911450.shtml");
-    Bee.addChannel("", "明星写真", "http://pic.yule.sohu.com/cate-914058.shtml");
-    Bee.addChannel("", "猎奇搞笑", "http://pic.yule.sohu.com/cate-911475.shtml");
-    Bee.addChannel("", "电影海报剧照", "http://pic.yule.sohu.com/cate-911476.shtml");
-    Bee.addChannel("", "国内新闻", "http://pic.news.sohu.com/cate-911195.shtml");
-    Bee.addChannel("", "国际新闻", "http://pic.news.sohu.com/cate-911196.shtml");
-    Bee.addChannel("", "角色", "http://pic.news.sohu.com/cate-914882.shtml");
-    Bee.addChannel("", "发现", "http://pic.news.sohu.com/cate-914883.shtml");
-    Bee.addChannel("", "军事", "http://pic.news.sohu.com/cate-911385.shtml");
-    Bee.addChannel("", "历史", "http://pic.history.sohu.com");
-    Bee.addChannel("", "教育", "http://pic.learning.sohu.com/cate-911355.shtml");
-    Bee.addChannel("", "篮球", "http://pic.sports.sohu.com/cate-911201.shtml");
-    Bee.addChannel("", "网球", "http://pic.sports.sohu.com/cate-911309.shtml");
-    Bee.addChannel("", "国际足球", "http://pic.sports.sohu.com/cate-911202.shtml");
-    Bee.addChannel("", "国内足球", "http://pic.sports.sohu.com/cate-911203.shtml");
-    Bee.addChannel("", "综合体育", "http://pic.sports.sohu.com/cate-911204.shtml");
-    Bee.addChannel("", "赛车", "http://pic.sports.sohu.com/cate-911205.shtml");
-    Bee.setType("pic.yule.sohu.com");
-    Bee.setImgReferer("pic.yule.sohu.com");
-    Bee.setRefreshTime(1000*60*10);
-    Bee.onListDomLoaded = function(dom) {
-        var pp = dom.byClass("pp", true);
-        var lis = pp.byTags("li");
-        var items = [];
-        for (var i = 0; i < lis.length; i++) {
-            var item = {};
-            var li = lis[i];
-            var a = li.byTag("a");
-            item.url = a.href;
-            item.title = a.byClass("desc").innerText;
-            items.push(item);
-        }
-        console.log(items);
-        Bee.finishExtractList(items);
-    };
+    SohuPicBee.addChannel("娱乐", "独家新闻", "http://pic.yule.sohu.com/cate-911450.shtml");
+    SohuPicBee.addChannel("娱乐", "娱乐频道", "http://pic.yule.sohu.com/cate-911401.shtml");
+    SohuPicBee.addChannel("娱乐", "独家镜头", "http://pic.yule.sohu.com/cate-913775.shtml");
+    SohuPicBee.addChannel("娱乐", "明星写真", "http://pic.yule.sohu.com/cate-914058.shtml");
+    SohuPicBee.addChannel("娱乐", "音乐频道", "http://pic.yule.sohu.com/cate-911400.shtml");
+    SohuPicBee.addChannel("娱乐", "签售发布会", "http://pic.yule.sohu.com/cate-911462.shtml");
+    SohuPicBee.addChannel("娱乐", "花絮彩排", "http://pic.yule.sohu.com/cate-911463.shtml");
+    SohuPicBee.addChannel("娱乐", "演出现场", "http://pic.yule.sohu.com/cate-911460.shtml");
+    SohuPicBee.addChannel("娱乐", "图片新闻", "http://pic.yule.sohu.com/cate-911466.shtml");
+    SohuPicBee.addChannel("娱乐", "电影活动", "http://pic.yule.sohu.com/cate-913901.shtml");
+    SohuPicBee.addChannel("娱乐", "猎奇搞笑", "http://pic.yule.sohu.com/cate-911475.shtml");
+    SohuPicBee.addChannel("娱乐", "电影海报剧照", "http://pic.yule.sohu.com/cate-911476.shtml");
+    SohuPicBee.addChannel("娱乐", "电视海报剧照", "http://pic.yule.sohu.com/cate-914150.shtml");
+    SohuPicBee.addChannel("国内", "", "http://pic.news.sohu.com/cate-911195.shtml");
+    SohuPicBee.addChannel("国际", "", "http://pic.news.sohu.com/cate-911196.shtml");
+    SohuPicBee.addChannel("", "角色", "http://pic.news.sohu.com/cate-914882.shtml");
+    SohuPicBee.addChannel("", "发现", "http://pic.news.sohu.com/cate-914883.shtml");
+    SohuPicBee.addChannel("", "720行走", "http://pic.news.sohu.com/cate-915055.shtml");
+    SohuPicBee.addChannel("军事", "", "http://pic.news.sohu.com/cate-911385.shtml");
+    SohuPicBee.addChannel("旅游", "风光美图", "http://pic.travel.sohu.com/cate-911366.shtml");
+    SohuPicBee.addChannel("旅游", "风土人情", "http://pic.travel.sohu.com/cate-911367.shtml");
+    SohuPicBee.addChannel("旅游", "星在旅途", "http://pic.travel.sohu.com/cate-911368.shtml");
+    SohuPicBee.addChannel("旅游", "天下奇闻", "http://pic.travel.sohu.com/cate-911390.shtml");
+    SohuPicBee.addChannel("旅游", "人文历史", "http://pic.travel.sohu.com/cate-912228.shtml");
+    SohuPicBee.addChannel("旅游", "新闻", "http://pic.travel.sohu.com/cate-912052.shtml");
+    SohuPicBee.addChannel("旅游", "世界最美图", "http://pic.travel.sohu.com/cate-914038.shtml");
+    SohuPicBee.addChannel("", "历史", "http://pic.history.sohu.com");
+    SohuPicBee.addChannel("教育", "校花校草", "http://pic.learning.sohu.com/cate-911374.shtml");
+    SohuPicBee.addChannel("教育", "BT搞笑", "http://pic.learning.sohu.com/cate-911376.shtml");
+    SohuPicBee.addChannel("教育", "校园风光", "http://pic.learning.sohu.com/cate-911377.shtml");
+    SohuPicBee.addChannel("教育", "校园生活", "http://pic.learning.sohu.com/cate-911379.shtml");
+    SohuPicBee.addChannel("教育", "海外风情", "http://pic.learning.sohu.com/cate-911375.shtml");
+    SohuPicBee.addChannel("教育", "职场丽人", "http://pic.learning.sohu.com/cate-911378.shtml");
+    SohuPicBee.addChannel("体育", "篮球", "http://pic.sports.sohu.com/cate-911201.shtml");
+    SohuPicBee.addChannel("体育", "网球", "http://pic.sports.sohu.com/cate-911309.shtml");
+    SohuPicBee.addChannel("体育", "国际足球", "http://pic.sports.sohu.com/cate-911202.shtml");
+    SohuPicBee.addChannel("体育", "国内足球", "http://pic.sports.sohu.com/cate-911203.shtml");
+    SohuPicBee.addChannel("体育", "综合体育", "http://pic.sports.sohu.com/cate-911204.shtml");
+    SohuPicBee.addChannel("体育", "赛车", "http://pic.sports.sohu.com/cate-911205.shtml");
+    SohuPicBee.addChannel("女性", "时尚", "http://pic.women.sohu.com/cate-911188.shtml");
+    SohuPicBee.addChannel("女性", "美容", "http://pic.women.sohu.com/cate-911189.shtml");
+    SohuPicBee.addChannel("女性", "情感", "http://pic.women.sohu.com/cate-911190.shtml");
+    SohuPicBee.addChannel("女性", "生活", "http://pic.women.sohu.com/cate-911191.shtml");
+    SohuPicBee.addChannel("健康", "中医养生", "http://pic.health.sohu.com/cate-914358.shtml");
+    SohuPicBee.addChannel("健康", "图片纪实", "http://pic.health.sohu.com/cate-914643.shtml");
+    SohuPicBee.addChannel("健康", "医学科普", "http://pic.health.sohu.com/cate-911341.shtml");
+    SohuPicBee.addChannel("健康", "时事类", "http://pic.health.sohu.com/cate-911342.shtml");
+    SohuPicBee.addChannel("健康", "奇闻趣事", "http://pic.health.sohu.com/cate-911343.shtml");
+    SohuPicBee.addChannel("健康", "健康生活", "http://pic.health.sohu.com/cate-911344.shtml");
+    SohuPicBee.addChannel("健康", "时尚类", "http://pic.health.sohu.com/cate-911332.shtml");
+    SohuPicBee.addChannel("健康", "营养美食", "http://pic.health.sohu.com/cate-911333.shtml");
+    SohuPicBee.addChannel("健康", "美容健身", "http://pic.health.sohu.com/cate-911335.shtml");
+    SohuPicBee.addChannel("健康", "生活类", "http://pic.health.sohu.com/cate-911336.shtml");
+    SohuPicBee.addChannel("健康", "科普类", "http://pic.health.sohu.com/cate-911338.shtml");
+    SohuPicBee.start();
 
-    Bee.onItemLoaded = function(dom, item) {
-        var groupData = this.getWindow()["groupData"];
-        var pics = groupData.items;
-        var meta = groupData.meta;
-        var sourceString = meta.src.title;
-        if (sourceString.indexOf("搜狐") < 0) {
-            if (Bee.existSource(sourceString)) {
-                console.log("跳过来源：" + sourceString);
-                Bee.passItem(item);
-                return;
-            } else {
-                console.log("未知来源：" + sourceString);
-            }
-        }
-        item.source = sourceString;
-        if (item.source == "") {
-            item.source = "搜狐大视野";
-        }
-        item.created_at = meta.date / 1000;
-        item.class = "image";
-        item.content = {};
-        item.content.imgs = [];
-        loadImage();
-
-        function loadImage() {
-            if (pics == undefined) {
-                Bee.passItem(item);
-                return;
-            }
-            if (pics.length == 0) {
-                item.cover_img = {};
-                item.cover_img.src = item.content.imgs[0].src;
-                item.cover_img.width = item.content.imgs[0].width;
-                item.cover_img.height = item.content.imgs[0].height;
-                Bee.finishExtractItem(item);
-                return;
-            }
-            var imgInfo = pics.shift();
-            var img = {};
-            img.desc = imgInfo.desc;
-            img.src = Bee.makeImgJumpUrl(imgInfo.pic3, "163.com");
-            var imgNode = document.createElement("img");
-            dom.body.appendChild(imgNode);
-            imgNode.src = img.src;
-            imgNode.onload = function() {
-                img.width = imgNode.clientWidth;
-                img.height = imgNode.clientHeight;
-                item.content.imgs.push(img);
-                loadImage();
-            }
-        }
-    };
-
-    Bee.start();
 
 </script>
 
