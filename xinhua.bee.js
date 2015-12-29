@@ -31,7 +31,7 @@ function _XinhuaBee() {
                         image.src = listImg.src;
                         image.height = listImg.clientHeight;
                         image.width = listImg.clientWidth;
-                        if (image.height != "0px" && image.width != "0px") {
+                        if (image.height != "0" && image.width != "0") {
                             item.cover_img = image;
                         }
                     }
@@ -45,6 +45,7 @@ function _XinhuaBee() {
                     items.push(item);
                 }
             }
+            console.log(items);
 
             Bee.finishExtractList(items);
         }, 1000);
@@ -61,15 +62,20 @@ function _XinhuaBee() {
         }
         return item;
     }
+
+    function finishExtractItem(item) {
+        Bee.finishExtractItem(item, true);
+    }
+
     Bee.onItemDomLoaded = function (dom, item) {
 
         var article = dom.byClass("article", true);
-        if (article == undefined) {
+        var attrib = dom.byClass("source", true);
+        if (article == undefined || attrib == undefined) {
             console.log("article == undefined");
-            Bee.finishExtractItem();
+            finishExtractItem();
             return;
         }
-        var attrib = dom.byClass("source");
         var sourceString = attrib.byId("source");
         if (sourceString) {
             sourceString = sourceString.innerText;
@@ -89,6 +95,7 @@ function _XinhuaBee() {
         var timeString = attrib.byClass("time").innerText;
         item.created_at = Bee.convertTime(timeString);
         item.class = "";
+        item.status = 5;
         var isPages = article.byId("div_currpage", true);
         item = creatContent(article, item);
         if (isPages) {
@@ -100,7 +107,7 @@ function _XinhuaBee() {
             }
             Bee.finishExtractSubUrls(subUrls, item);
         } else {
-            Bee.finishExtractItem(item);
+            finishExtractItem(item);
         }
     };
 
@@ -114,7 +121,7 @@ function _XinhuaBee() {
         item = creatContent(article, item);
         var result = Bee.continueSubItem(item);
         if (result == false) {
-            Bee.finishExtractItem(item);
+            finishExtractItem(item);
         }
     };
 
