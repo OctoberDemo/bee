@@ -46,7 +46,7 @@
             item.title = detail.innerText;
             item.url = detail.href;
             item.key = Bee.hashCode(item.url);
-            var img = itemDivs[i].byTag("img");
+            var img = itemDivs[i].byTag("img", true);
             if (img != null) {
                 var image = {};
                 image.src = img.src;
@@ -57,7 +57,7 @@
             items.push(item);
         }
         Bee.finishExtractList(items);
-    }
+    };
 
     Bee.onItemLoaded = function(dom, item) {
         var src = dom.byId("source_baidu").byTag("a");
@@ -66,12 +66,11 @@
             return;
         }
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
-        var content = Bee.htmlToJson(dom.byClass("baohanP"));
-        item.content = content;
+        item.content = Bee.htmlToJson(dom.byClass("baohanP"));
         item.tag = Bee.getCurCategory();
         item.class = "news";
         Bee.finishExtractItem(item);
-    }
+    };
     Bee.start();
 </script>
 </body>
