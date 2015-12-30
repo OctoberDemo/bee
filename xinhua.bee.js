@@ -92,7 +92,12 @@ function _XinhuaBee() {
             }
         }
         item.source = sourceString;
-        var timeString = attrib.byClass("time").innerText;
+        var timeItem = attrib.byClass("time");
+        if (timeItem == undefined) {
+            Bee.passItem(item);
+            return;
+        }
+        var timeString = timeItem.innerText;
         item.created_at = Bee.convertTime(timeString);
         item.class = "";
         var isPages = article.byId("div_currpage", true);
