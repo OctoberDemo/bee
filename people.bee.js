@@ -228,5 +228,9 @@ function _PeopleBee() {
 
     this.start = function() {
         Bee.start();
+    };
+
+    this.debug = function(url) {
+        Bee.debug(url);
     }
 }
