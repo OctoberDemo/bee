@@ -468,6 +468,9 @@ function _Bee() {
             BeeUtils.log("已成功爬取：" + item.title);
             BeeUtils.addKey(type, key);
 
+            var dingUrl = "http://jcloud.jndroid.com/request?page=http://source.greatlibrary.jndroid.cn/statistics/ding.html";
+            liteAjax(dingUrl, function(e) {}, "post", item.source, false);
+
             if (oneByone != true) {
                 loadItem();
             }
