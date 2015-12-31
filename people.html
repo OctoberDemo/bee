@@ -55,6 +55,10 @@
     Bee.onItemLoaded = function(dom, item) {
         var h4 = dom.byTag("h4");
         var infos = h4.innerText.trim().split(" ");
+        if (infos.length < 3) {
+            Bee.finishExtractItem();
+            return;
+        }
         var author = infos[infos.length - 1];
         if (author.indexOf("人民网") >= 0 || author.indexOf("人民日报") >= 0) {
 

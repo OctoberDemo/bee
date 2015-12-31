@@ -76,7 +76,12 @@
             Bee.passItem(item);
             return;
         }
-        var article_info = dom.byClass("article-info");
+        var article_info = dom.byClass("article-info", true);
+        if (article_info == undefined) {
+            console.log("article_info == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
         console.log(article_info);
         var author = article_info.byClass("author");
         if (author.byTag("li", true)) {
