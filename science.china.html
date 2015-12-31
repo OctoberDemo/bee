@@ -44,7 +44,7 @@
             var srcTag = dom.byId("source_baidu", true);
             if (srcTag != null) {
                 var src = srcTag.innerText;
-                src.replace("来源：","");
+                src = src.replace("来源：","");
                 if (src.search("中国网") < 0) {
                     if (Bee.existSource(src)) {
                         console.log("跳过来源：" + src);
