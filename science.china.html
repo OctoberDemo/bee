@@ -58,7 +58,6 @@
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
                 item.created_at = Bee.convertTime(time);
-                item.status = 3;
                 if (dom.byId("fontzoom", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("fontzoom"));
                     item.content = JSON.stringify(content);

@@ -58,7 +58,7 @@ function _ChinanewsBee() {
         if (item.url.indexOf("www.bj.chinanews") >= 0) {
             onBJItemLoaded(dom, item);
             return;
-        };
+        }
         var con = dom.byId("con", true);
         if (con == null) {
             console.log("未知页面格式：" + item.url);
@@ -95,7 +95,7 @@ function _ChinanewsBee() {
             if (tupian_div) {
                 item.content = item.content.concat(Bee.htmlToJson(tupian_div, [], [], imgConverter));
             }
-            var left_ph = con.byClass("left_ph");
+            var left_ph = con.byClass("left_ph", true);
             while (left_ph != null) {
                 item.content = item.content.concat(Bee.htmlToJson(left_ph, [], [], imgConverter));
                 left_ph.parentNode.removeChild(left_ph);
@@ -200,6 +200,10 @@ function _ChinanewsBee() {
 
     this.start = function() {
         Bee.start();
+    };
+
+    this.debug = function(url) {
+        Bee.debug(url);
     }
 
 }

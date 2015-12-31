@@ -36,8 +36,12 @@
             for (var i = 0; i < itemDivs.length; i++) {
                 var item = {};
                 var className = "c_title fl";
-                item.title = itemDivs[i].byClass(className).byTag("a").innerText;
-                item.url = itemDivs[i].byClass(className).byTag("a").href;
+                var classItem = itemDivs[i].byClass(className, true);
+                if (classItem == undefined) {
+                    continue;
+                }
+                item.title = classItem.byTag("a").innerText;
+                item.url = classItem.byTag("a").href;
                 item.key = Bee.hashCode(item.url);
                 items.push(item);
             }
@@ -63,7 +67,6 @@
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
                 item.created_at = Bee.convertTime(time);
-                item.status = 3;
                 if (dom.byId("artbody", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("artbody"));
                     item.content = JSON.stringify(content);

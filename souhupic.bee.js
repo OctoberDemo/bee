@@ -1,32 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>搜狐图片蜜蜂</title>
-    <script src="bee.js"></script>
-</head>
-<body>
-<script>
+var SohuPicBee = new _SohuPicBee();
+function _SohuPicBee() {
 
-//    Bee.addChannel("", "独家新闻", "http://pic.yule.sohu.com/cate-911450.shtml");
-    Bee.addChannel("", "明星写真", "http://pic.yule.sohu.com/cate-914058.shtml");
-    Bee.addChannel("", "猎奇搞笑", "http://pic.yule.sohu.com/cate-911475.shtml");
-    Bee.addChannel("", "电影海报剧照", "http://pic.yule.sohu.com/cate-911476.shtml");
-    Bee.addChannel("", "国内新闻", "http://pic.news.sohu.com/cate-911195.shtml");
-    Bee.addChannel("", "国际新闻", "http://pic.news.sohu.com/cate-911196.shtml");
-    Bee.addChannel("", "角色", "http://pic.news.sohu.com/cate-914882.shtml");
-    Bee.addChannel("", "发现", "http://pic.news.sohu.com/cate-914883.shtml");
-    Bee.addChannel("", "军事", "http://pic.news.sohu.com/cate-911385.shtml");
-    Bee.addChannel("", "历史", "http://pic.history.sohu.com");
-    Bee.addChannel("", "教育", "http://pic.learning.sohu.com/cate-911355.shtml");
-    Bee.addChannel("", "篮球", "http://pic.sports.sohu.com/cate-911201.shtml");
-    Bee.addChannel("", "网球", "http://pic.sports.sohu.com/cate-911309.shtml");
-    Bee.addChannel("", "国际足球", "http://pic.sports.sohu.com/cate-911202.shtml");
-    Bee.addChannel("", "国内足球", "http://pic.sports.sohu.com/cate-911203.shtml");
-    Bee.addChannel("", "综合体育", "http://pic.sports.sohu.com/cate-911204.shtml");
-    Bee.addChannel("", "赛车", "http://pic.sports.sohu.com/cate-911205.shtml");
-    Bee.setType("pic.yule.sohu.com");
-    Bee.setImgReferer("pic.yule.sohu.com");
+    Bee.setType("www.sohu.com");
+    Bee.setImgReferer("www.sohu.com");
     Bee.setRefreshTime(1000*60*10);
     Bee.onListDomLoaded = function(dom) {
         var pp = dom.byClass("pp", true);
@@ -49,6 +25,9 @@
         var pics = groupData.items;
         var meta = groupData.meta;
         var sourceString = meta.src.title;
+        if (sourceString.length == 0) {
+            sourceString = "搜狐大视野";
+        }
         if (sourceString.indexOf("搜狐") < 0) {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);
@@ -59,9 +38,6 @@
             }
         }
         item.source = sourceString;
-        if (item.source == "") {
-            item.source = "搜狐大视野";
-        }
         item.created_at = meta.date / 1000;
         item.class = "image";
         item.content = {};
@@ -84,10 +60,13 @@
             var imgInfo = pics.shift();
             var img = {};
             img.desc = imgInfo.desc;
-            img.src = Bee.makeImgJumpUrl(imgInfo.pic3, "163.com");
+            img.src = Bee.makeImgJumpUrl(imgInfo.pic3, "www.sohu.com");
             var imgNode = document.createElement("img");
             dom.body.appendChild(imgNode);
             imgNode.src = img.src;
+            imgNode.onerror = function() {
+                loadImage();
+            };
             imgNode.onload = function() {
                 img.width = imgNode.clientWidth;
                 img.height = imgNode.clientHeight;
@@ -97,9 +76,15 @@
         }
     };
 
-    Bee.start();
+    this.addChannel = function(category, tag, url) {
+        Bee.addChannel(category, tag, url);
+    };
 
-</script>
+    this.start = function() {
+        Bee.start();
+    };
 
-</body>
-</html>
+    this.debug = function(url) {
+      Bee.debug(url);
+    }
+}

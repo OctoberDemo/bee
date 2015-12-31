@@ -21,7 +21,7 @@
     Bee.setImgReferer("news.oeeee.com");
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListLoaded = function (dom) {
-        var button = dom.byClass("more");
+        var button = dom.byClass("more", true);
         if (button) {
             button.click();
             button.click();
@@ -38,13 +38,12 @@
                 item.title = a.innerText;
                 items.push(item);
             }
-            console.log(items);
             Bee.finishExtractList(items);
-        }, 500);
+        }, 1000);
     };
 
     Bee.onItemDomLoaded = function (dom, item) {
-        var article = dom.byClass("content content2");
+        var article = dom.byClass("content content2", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();

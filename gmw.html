@@ -101,6 +101,9 @@
         item.source = source;
 
         var pubTime = dom.byId("pubTime");
+        if (pubTime == undefined) {
+            pubTime = dom.byClass("subtitle").byTag("time");
+        }
         item.created_at = Bee.convertTime(pubTime.innerText);
 
         var contentMain = dom.byId("contentMain", true);

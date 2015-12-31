@@ -32,6 +32,10 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
+        if (dom.byClass("tpgsFocus", true)) {
+            Bee.finishExtractItem();
+            return;
+        }
         item.title = dom.byClass("crumbsTit").innerText;
         item.created_at = Bee.convertTime(dom.byClass("date").innerText);
 

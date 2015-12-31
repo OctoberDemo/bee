@@ -50,7 +50,11 @@
             return;
         }
         var attrib = dom.byId("pubtime_baidu");
-        var sourceString = attrib.byId("media_span").byTag("span").innerText;
+        var writer = dom.byClass("news-writer clear");
+        var sourceString = "搜狐娱乐";
+        if (writer == undefined) {
+            sourceString = attrib.byId("media_span").byTag("span").innerText;
+        }
         if (sourceString.indexOf("搜狐娱乐") < 0) {
             if (Bee.existSource(sourceString)) {
                 console.log("跳过来源：" + sourceString);

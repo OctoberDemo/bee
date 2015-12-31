@@ -1,31 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>中国网旅游频道蜜蜂</title>
-    <script src="bee.js"></script>
-</head>
-<body>
-<script>
-    Bee.setType("http://travel.china.com.cn/");
+/**
+ * Created by guyiyang on 2015/12/28.
+ */
+var chinaFinanceBee = new _ChinaFinanceBee();
+function _ChinaFinanceBee() {
+    Bee.setType("http://finance.china.com.cn/");
     Bee.requestNoScript();
     Bee.requestNoIframe();
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211766.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211764.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211768.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7085313.htm");
-    Bee.addChannel("新闻", "旅游", "http://travel.china.com.cn/node_7211761.htm");
-    Bee.setImgReferer("http://travel.china.com.cn/");
+    Bee.setImgReferer("http://finance.china.com.cn/");
     Bee.setRefreshTime(60 * 60 * 1000);
+
     Bee.onListLoaded = function(dom) {
         var items = [];
-        if (dom.byClass("List", true) != null) {
-            var itemDivs = dom.byTags("li");
+        if (dom.byClass("news_list", true) != null) {
+            var itemDivs = dom.byClass("news_list").byTags("li");
             for (var i = 0; i < itemDivs.length; i++) {
                 var item = {};
-                if (itemDivs[i].byTag("a", true) != null) {
-                    item.title = itemDivs[i].byTag("a").innerText;
-                    item.url = itemDivs[i].byTag("a").href;
+                var tags = itemDivs[i].byTags("a", true);
+                if (tags != null) {
+                    var tag = tags[tags.length - 1];
+                    item.title = tag.innerText;
+                    item.url = tag.href;
                     item.key = Bee.hashCode(item.url);
                     items.push(item);
                 }
@@ -53,8 +47,8 @@
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
                 item.created_at = Bee.convertTime(time);
-                if (dom.byId("fontzoom", true) != null) {
-                    var content = Bee.htmlToJson(dom.byId("fontzoom"));
+                if (dom.byId("content", true) != null) {
+                    var content = Bee.htmlToJson(dom.byId("content"));
                     item.content = JSON.stringify(content);
                     Bee.finishExtractItem(item);
                 } else {
@@ -65,8 +59,4 @@
             }
         }, 1000)
     }
-
-    Bee.start();
-</Script>
-</body>
-</html>
+}

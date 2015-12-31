@@ -41,7 +41,12 @@
         item.category = Bee.getCurCategory();
         item.tag = "美食";
 
-        var content = dom.byClass("content");
+        var content = dom.byClass("content", true);
+        if (content == undefined) {
+            Bee.log("content == undefined");
+            Bee.finishExtractItem();
+            return;
+        }
 
         var hasNext = false;
         var ps = content.byTags("p");

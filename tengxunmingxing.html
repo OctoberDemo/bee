@@ -93,7 +93,7 @@
                     desc: article.byTag("p").innerText
                 });
             }
-            if (dom.byClass("gallery")) {
+            if (dom.byClass("gallery", true)) {
                 var index = item.url.search("htm");
                 var picSrc = item.url.substring(0, index) + "hdPic.js";
                 liteAjax(picSrc, function(data) {
