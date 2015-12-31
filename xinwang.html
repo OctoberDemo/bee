@@ -60,7 +60,7 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var src = dom.byId("source_baidu").byTag("a");
+        var src = dom.byId("source_baidu").byTag("a", true);
         if (src == null) {
             Bee.passItem(item);
             return;

@@ -16,7 +16,7 @@ function _PeopleBee() {
         if (ej_right) {
             var uls = ej_right.byTags("ul");
             for (var i = 0; i < uls.length; i++) {
-                var links = uls[i].byTags("a");
+                var links = uls[i].byTags("a", true);
                 getItems(links);
             }
         }
@@ -24,7 +24,7 @@ function _PeopleBee() {
         if (newslist) {
             var uls = newslist.byTags("ul");
             for (var i = 0; i < uls.length; i++) {
-                var links = uls[i].byTags("a");
+                var links = uls[i].byTags("a", true);
                 getItems(links);
             }
         }
@@ -32,7 +32,7 @@ function _PeopleBee() {
         if (one_5) {
             var uls = one_5.byTags("ul");
             for (var i = 0; i < uls.length; i++) {
-                var links = uls[i].byTags("a");
+                var links = uls[i].byTags("a", true);
                 getItems(links);
             }
         }
@@ -40,7 +40,7 @@ function _PeopleBee() {
         if (d2_left) {
             var uls = d2_left.byTags("ul");
             for (var i = 0; i < uls.length; i++) {
-                var links = uls[i].byTags("a");
+                var links = uls[i].byTags("a", true);
                 getItems(links);
             }
         }
@@ -58,7 +58,7 @@ function _PeopleBee() {
         function getItemsFromList(listclass) {
             var lists = dom.byClasses(listclass, true);
             for (var i = 0; i < lists.length; i++) {
-                var links = lists[i].byTags("a");
+                var links = lists[i].byTags("a", true);
                 getItems(links);
             }
         }
@@ -111,7 +111,7 @@ function _PeopleBee() {
             var zdfy = dom.byClass("zdfy", true);
             if (zdfy && zdfy.byTags("a").length > 0) {
                 var urls = [];
-                var links = zdfy.byTags("a");
+                var links = zdfy.byTags("a", true);
                 for (var i = 1; i < links.length; i++) {
                     urls.push(links[i].href);
                 }
@@ -163,7 +163,7 @@ function _PeopleBee() {
             var zdfy = dom.byClass("zdfy", true);
             if (zdfy && zdfy.byTags("a").length > 0) {
                 var urls = [];
-                var links = zdfy.byTags("a");
+                var links = zdfy.byTags("a", true);
                 for (var i = 1; i < links.length; i++) {
                     urls.push(links[i].href);
                 }

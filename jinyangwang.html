@@ -16,7 +16,7 @@
     Bee.setImgReferer("www.ycwb.com");
     Bee.setRefreshTime(60 * 60 * 1000);
     Bee.onListLoaded = function(dom) {
-        var head = dom.byClass("headline");
+        var head = dom.byClass("headline", true);
         var items = [];
         if (head != null) {
             var item1 = {};
@@ -45,9 +45,15 @@
             }
         }
         Bee.finishExtractList(items);
-    }
+    };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function(dom, item) {
+        var main = dom.byClass("main_article", true);
+        if (main == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
+
         var src = dom.byId("source_baidu");
         if (src == null) {
             Bee.passItem(item);
@@ -69,7 +75,7 @@
         item.source = s;
         item.created_at = Bee.convertTime(time);
         item.tag = Bee.getCurCategory();
-        var content = Bee.htmlToJson(dom.byClass("main_article"));
+        var content = Bee.htmlToJson(main);
         item.content = JSON.stringify(content);
         item.class = "news";
         Bee.finishExtractItem(item);

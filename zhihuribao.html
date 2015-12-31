@@ -32,7 +32,11 @@
                 var duanzi = {};
                 duanzi.title = questions[i].byClass("question-title").innerText;
                 var key = Bee.hashCode(duanzi.title);
-                var author = questions[i].byClass("author").innerText;
+                var authorItem = questions[i].byClass("author");
+                if (authorItem == undefined) {
+                    continue;
+                }
+                var author = authorItem.innerText;
                 duanzi.source = "知乎";
                 duanzi.author = author.substring(0, author.length - 1);
                 var date = new Date();
