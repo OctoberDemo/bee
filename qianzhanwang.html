@@ -63,7 +63,7 @@
         var srcTag = dom.byId("source_baidu", true);
         if (srcTag) {
             var src = srcTag.innerText;
-            src.replace("来源：","");
+            src = src.replace("来源：","");
             if (src.search("头条前瞻") >= 0) {
                 Bee.passItem(item);
                 return;
