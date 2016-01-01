@@ -54,7 +54,7 @@
 
         setTimeout(function() {
             Bee.log("before load tw3");
-            var tw3s = dom.byClasses("tw3");
+            var tw3s = dom.byClasses("tw3", true);
             Bee.log("tw3s loaded:" + tw3s.length);
             var items = [];
             for (var i = 0; i < tw3s.length; i++) {

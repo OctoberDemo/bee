@@ -26,7 +26,7 @@
         var itemDivs = itemDiv.byTags("li");
         var items = [];
         for (var i = 0; i < itemDivs.length; i++) {
-            var tag = itemDivs[i].byTag("a");
+            var tag = itemDivs[i].byTag("a", true);
             if (tag != null) {
                 var item = {};
                 item.title = tag.innerText;

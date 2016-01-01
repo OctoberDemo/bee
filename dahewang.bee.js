@@ -6,7 +6,11 @@ function _DaHeBee() {
     Bee.setRefreshTime(1000 * 60 * 10);
     Bee.onListDomLoaded = function (dom) {
         var items = [];
-        var contList = dom.byClass("ulTxtList clearfix");
+        var contList = dom.byClass("ulTxtList clearfix", true);
+        if (contList == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var lis = contList.byTags("li");
         for (var i = 0; i < lis.length; i++) {
             var item = {};

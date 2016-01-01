@@ -19,7 +19,7 @@
 
     Bee.onListLoaded = function(dom) {
         if (Bee.getCurTag().indexOf("理论") >= 0) {
-            var news = dom.byClasses("pl_news xline pl_ative");
+            var news = dom.byClasses("pl_news xline pl_ative", true);
             var items = [];
             for (var i = 0; i < news.length; i++) {
                 var item = {};

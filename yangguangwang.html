@@ -96,7 +96,11 @@
     Bee.setRefreshTime(1000 * 60 * 5);
     Bee.onListDomLoaded = function (dom) {
         var items = [];
-        var contList = dom.byClass("wh690 left");
+        var contList = dom.byClass("wh690 left", true);
+        if (contList == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var lis = contList.byTags("li");
         for (var i = 0; i < lis.length; i++) {
             var item = {};
