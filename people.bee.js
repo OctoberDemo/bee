@@ -159,6 +159,7 @@ function _PeopleBee() {
             item.source = source;
             contentNode.removeTag("h2");
             contentNode.removeClass("editor");
+            contentNode.removeClass("jingbian2012");
 
             var zdfy = dom.byClass("zdfy", true);
             if (zdfy && zdfy.byTags("a").length > 0) {
