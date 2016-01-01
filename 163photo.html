@@ -63,7 +63,7 @@
     Bee.onListLoaded = function(dom) {
         setTimeout(function() {
             var items = [];
-            var picDivs = dom.byClasses("pic");
+            var picDivs = dom.byClasses("pic", true);
             for (var i = 0; i < picDivs.length; i++) {
                 var picDiv = picDivs[i];
                 var likeCount = parseInt(picDiv.byClass("js-like likeicn etag").innerText);

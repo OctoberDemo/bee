@@ -30,7 +30,7 @@
         setTimeout(function () {
             var items = [];
             var contList = dom.byId("J_roll_news");
-            var lis = contList.byClasses("J-roll-list roll-list clearfix");
+            var lis = contList.byClasses("J-roll-list roll-list clearfix", true);
             for (var i = 0; i < lis.length; i++) {
                 var a = lis[i].byTag("a");
                 var item = {};
