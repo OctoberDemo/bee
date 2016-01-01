@@ -8,7 +8,7 @@ function _JingbaowangBee() {
     Bee.requestNoCss();
     Bee.requestNoIframe()
 
-    //Bee.debug("http://www.bjd.com.cn/10zt/201512/29/t20151229_10696552.html");
+    //Bee.debug("http://www.bjd.com.cn/10jsxw/201512/31/t20151231_10713421.html ");
 
     Bee.onListLoaded = function(dom) {
         var items = [];
@@ -30,20 +30,37 @@ function _JingbaowangBee() {
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var zj_info = dom.byClass("zj_info");
-        var tds = zj_info.byTags("td");
-        if (tds.length != 5) {
-            Bee.warning("未知网页格式：" + item.url);
-            Bee.passItem(item);
-            return;
+        var timeString;
+        var sourceString;
+        var zj_info = dom.byClass("zj_info", true);
+        if (zj_info) {
+            var tds = zj_info.byTags("td");
+            if (tds.length != 5) {
+                Bee.warning("未知网页格式：" + item.url);
+                Bee.passItem(item);
+                return;
+            }
+            timeString = tds[1].innerText.trim();
+            sourceString = tds[2].innerText.trim();
+            item.content = Bee.htmlToJson(dom.byClass("zj_txt"));
+        } else {
+            var txth12 = dom.byClass("txth12");
+            var tds = txth12.byTags("td");
+            if (tds.length != 5) {
+                Bee.warning("未知网页格式：" + item.url);
+                Bee.passItem(item);
+                return;
+            }
+            timeString = tds[1].innerText.trim();
+            sourceString = tds[2].innerText.trim();
+            item.content = Bee.htmlToJson(dom.byClass("txtcon"));
         }
-        var timeString = tds[1].innerText.trim();
+
         if (timeString.indexOf("发布时间：") >= 0 || timeString.indexOf("发布时间:") >= 0) {
             timeString = timeString.substring(5);
         }
         item.created_at = Bee.convertTime(timeString);
 
-        var sourceString = tds[2].innerText.trim();
         if (sourceString.indexOf("文章来源：") >= 0 || sourceString.indexOf("文章来源:") >= 0) {
             sourceString = sourceString.substring(5).trim();
         }
@@ -65,13 +82,12 @@ function _JingbaowangBee() {
         }
         item.source = sourceString;
 
-        item.content = Bee.htmlToJson(dom.byClass("zj_txt"));
         if (item.desc) {
             var desc = {};
             desc.desc = item.desc;
             item.content.add(0, desc);
-            delete item.desc;
         }
+        delete item.desc;
 
         Bee.finishExtractItem(item);
     }
