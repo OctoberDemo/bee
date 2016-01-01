@@ -51,7 +51,11 @@
     Bee.addChannel("娱乐","http://e.gmw.cn/node_10798.htm");
 
     Bee.onListLoaded = function(dom) {
-        var news_list = dom.byClass("channelLeftPart");
+        var news_list = dom.byClass("channelLeftPart", true);
+        if (news_list == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var lis = news_list.byTags("li");
         var items = [];
         for (var i = 0; i < lis.length; i++) {

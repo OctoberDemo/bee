@@ -26,7 +26,11 @@
     Bee.addChannel("文化", "http://www.nbweekly.com/culture/Culture/");
     Bee.setRefreshTime(1000 * 60 * 60 * 4);
     Bee.onListLoaded = function(dom) {
-        var list = dom.byClass("list");
+        var list = dom.byClass("list", true);
+        if (list == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var lis = list.byTags("li");
         var items = [];
         for (var i = 0; i < lis.length; i++) {

@@ -26,7 +26,7 @@ function _DaHeBee() {
 
     Bee.onItemDomLoaded = function (dom, item) {
 
-        var article = dom.byId("mainCon");
+        var article = dom.byId("mainCon", true);
         if (article == undefined) {
             console.log("article == undefined");
             Bee.finishExtractItem();

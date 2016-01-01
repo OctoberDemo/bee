@@ -16,7 +16,7 @@
     Bee.setImgReferer("iszed.com");
     Bee.setRefreshTime(60 * 60 * 1000);
     Bee.onListLoaded = function(dom) {
-        var itemDivs = dom.byClasses("picArticle");
+        var itemDivs = dom.byClasses("picArticle", true);
         var items = [];
         for (var i = 0; i < itemDivs.length; i++) {
             var item = {};

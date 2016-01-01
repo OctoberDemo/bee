@@ -22,7 +22,7 @@
             }, 5000);
         };
         Bee.onItemLoaded = function(dom, item) {
-            var itemDivs = dom.byClasses("status-card");
+            var itemDivs = dom.byClasses("status-card", true);
             for (var i = 0; i < itemDivs.length; i++) {
                 var duanzi = {};
                 var content = Bee.htmlToJson(itemDivs[i].byClass("bd"));

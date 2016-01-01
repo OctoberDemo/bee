@@ -94,7 +94,7 @@
     Bee.setRefreshTime(1000 * 60 * 30 * 1);
 
     Bee.onListLoaded = function(dom) {
-        var list = dom.byClass("module mNyList");
+        var list = dom.byClass("module mNyList", true);
         if (list == undefined) {
             Bee.finishExtractList();
             return;

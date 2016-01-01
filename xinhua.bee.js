@@ -11,7 +11,7 @@ function _XinhuaBee() {
         }
         setTimeout(function () {
             var items = [];
-            var dataList = dom.byClasses("dataList");
+            var dataList = dom.byClasses("dataList", true);
             for (var j = 0; j < dataList.length; j++) {
                 var lis = dataList[j].byClasses("clearfix", true);
                 if (lis == undefined) {

@@ -28,7 +28,11 @@
     Bee.onListLoaded = function(dom) {
         var items = [];
 
-        var articleList = dom.byClass("articleList");
+        var articleList = dom.byClass("articleList", true);
+        if (articleList == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         getItems(articleList.byTags("a"));
 
         function getItems(as) {

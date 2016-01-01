@@ -85,7 +85,11 @@
 
         setTimeout(function () {
             var items = [];
-            var contList = dom.byClass("list-view card");
+            var contList = dom.byClass("list-view card", true);
+            if (contList == undefined) {
+                Bee.finishExtractList();
+                return;
+            }
             var lis = contList.byClasses("news-view left card");
             for (var i = 0; i < lis.length; i++) {
                 var li = lis[i];

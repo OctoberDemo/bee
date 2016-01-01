@@ -6,7 +6,11 @@ var SinaLocalBee = (function () {
     Bee.onListLoaded = function(dom) {
         setTimeout(function() {
             var items = [];
-            var listArticle = dom.byId("listArticle_page_0");
+            var listArticle = dom.byId("listArticle_page_0", true);
+            if (listArticle == undefined) {
+                Bee.finishExtractList();
+                return;
+            }
             var h3s = listArticle.byTags("h3");
             for (var i = 0; i < h3s.length; i++) {
                 var a = h3s[i].byTag("a");
@@ -20,7 +24,7 @@ var SinaLocalBee = (function () {
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var time_elem = dom.byClass("source-time");
+        var time_elem = dom.byClass("source-time", true);
         if (time_elem) {
         } else {
             Bee.passItem(item);

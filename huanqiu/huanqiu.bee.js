@@ -9,7 +9,11 @@ function _HuanqiuBee() {
     Bee.requestNoIframe();
 
     Bee.onListLoaded = function(dom) {
-        var fallsFlow = dom.byClass("fallsFlow");
+        var fallsFlow = dom.byClass("fallsFlow", true);
+        if (fallsFlow == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var items = [];
         var itemNodes = fallsFlow.byClasses("item");
         for (var i = 0; i < itemNodes.length; i++) {
