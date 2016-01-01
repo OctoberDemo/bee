@@ -50,7 +50,7 @@
             return;
         }
         var attrib = dom.byId("pubtime_baidu");
-        var writer = dom.byClass("news-writer clear");
+        var writer = dom.byClass("news-writer clear", true);
         var sourceString = "搜狐娱乐";
         if (writer == undefined) {
             sourceString = attrib.byId("media_span").byTag("span").innerText;

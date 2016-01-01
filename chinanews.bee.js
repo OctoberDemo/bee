@@ -104,7 +104,7 @@ function _ChinanewsBee() {
                     item.content = item.content.concat(Bee.htmlToJson(left_pt, [], [], imgConverter));
                     left_pt.parentNode.removeChild(left_pt);
                 }
-                left_ph = con.byClass("left_ph");
+                left_ph = con.byClass("left_ph", true);
             }
 
             var left_zw = con.byClass("left_zw");

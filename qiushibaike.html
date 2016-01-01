@@ -14,7 +14,7 @@
         console.log(dom);
         dom.removeTags("iframe");
         var items = [];
-        var articles = dom.byTags("article");
+        var articles = dom.byTags("article", true);
         for (var i = 0; i < articles.length; i++) {
             var article = articles[i];
             var id = article.attr("id");

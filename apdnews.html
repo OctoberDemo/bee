@@ -95,6 +95,10 @@
 
     Bee.onListLoaded = function(dom) {
         var list = dom.byClass("module mNyList");
+        if (list == undefined) {
+            Bee.finishExtractList();
+            return;
+        }
         var h4s = list.byTags("h4");
         var items = [];
         for (var i = 0; i < h4s.length; i++) {

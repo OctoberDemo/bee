@@ -32,7 +32,12 @@
             item.title = t.innerText;
             item.url = t.href;
             item.key = Bee.hashCode(item.url);
-            item.created_at = Bee.convertTime(itemDivs[i].byClass("usa_blbtrt blue").innerText);
+            var timeStringItem = itemDivs[i].byClass("usa_blbtrt blue", true);
+            if (timeStringItem == undefined) {
+                Bee.passItem(item);
+                return;
+            }
+            item.created_at = Bee.convertTime(timeStringItem.innerText);
             var img = itemDivs[i].byClass("usa_blbtrb").byTag("img");
             if (img != null) {
                 var image = {};
