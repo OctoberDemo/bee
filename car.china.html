@@ -51,7 +51,7 @@
             var srcTag = dom.byId("source_baidu", true);
             if (srcTag != null) {
                 var src = srcTag.innerText;
-                src.replace("来源：","");
+                src = src.replace("来源：","");
                 if (src.search("中国网") < 0) {
                     if (Bee.existSource(src)) {
                         console.log("跳过来源：" + src);
@@ -77,7 +77,7 @@
             }
         }, 1000)
     }
-    Bee.start();
+    Bee.debug("http://travel.china.com.cn/txt/2016-01/01/content_37435929.htm");
 </script>
 </body>
 </html>
