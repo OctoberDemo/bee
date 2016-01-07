@@ -38,7 +38,7 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var showAllBtn = dom.byId("showAllArticle");
+        var showAllBtn = dom.byId("showAllArticle", true);
         if (showAllBtn) {
             showAllBtn.click();
         } else {
@@ -46,13 +46,13 @@
         }
 
         setTimeout(function() {
-            item.title = dom.byClass("article-title").innerText;
-
             var article = dom.byClass("articleList");
+
             if (article == undefined) {
                 Bee.finishExtractItem();
                 return;
             }
+            item.title = dom.byClass("article-title").innerText;
             var timeString = article.byClass("time").innerText;
             item.created_at = Bee.convertTime(timeString);
             item.source = article.byClass("source").innerText;
