@@ -28,7 +28,8 @@
                 item.cover_img = image;
                 var info = itemDivs[i].byClass("info");
                 var blank = info.byTag("a");
-                item.source = "腾讯大家 "+blank.innerText;
+                item.source = "腾讯大家 ";
+                item.author = blank.innerText;
                 items.push(item);
             }
             Bee.finishExtractList(items);

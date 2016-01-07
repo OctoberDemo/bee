@@ -72,6 +72,10 @@
             var info = dom.byClass("info").byTags("span");
             var src = info[2].innerText;
             src = src.replace("来源： ","");
+            var srcs = src.split(" ");
+            if (srcs.length >= 2) {
+                src = srcs[0];
+            }
             if (src.search("中国西藏网") < 0) {
                 if (Bee.existSource(src)) {
                     console.log("跳过来源：" + src);
@@ -90,7 +94,7 @@
             item.content = JSON.stringify(content);
             Bee.finishExtractItem(item);
         }, 1000);
-    }
+    };
     Bee.start();
 </script>
 </body>
