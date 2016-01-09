@@ -156,10 +156,10 @@ function _Bee() {
     };
 
     this.setRefreshTime = function(t) {
-        var rand = Math.floor((Math.random() - 0.5) * t / 10);
-        setTimeout(function() {
-            location.reload();
-        }, t + rand);
+        //var rand = Math.floor((Math.random() - 0.5) * t / 10);
+        //setTimeout(function() {
+        //    location.reload();
+        //}, t + rand);
     };
 
     this.start = function() {
@@ -192,7 +192,7 @@ function _Bee() {
             if (self.onListLoaded) {
                 self.onListLoaded.call(listWebView, dom);
             }
-        }, 10000);
+        });
         listWebView.setOnDomLoadedListener(function() {
             var dom = listWebView.getDom();
             if (self.onListDomLoaded) {
@@ -221,7 +221,9 @@ function _Bee() {
         if (parentWin) {
             parentWin.postMessage("finish", "*");
         }
-        window.close();
+        if (window.this_is_jcloud) {
+            window.close();
+        }
     }
 
     this.finishExtractList = function(items) {
@@ -263,7 +265,7 @@ function _Bee() {
             if (self.onItemLoaded) {
                 self.onItemLoaded.call(itemWebView, dom, item);
             }
-        }, 10000);
+        });
         itemWebView.setOnDomLoadedListener(function() {
             var dom = itemWebView.getDom();
             if (self.onItemDomLoaded) {
@@ -300,7 +302,7 @@ function _Bee() {
             subItemWebView.setOnPageFinishListener(function() {
                 var dom = subItemWebView.getDom();
                 self.onSubItemLoaded.call(subItemWebView, dom, item);
-            }, 10000);
+            });
         }
         if (self.onSubItemDomLoaded) {
             subItemWebView.setOnDomLoadedListener(function() {
