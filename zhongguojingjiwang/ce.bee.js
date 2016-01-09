@@ -90,7 +90,10 @@ function _CEBee() {
 
             var hasSubItem = false;
             var page = dom.byClass("page", true);
+            console.log("page:" + page);
             if (page != null) {
+                console.log("page.innerHTML:" + page.innerHTML);
+                console.log("page.innerText:" + page.innerText);
                 if (page.innerText.indexOf("下一页") >= 0) {
                     if (page != null && page != undefined) {
                         var links = page.byTags("a");
