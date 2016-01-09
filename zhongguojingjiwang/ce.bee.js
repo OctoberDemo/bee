@@ -90,9 +90,11 @@ function _CEBee() {
 
             var hasSubItem = false;
             var page = dom.byClass("page", true);
-            if (page && page.innerText.indexOf("下一页") >= 0) {
-                var links = page.byTags("a");
-                extractSubItems(links);
+            if (page) {
+                if (page.innerText.indexOf("下一页") >= 0) {
+                    var links = page.byTags("a");
+                    extractSubItems(links);
+                }
             }
             var laiyuans = dom.byClasses("laiyuan", true);
             for (var i = 0; i < laiyuans.length; i++) {
