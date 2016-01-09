@@ -43,7 +43,20 @@
             return;
         }
         item.created_at = Bee.convertTime(dom.byClass("date").innerText);
-        item.source = dom.byClass("source").innerText;
+        var sourceString = dom.byClass("source").innerText;
+        if (sourceString.indexOf("来源：") >= 0) {
+            sourceString = sourceString.replace("来源：", "")
+        }
+        if (sourceString.indexOf("深圳商报") < 0) {
+            if (Bee.existSource(sourceString)) {
+                console.log("跳过来源：" + sourceString);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + sourceString);
+            }
+        }
+        item.source = sourceString;
         var content = Bee.htmlToJson(dom.byClass("content"));
         item.class = "news";
         item.tag = Bee.getCurCategory();
