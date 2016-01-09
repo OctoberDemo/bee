@@ -43,7 +43,7 @@ function _CEBee() {
     Bee.onItemLoaded = function(dom, item) {
         var articleTitle = dom.byId("articleTitle", true);
         if (articleTitle == null) {
-            console.log("未知格式");
+            console.log("未知格式：" + item.url);
             Bee.passItem(item);
             return;
         }
