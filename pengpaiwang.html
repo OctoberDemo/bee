@@ -68,7 +68,7 @@
         var sourceString = attrib[0].innerText;
         if (sourceString.indexOf("/") > 0) {
             var array = sourceString.split("/");
-            if (array[1] != "译") {
+            if (array[1].indexOf( "译") != 0) {
                 item.author = array[0];
                 sourceString = array[1];
             }

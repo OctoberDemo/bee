@@ -28,7 +28,8 @@
             var info = article.byClass("article-info");
             info.removeClass("article-comments");
             var infos = info.innerText.split("|");
-            item.source = "果壳网 " + infos[0];
+            item.source = "果壳网";
+            item.author = infos[0];
             item.created_at = Bee.convertTime(infos[1]);
             items.push(item);
 
