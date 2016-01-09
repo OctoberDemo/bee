@@ -90,10 +90,12 @@ function _CEBee() {
 
             var hasSubItem = false;
             var page = dom.byClass("page", true);
-            if (page) {
+            if (page != null) {
                 if (page.innerText.indexOf("下一页") >= 0) {
-                    var links = page.byTags("a");
-                    extractSubItems(links);
+                    if (page != null && page != undefined) {
+                        var links = page.byTags("a");
+                        extractSubItems(links);
+                    }
                 }
             }
             var laiyuans = dom.byClasses("laiyuan", true);
