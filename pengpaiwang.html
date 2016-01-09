@@ -66,7 +66,17 @@
         }
         var attrib = dom.byClass("news_about").byTags("p");
         var sourceString = attrib[0].innerText;
+        if (sourceString.indexOf("/") > 0) {
+            var array = sourceString.split("/");
+            if (array[1] != "译") {
+                item.author = array[0];
+                sourceString = array[1];
+            }
+        }
         if (sourceString.indexOf("澎湃") >= 0) {
+            if (sourceString.indexOf(" ") > 0) {
+                item.author = sourceString.split(" ")[1];
+            }
             sourceString = "澎湃新闻网";
         } else {
             if (Bee.existSource(sourceString)) {

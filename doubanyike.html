@@ -28,7 +28,8 @@
                 var content = Bee.htmlToJson(itemDivs[i].byClass("bd"));
                 duanzi.content = JSON.stringify(content);
                 duanzi.key = Bee.hashCode(JSON.stringify(content));
-                duanzi.source = "豆瓣一刻 " + itemDivs[i].byClass("hd").innerText;
+                duanzi.source = "豆瓣一刻";
+                duanzi.author = itemDivs[i].byClass("hd").innerText;
                 var date = new Date();
                 duanzi.created_at = Bee.convertTime(date.toDateString());
                 duanzi.class = "episode";

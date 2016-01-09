@@ -45,7 +45,8 @@
             Bee.passItem(item);
             return;
         }
-        item.source = dom.byId("source_baidu").innerText + " " +dom.byId("author_baidu").innerText;
+        item.source = dom.byId("source_baidu").innerText.replace("来源：", "");
+        item.author = dom.byId("author_baidu").innerText.replace("作者/", "");
         item.created_at = Bee.convertTime(dom.byId("pubtime_baidu").innerText);
         var content = Bee.htmlToJson(dom.byClass("text_f"));
         item.content = JSON.stringify(content);

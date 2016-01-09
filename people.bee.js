@@ -145,7 +145,7 @@ function _PeopleBee() {
 
             var source = pubText.substring(0, pubText.length - time.length).trim();
             if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
-                source = source.substring(3);
+                source = source.substring(3).split(" ")[0];
             }
             if (source.indexOf("人民") < 0) {
                 if (Bee.existSource(source)) {
