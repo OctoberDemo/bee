@@ -63,78 +63,79 @@ function _CEBee() {
     };
 
     Bee.onItemDomLoaded = function(dom, item) {
-        var articleTitle = dom.byId("articleTitle", true);
-        if (articleTitle == null) {
-            console.log("未知格式：" + item.url);
-            Bee.passItem(item);
-            return;
-        }
-        item.title = articleTitle.innerText;
-        var articleTime = dom.byId("articleTime");
-        item.created_at = Bee.convertTime(articleTime.innerText);
-        item.source = dom.byId("articleSource").innerText.trim();
-        if (item.source.indexOf("来源：") == 0 || item.source.indexOf("来源:") == 0) {
-            item.source = item.source.substring(3).trim();
-        }
-        if (item.source.indexOf("中国经济网") < 0) {
-            if (Bee.existSource(item.source)) {
-                console.log("已知来源：" + item.source);
-                Bee.passItem(item);
-            } else {
-                console.log("未知来源:" + item.source);
-            }
-        }
-        var TRS_Editor = dom.byClass("TRS_Editor", true);
-        if (TRS_Editor) {
-            item.content = Bee.htmlToJson(TRS_Editor, adTexts);
+        dom.removeTags("iframe");
 
-            var hasSubItem = false;
-            var page = dom.byClass("page", true);
-            console.log("page:" + page);
-            if (page != null) {
-                console.log("page.innerHTML:" + page.innerHTML);
-                console.log("page.innerText:" + page.innerText);
-                if (page.innerText.indexOf("下一页") >= 0) {
-                    if (page != null && page != undefined) {
-                        var links = page.byTags("a");
-                        extractSubItems(links);
+        setTimeout(function() {
+            var articleTitle = dom.byId("articleTitle", true);
+            if (articleTitle == null) {
+                console.log("未知格式：" + item.url);
+                Bee.passItem(item);
+                return;
+            }
+            item.title = articleTitle.innerText;
+            var articleTime = dom.byId("articleTime");
+            item.created_at = Bee.convertTime(articleTime.innerText);
+            item.source = dom.byId("articleSource").innerText.trim();
+            if (item.source.indexOf("来源：") == 0 || item.source.indexOf("来源:") == 0) {
+                item.source = item.source.substring(3).trim();
+            }
+            if (item.source.indexOf("中国经济网") < 0) {
+                if (Bee.existSource(item.source)) {
+                    console.log("已知来源：" + item.source);
+                    Bee.passItem(item);
+                } else {
+                    console.log("未知来源:" + item.source);
+                }
+            }
+            var TRS_Editor = dom.byClass("TRS_Editor", true);
+            if (TRS_Editor) {
+                item.content = Bee.htmlToJson(TRS_Editor, adTexts);
+
+                var hasSubItem = false;
+                var page = dom.byClass("page", true);
+                if (page != null) {
+                    if (page.innerText.indexOf("下一页") >= 0) {
+                        if (page != null && page != undefined) {
+                            var links = page.byTags("a");
+                            extractSubItems(links);
+                        }
                     }
                 }
-            }
-            var laiyuans = dom.byClasses("laiyuan", true);
-            for (var i = 0; i < laiyuans.length; i++) {
-                if (laiyuans[i].innerText.indexOf("下一页") >= 0) {
-                    var links = laiyuans[i].byTags("a");
-                    extractSubItems(links);
-                    break;
+                var laiyuans = dom.byClasses("laiyuan", true);
+                for (var i = 0; i < laiyuans.length; i++) {
+                    if (laiyuans[i].innerText.indexOf("下一页") >= 0) {
+                        var links = laiyuans[i].byTags("a");
+                        extractSubItems(links);
+                        break;
+                    }
                 }
-            }
-            if (hasSubItem == false) {
+                if (hasSubItem == false) {
+                    Bee.finishExtractItem(item);
+                }
+
+                function extractSubItems(links) {
+                    hasSubItem = true;
+                    var lastLinks = links[links.length - 1];
+                    var substring = lastLinks.href.substring(item.url.length - 6);
+                    substring = substring.substring(substring.indexOf("_") + 1);
+                    substring = substring.substring(0, substring.indexOf("."));
+                    var subCount = parseInt(substring);
+
+                    var baseUrl = item.url.substring(0, item.url.lastIndexOf("."));
+                    var appendix = item.url.substring(baseUrl.length);
+                    var subUrls = [];
+                    for (var i = 0; i < subCount; i++) {
+                        subUrls.push(baseUrl + "_" + (i + 1) + appendix);
+                    }
+                    Bee.finishExtractSubUrls(subUrls, item);
+                }
+
+            } else {
+                var articleText = dom.byId("articleText");
+                item.content = Bee.htmlToJson(articleText, adTexts);
                 Bee.finishExtractItem(item);
             }
-
-            function extractSubItems(links) {
-                hasSubItem = true;
-                var lastLinks = links[links.length - 1];
-                var substring = lastLinks.href.substring(item.url.length - 6);
-                substring = substring.substring(substring.indexOf("_") + 1);
-                substring = substring.substring(0, substring.indexOf("."));
-                var subCount = parseInt(substring);
-
-                var baseUrl = item.url.substring(0, item.url.lastIndexOf("."));
-                var appendix = item.url.substring(baseUrl.length);
-                var subUrls = [];
-                for (var i = 0; i < subCount; i++) {
-                    subUrls.push(baseUrl + "_" + (i + 1) + appendix);
-                }
-                Bee.finishExtractSubUrls(subUrls, item);
-            }
-
-        } else {
-            var articleText = dom.byId("articleText");
-            item.content = Bee.htmlToJson(articleText, adTexts);
-            Bee.finishExtractItem(item);
-        }
+        }, 200);
     };
 
     Bee.onSubItemDomLoaded = function(dom, item) {
