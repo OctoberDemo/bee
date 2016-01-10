@@ -83,6 +83,7 @@ function _CEBee() {
                 if (Bee.existSource(item.source)) {
                     console.log("已知来源：" + item.source);
                     Bee.passItem(item);
+                    return;
                 } else {
                     console.log("未知来源:" + item.source);
                 }
