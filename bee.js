@@ -463,6 +463,12 @@ function _Bee() {
             console.log(item);
             return;
         }
+        item.title = item.title.trim();
+        item.source = item.source.trim();
+
+        if (item.category) {
+            item.category = item.category.trim();
+        }
         item.content = JSON.stringify(item.content);
         console.log(item);
         var result = BeeUtils.putModel(item);
