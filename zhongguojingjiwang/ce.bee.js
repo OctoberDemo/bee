@@ -135,7 +135,7 @@ function _CEBee() {
                 item.content = Bee.htmlToJson(articleText, adTexts);
                 Bee.finishExtractItem(item);
             }
-        }, 200);
+        }, 1000);
     };
 
     Bee.onSubItemDomLoaded = function(dom, item) {
