@@ -423,6 +423,13 @@ function _BeeUtils() {
                         image.width = node.clientWidth;
                         image.height = node.clientHeight;
                     }
+                    if (image.width == 0 || image.height == 0) {
+                        liteAjax("http://jcloud.jndroid.com/request?page=http://playground.jndroid.cn/imagesize", function(e) {
+                            var size = JSON.parse(e);
+                            image.width = size.width;
+                            image.height = size.height;
+                        }, "post", image.src, false);
+                    }
                     contentItem.bound = getBounds(node);
                     contentItem.img = image;
                     contentList.push(contentItem);

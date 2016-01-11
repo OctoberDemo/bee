@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>北京青年报蜜蜂</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("epaper.ynet.com");
+    Bee.setImgReferer("epaper.ynet.com");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    liteAjax("http://epaper.ynet.com/", function(e) {
+        var url = e.substring(e.indexOf("URL=") + 4);
+        url = url.substring(0, url.indexOf("\""));
+        url = "http://epaper.ynet.com/" + url;
+
+        setTimeout(function() {
+            var webView = new BeeWebView();
+            Bee.addWebView(webView);
+            webView.loadUrl(url);
+            webView.setOnPageFinishListener(function() {
+                var dom = webView.getDom();
+                var ullist = dom.byId("ullist");
+                var links = ullist.byTags("a");
+                for (var i = 0; i < links.length; i++) {
+                    var link = links[i];
+                    if (link.attr("id") == "pageLink") {
+                        var tag = link.innerText;
+                        tag = tag.substring(tag.indexOf(":") + 1);
+                        tag = tag.substring(tag.indexOf("：") + 1);
+                        if (tag.indexOf("广告") >= 0) {
+                            continue;
+                        }
+                        Bee.addChannel("", tag, link.href);
+                    }
+
+                }
+                Bee.removeView(webView);
+                Bee.start();
+            });
+        }, 1000);
+    });
+
+    Bee.onListLoaded = function(dom) {
+        var curChannel = Bee.getCurChannel();
+        var tag = curChannel.tag;
+        var category = curChannel.category;
+        if (tag.indexOf("本市") >= 0) {
+            tag = "北京";
+        }
+        if (tag.indexOf("国内") >= 0) {
+            category = "国内"
+        }
+        if (tag.indexOf("国际") >= 0) {
+            category = "国际"
+        }
+        if (tag.indexOf("财经") >= 0) {
+            category = "财经"
+        }
+        if (tag.indexOf("体育") >= 0) {
+            category = "体育"
+        }
+        if (tag.indexOf("文娱") >= 0) {
+            category = "文娱"
+        }
+        if (tag.indexOf("健康") >= 0) {
+            category = "健康"
+        }
+        if (tag.indexOf("阅读") >= 0) {
+            category = "读书"
+        }
+
+        var jcul = dom.byClass("jcul");
+        var links = jcul.byTags("a");
+
+        var items = [];
+        for (var i = 0; i < links.length; i++) {
+            var item = {};
+//            item.status = 5;
+            item.class = "news";
+            item.tag = tag;
+            item.category = category;
+            item.url = links[i].href;
+            item.source = "北京青年报";
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var rit = dom.byClass("rit");
+        item.title = rit.byTag("h1").innerText;
+
+        var now = new Date();
+        item.created_at = Bee.convertTime(now.toLocaleDateString());
+        item.content = Bee.htmlToJson(dom.byClass("contnt"));
+
+        var contentStr = JSON.stringify(item.content);
+        if (contentStr.length < 500) {
+            console.log("内容过短");
+            Bee.passItem(item);
+            return;
+        }
+
+        Bee.finishExtractItem(item);
+    };
+
+</script>
+</body>
+</html>
