@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广州日报蜜蜂</title>
+    <script src="bee.js"></script>
+    <script src="jndroid/jndroid.core.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("gzdaily.dayoo.com");
+    Bee.setImgReferer("gzdaily.dayoo.com");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    liteAjax("http://gzdaily.dayoo.com/", function(e) {
+        var url = e.substring(e.indexOf("URL=") + 4);
+        url = url.substring(0, url.indexOf("\""));
+        url = "http://gzdaily.dayoo.com/" + url;
+
+        Bee.addChannel("", url);
+
+        Bee.onListLoaded = function(dom) {
+            var all_article_list = dom.byId("all_article_list");
+
+            var h4s = all_article_list.byTags("h4");
+            var listblocks = all_article_list.byClasses("listblock");
+
+            var items = [];
+            for (var i = 0; i < h4s.length; i++) {
+                var tag = h4s[i].innerText;
+                tag = tag.substring(tag.indexOf(":") + 1);
+                tag = tag.substring(tag.indexOf("：") + 1);
+                if (tag.indexOf("第1纸·") >= 0) {
+                    tag = tag.substring(tag.indexOf("第1纸·") + 4);
+                }
+
+                if (tag.indexOf("广告") >= 0) {
+                    continue;
+                }
+                if (tag.indexOf("黄页") >= 0) {
+                    continue;
+                }
+                if (tag.indexOf("每日闲情") >= 0) {
+                    continue;
+                }
+                if (tag.indexOf("二手楼市") >= 0) {
+                    continue;
+                }
+
+
+                var category = "";
+                if (tag.indexOf("要闻") >= 0) {
+                    category = "要闻";
+                }
+                if (tag.indexOf("国际") >= 0) {
+                    category = "国际";
+                }
+                if (tag.indexOf("财经") >= 0) {
+                    category = "财经";
+                }
+                if (tag.indexOf("体育") >= 0) {
+                    category = "体育";
+                }
+                if (tag.indexOf("车天下") >= 0) {
+                    category = "汽车";
+                }
+                if (tag.indexOf("娱乐") >= 0) {
+                    category = "娱乐";
+                }
+                if (tag.indexOf("保健") >= 0) {
+                    category = "健康";
+                }
+
+                if (tag.indexOf("顺时针") >= 0) {
+                    tag += " 顺德";
+                }
+
+                var links = listblocks[i].byTags("a");
+                for (var j = 0; j < links.length; j++) {
+                    var item = {};
+                    item.class = "news";
+                    item.category = category;
+                    item.tag = tag;
+//                    item.status = 5;
+                    item.url = links[j].href;
+                    items.push(item);
+                }
+            }
+            Bee.finishExtractList(items);
+        };
+
+        Bee.onItemLoaded = function(dom, item) {
+            item.title = dom.byId("artTitle").innerText;
+            item.source = "广州日报";
+
+            var now = new Date();
+            item.created_at = Bee.convertTime(now.toLocaleDateString());
+
+            item.content = Bee.htmlToJson(dom.byClass("text"));
+            var contentStr = JSON.stringify(item.content);
+            if (contentStr.length < 500) {
+                console.log("内容过短：" + contentStr.length);
+                Bee.passItem(item);
+                return;
+            }
+
+            Bee.finishExtractItem(item);
+        };
+
+        Bee.start();
+
+    });
+
+</script>
+</body>
+</html>
