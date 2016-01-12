@@ -52,7 +52,7 @@
     Bee.onItemLoaded = function(dom, item) {
         var pubtime_baidu = dom.byId("pubtime_baidu", true);
         if (pubtime_baidu == null) {
-            console.log("未知格式");
+            console.log("未知格式：" + item.url);
             Bee.passItem(item);
             return;
         }
