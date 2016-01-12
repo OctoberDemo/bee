@@ -28,7 +28,7 @@
     }
 
     Bee.onItemLoaded = function(dom, item) {
-        var src = dom.byId("source_baidu");
+        var src = dom.byId("source_baidu", true);
         if (src == null) {
             Bee.passItem(item);
             return;

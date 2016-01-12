@@ -46,7 +46,7 @@
         }
 
         setTimeout(function() {
-            var article = dom.byClass("articleList");
+            var article = dom.byClass("articleList", true);
 
             if (article == undefined) {
                 Bee.finishExtractItem();

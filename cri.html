@@ -123,7 +123,7 @@
         if (center) {
             ccontent.removeTag("center");
             item.content = Bee.htmlToJson(ccontent);
-            var as = center.byTags("a");
+            var as = center.byTags("a", true);
             var subUrls = [];
             for (var i = 0; i < as.length; i++) {
                 subUrls.push(as[i].href);

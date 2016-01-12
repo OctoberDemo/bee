@@ -32,7 +32,7 @@
                 var duanzi = {};
                 duanzi.title = questions[i].byClass("question-title").innerText;
                 var key = Bee.hashCode(duanzi.title);
-                var authorItem = questions[i].byClass("author");
+                var authorItem = questions[i].byClass("author", true);
                 if (authorItem == undefined) {
                     continue;
                 }
