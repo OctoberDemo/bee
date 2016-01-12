@@ -74,7 +74,7 @@ function Sinasport() {
 
     Bee.onListLoaded = function(dom) {
         if ( !loadOldList(dom) && !loadNewList(dom)) {
-            Bee.log("Á½¸ö°æ±¾¶¼²»ÊÇ");
+            Bee.log("ï¿½ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             Bee.finishExtractList([]);
         }
     };
@@ -100,18 +100,18 @@ function Sinasport() {
         var sourceString = "";
         var mediaName = artInfo.byId("media_name");
         var tagA = mediaName.byTags("a");
-        if (tagA.length == 1 && tagA[0].innerText == "Î¢²©") {
+        if (tagA.length == 1 && tagA[0].innerText == "Î¢ï¿½ï¿½") {
             sourceString = mediaName.innerText.split(" ")[0];
         } else {
             sourceString = tagA[0].innerText;
         }
-        if (sourceString.indexOf("ÐÂÀËÌåÓý") < 0) {
+        if (sourceString.indexOf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½") < 0) {
             if (Bee.existSource(sourceString)) {
-                console.log("Ìø¹ýÀ´Ô´£º" + sourceString);
+                console.log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½" + sourceString);
                 Bee.passItem(item);
                 return;
             } else {
-                console.log("Î´ÖªÀ´Ô´£º" + sourceString);
+                console.log("Î´Öªï¿½ï¿½Ô´ï¿½ï¿½" + sourceString);
             }
         }
         item.source = sourceString;
