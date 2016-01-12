@@ -37,7 +37,7 @@
 var Bee = new _Bee();
 function _Bee() {
     this.knownSource = "豆瓣一刻|互动百科|长江网|南都周刊|搜狐|糗百|163摄影|果壳网|中国日报|中青评论|国际在线|163新闻|百度百家|"
-                     + "参考消息网|喷嚏网|亚太日报|知乎日报|北京晨报|美食天下|周末画报|modernweekly|财新网|《财新周刊》|观点网|观察者|大河网|" +
+        + "参考消息网|喷嚏网|亚太日报|知乎日报|北京晨报|美食天下|周末画报|modernweekly|财新网|《财新周刊》|观点网|观察者|大河网|" +
         "法制晚报|环球|澎湃|新华网|中国新闻网|奥一网|第一财经|南方都市报|京华网|京华网综合";
 
     var self = this;
@@ -192,7 +192,7 @@ function _Bee() {
             if (self.onListLoaded) {
                 self.onListLoaded.call(listWebView, dom);
             }
-        }, 10000);
+        });
         listWebView.setOnDomLoadedListener(function() {
             var dom = listWebView.getDom();
             if (self.onListDomLoaded) {
@@ -221,7 +221,9 @@ function _Bee() {
         if (parentWin) {
             parentWin.postMessage("finish", "*");
         }
-        //window.close();
+        if (window.this_is_jcloud) {
+            window.close();
+        }
     }
 
     this.finishExtractList = function(items) {
@@ -263,7 +265,7 @@ function _Bee() {
             if (self.onItemLoaded) {
                 self.onItemLoaded.call(itemWebView, dom, item);
             }
-        }, 10000);
+        });
         itemWebView.setOnDomLoadedListener(function() {
             var dom = itemWebView.getDom();
             if (self.onItemDomLoaded) {
@@ -300,7 +302,7 @@ function _Bee() {
             subItemWebView.setOnPageFinishListener(function() {
                 var dom = subItemWebView.getDom();
                 self.onSubItemLoaded.call(subItemWebView, dom, item);
-            }, 10000);
+            });
         }
         if (self.onSubItemDomLoaded) {
             subItemWebView.setOnDomLoadedListener(function() {
@@ -461,6 +463,12 @@ function _Bee() {
             console.log(item);
             return;
         }
+        item.title = item.title.trim();
+        item.source = item.source.trim();
+
+        if (item.category) {
+            item.category = item.category.trim();
+        }
         item.content = JSON.stringify(item.content);
         console.log(item);
         var result = BeeUtils.putModel(item);
@@ -499,7 +507,7 @@ function _Bee() {
     };
 
     this.hashCode = function(string) {
-       return BeeUtils.hashCode(string);
+        return BeeUtils.hashCode(string);
     };
 
     this.scrollToBottom = function(dom) {
