@@ -73,7 +73,7 @@ String.prototype.trim = function() {
 };
 
 String.prototype.contains = function(str) {
-    return (this.indexOf(str) < 0);
+    return (this.indexOf(str) >= 0);
 };
 
 String.prototype.startsWith = function(str) {

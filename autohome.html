@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>汽车之家蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("www.autohome.com.cn")
+    Bee.setImgReferer("www.autohome.com.cn");
+
+    Bee.addChannel("汽车", "新闻", "http://www.autohome.com.cn/news/");
+    Bee.addChannel("汽车", "用车", "http://www.autohome.com.cn/use/");
+    Bee.addChannel("汽车", "文化", "http://www.autohome.com.cn/culture/");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        dom.removeClasses("advlist");
+        dom.removeId("channelPage");
+
+        var column = dom.byClass("column");
+        var lis = column.byTags("li");
+        for (var i = 0; i < lis.length; i++) {
+            if (lis[i].innerText.indexOf("推广") >= 0) {
+                console.log("推广链接");
+                continue;
+            }
+            var links = lis[i].byTags("a");
+            extractLinks(links);
+        }
+
+        function extractLinks(links) {
+            for (var i = 0; i < links.length; i++) {
+                if (exist(links[i].href) || links[i].href.trim() == "") {
+                    continue;
+                }
+                var item = {};
+                item.class = "news";
+//                item.status = 5;
+                item.url = links[i].href;
+                items.push(item);
+            }
+        }
+
+        function exist(url) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].url == url) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var article = dom.byClass("article", true);
+        if (article == null) {
+            console.log("未知格式：" + item.url);
+            Bee.passItem(item);
+            return;
+        }
+        item.title = article.byTag("h1").innerText;
+
+        var info = dom.byClass("article-info").innerText;
+        var time = info.substring(0, info.indexOf("来源"));
+        item.created_at = Bee.convertTime(time);
+
+        var source = info.substring(info.indexOf("来源") + 3);
+        source = source.substring(0, source.indexOf(" "));
+        source = source.trim();
+
+        if (source.indexOf("汽车之家") >= 0) {
+
+        } else {
+            if (Bee.existSource(source)) {
+                console.log("已知来源：" + source);
+                Bee.passItem(item);
+                return;
+            } else {
+                console.log("未知来源：" + source);
+            }
+        }
+        item.source = source;
+        item.content = getContent(dom);
+
+        var page = dom.byClass("page", true);
+        if (page && page.innerText.indexOf("下一页") >= 0) {
+            var links = page.byTags("a");
+            var subUrls = [];
+            for (var i = 2; i < links.length - 2; i++) {
+                subUrls.push(links[i].href);
+            }
+            Bee.finishExtractSubUrls(subUrls, item);
+        } else {
+            console.log(item.content.length);
+            Bee.finishExtractItem(item);
+        }
+
+        console.log(item);
+    };
+
+    Bee.onSubItemLoaded = function(dom, item) {
+        item.content = item.content.concat(getContent(dom));
+        if (item.content.length > 200) {
+            console.log("文章过长！！" + item.url);
+            Bee.passItem(item);
+            return;
+        }
+        var hasNext = Bee.continueSubItem(item);
+        if (hasNext == false) {
+            Bee.finishExtractItem(item);
+        }
+    };
+
+    function getContent(dom) {
+        dom.removeClasses("diversion-box");
+        var articleContent = dom.byId("articleContent");
+        var itemContent = Bee.htmlToJson(articleContent);
+        var content = [];
+        for (var i = 0; i < itemContent.length; i++) {
+            var node = itemContent[i];
+            if (node.p && (node.p.indexOf("更多阅读") >= 0 || node.p.indexOf("相关链接") >= 0
+                    || node.p.indexOf("相关阅读") >= 0)) {
+                break;
+            }
+            content.push(node);
+        }
+        return content;
+    }
+
+    Bee.start();
+
+
+</script>
+</body>
+</html>
