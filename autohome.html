@@ -97,7 +97,11 @@
         if (page && page.innerText.indexOf("下一页") >= 0) {
             var links = page.byTags("a");
             var subUrls = [];
-            for (var i = 2; i < links.length - 2; i++) {
+            var end = links.length - 1;
+            if (page.innerText.indexOf("阅读全文") >= 0) {
+                end = links.length - 2;
+            }
+            for (var i = 2; i < end; i++) {
                 subUrls.push(links[i].href);
             }
             Bee.finishExtractSubUrls(subUrls, item);
