@@ -6,7 +6,6 @@ function Sinasport() {
     Bee.requestNoCss();
     Bee.requestNoIframe();
 
-
     function loadNewList(dom) {
         Bee.scrollToBottom(dom);
         setTimeout(function() {
@@ -74,7 +73,7 @@ function Sinasport() {
 
     Bee.onListLoaded = function(dom) {
         if ( !loadOldList(dom) && !loadNewList(dom)) {
-            Bee.log("�����汾������");
+            Bee.log("两种格式都不是");
             Bee.finishExtractList([]);
         }
     };
@@ -100,18 +99,18 @@ function Sinasport() {
         var sourceString = "";
         var mediaName = artInfo.byId("media_name");
         var tagA = mediaName.byTags("a");
-        if (tagA.length == 1 && tagA[0].innerText == "΢��") {
+        if (tagA.length == 1 && tagA[0].innerText == "微博") {
             sourceString = mediaName.innerText.split(" ")[0];
         } else {
             sourceString = tagA[0].innerText;
         }
-        if (sourceString.indexOf("��������") < 0) {
+        if (sourceString.indexOf("新浪体育") < 0) {
             if (Bee.existSource(sourceString)) {
-                console.log("������Դ��" + sourceString);
+                console.log("已知来源： " + sourceString);
                 Bee.passItem(item);
                 return;
             } else {
-                console.log("δ֪��Դ��" + sourceString);
+                console.log("未知来源： " + sourceString);
             }
         }
         item.source = sourceString;
