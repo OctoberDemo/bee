@@ -38,7 +38,7 @@
                 return;
             }
             item.created_at = Bee.convertTime(timeStringItem.innerText);
-            var img = itemDivs[i].byClass("usa_blbtrb").byTag("img");
+            var img = itemDivs[i].byClass("usa_blbtrb").byTag("img", true);
             if (img != null) {
                 var image = {};
                 image.src = img.src;

@@ -11,7 +11,7 @@ var SinaLocalBee = (function () {
                 Bee.finishExtractList();
                 return;
             }
-            var h3s = listArticle.byTags("h3");
+            var h3s = listArticle.byTags("h3", true);
             for (var i = 0; i < h3s.length; i++) {
                 var a = h3s[i].byTag("a");
                 var item = {};

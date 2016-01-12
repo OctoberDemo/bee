@@ -37,7 +37,13 @@
         if (src == null) {
             Bee.passItem(item);
         }
-        var s = src.byTag("a").innerText;
+        var sourceItem = src.byTag("a", true);
+        if (sourceItem == undefined) {
+            Bee.log("来源为空");
+            Bee.passItem(item);
+            return;
+        }
+        var s = sourceItem.innerText;
         if (s.search("人民网-舆情频道") < 0) {
             if (Bee.existSource(s)) {
                 console.log("跳过来源：" + s);
