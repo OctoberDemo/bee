@@ -72,6 +72,10 @@ String.prototype.trim = function() {
     return this.replace(/^[\s| ]*|[\s| ]*$/g, "");
 };
 
+String.prototype.contains = function(str) {
+    return (this.indexOf(str) < 0);
+};
+
 String.prototype.startsWith = function(str) {
     return (this.indexOf(str) == 0);
 };
