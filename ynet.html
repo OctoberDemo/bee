@@ -38,11 +38,13 @@
 
         function extractLinks(links) {
             for (var i = 0; i < links.length; i++) {
-                var item = {};
-                item.class = "news";
-                item.url = links[i].href;
+                if (links[i].href.trim() != "") {
+                    var item = {};
+                    item.class = "news";
+                    item.url = links[i].href;
 //                item.status = 5;
-                items.push(item);
+                    items.push(item);
+                }
             }
         }
 
