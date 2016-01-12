@@ -65,6 +65,11 @@
         if (source_baidu == null) {
             source_baidu = dom.byId("source_baidu");
         }
+        if (source_baidu == null) {
+            console.log("未知格式：" + item.url);
+            Bee.passItem(item);
+            return;
+        }
         var source = source_baidu.innerText.trim();
         if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
             source = source.substring(3);
