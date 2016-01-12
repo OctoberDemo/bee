@@ -28,7 +28,7 @@
             webView.setOnPageFinishListener(function() {
                 var dom = webView.getDom();
                 var ullist = dom.byId("ullist");
-                var links = ullist.byTags("a");
+                var links = ullist.byTags("a", true);
                 for (var i = 0; i < links.length; i++) {
                     var link = links[i];
                     if (link.attr("id") == "pageLink") {
