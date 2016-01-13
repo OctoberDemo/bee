@@ -13,9 +13,16 @@ function _YouthBee() {
     Bee.onListLoaded = function(dom) {
         var items = [];
 
-        var rdwz = dom.byClass("rdwz");
-        var links = rdwz.byTags("a");
-        extractLinks(links);
+        var rdwz = dom.byClass("rdwz", true);
+        if (rdwz) {
+            var links = rdwz.byTags("a");
+            extractLinks(links);
+        }
+        var list = dom.byClass("list", true);
+        if (list) {
+            var links = list.byTags("a");
+            extractLinks(links);
+        }
 
         Bee.finishExtractList(items);
 
@@ -34,6 +41,8 @@ function _YouthBee() {
     };
 
     Bee.onItemLoaded = function(dom, item) {
+        dom.removeClass("copy-share");
+
         var main_l = dom.byClass("main_l", true);
         if (main_l == null) {
             console.log("未知格式：" + item.url);
@@ -54,11 +63,15 @@ function _YouthBee() {
         }
         item.created_at = Bee.convertTime(time);
 
-        var source_baidu = dom.byId("source_baidu");
-        var source = source_baidu.innerText;
+        var source_baidu = dom.byId("source_baidu", true);
+        var source = "中国青年网";
+        if (source_baidu) {
+            source = source_baidu.innerText;
+        }
         if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
             source = source.substring(3);
         }
+        source = source.trim();
         if (source.contains("中国青年网")) {
 
         } else {
@@ -140,6 +153,8 @@ function _YouthBee() {
     };
 
     Bee.onSubItemDomLoaded = function(dom, item) {
+        dom.removeClass("copy-share");
+
         var TRS_Editor = dom.byClass("TRS_Editor", true);
         if (TRS_Editor) {
             item.content = item.content.concat(Bee.htmlToJson(TRS_Editor));

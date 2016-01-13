@@ -66,7 +66,7 @@ function BeeWebView() {
             if (window.Node.prototype.attr == undefined) {
                 window.Node.prototype.attr = function (a, ignoreCheck) {
                     var node = this.getAttribute(a);
-                    if (node == undefined && ignoreCheck == true) {
+                    if (node == undefined && ignoreCheck != true) {
                         BeeUtils.warning(getUrl() + " | attr \"" + a + "\" fail!");
                     }
                     return node;
