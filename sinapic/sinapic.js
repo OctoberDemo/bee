@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>新浪图片</title>
-    <script src="bee.js"></script>
-</head>
-<body>
-<script>
-
+new sinapic();
+function sinapic() {
+    //chanel url 在index下的 BASEURL；
     Bee.setType("photo.sina.com");
     Bee.setImgReferer("www.sinaimg.cn");
     Bee.requestNoCss();
-    Bee.requestNoIframe();
 
-//    Bee.addChannel("国内", "新闻", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=c&num=50");
-//    Bee.addChannel("国际", "新闻", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=w&num=50");
-    Bee.addChannel("", "社会", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=&num=10");
+    Bee.requestNoIframe();
 
     Bee.onListDomLoaded = function(dom) {
         var jsonData = JSON.parse(dom.body.innerText).data;
+        console.log(jsonData.length);
         var items = [];
 
         function loadList() {
@@ -40,15 +31,19 @@
                     return;
                 } else {
                     console.log("未知来源：" + sourceString);
+                    //为了集中量，暂时这样吧，，
+                    if (sourceString != "其他") {
+                        item.tag = sourceString;
+                    }
                 }
             }
-            if (sourceString == "其他" || sourceString == "新浪") {
-                sourceString = "新浪图片";
-            }
-            item.source = sourceString;
+
+            console.log(sourceString);
+            item.source = "新浪图片";
             item.created_at = Bee.convertTime(data.createtime);
 
             if (data.cover_img == "") {
+                items.push(item);
                 loadList();
                 return;
             }
@@ -66,6 +61,7 @@
             };
             imgNode.onerror = function() {
                 console.log("图片加载失败");
+                items.push(item);
                 loadList();
             }
 
@@ -81,12 +77,17 @@
         }
         var deses = dom.byId("imageDesc").byClasses("desc-text-item");
         var scrollItems = listContent.byClasses("scroll-item", true);
+        var desCount = 0;
         for (var i = 0; i < scrollItems.length; i++) {
             var imgWrap = scrollItems[i].byClass("img-wrap", true);
             if (imgWrap && imgWrap.byTag("img", true) != undefined) {
                 var img = {};
-                var des = deses.shift();
-                img.desc = des.innerText;
+                var des = deses[desCount].innerText.trim();
+                img.desc = des;
+                desCount++;
+                if (des.indexOf("感谢观看本期《看见》") != -1) {
+                    continue;
+                }
                 var imgTag = imgWrap.byTag("img");
                 img.src = Bee.makeImgJumpUrl(imgTag.src, "www.sina.com");
                 img.width = imgTag.clientWidth;
@@ -94,16 +95,14 @@
                 item.content.imgs.push(img);
             }
         }
-
-
     }
     Bee.onItemDomLoaded = function(dom, item) {
         item.class = "image";
         item.content = {};
         item.content.imgs = [];
-        item.status = 5;
+        //item.status = 5;
         var page = this.getWindow().PAGE;
-        if(page == undefined) {
+        if(page == undefined || page.FullScreen == undefined || page.FullScreen.___ytreporp___ == undefined) {
             beeByDom(dom, item);
             return;
         }
@@ -122,7 +121,7 @@
                     item.cover_img.width = item.content.imgs[0].width;
                     item.cover_img.height = item.content.imgs[0].height;
                 }
-                Bee.finishExtractItem(item, true);
+                Bee.finishExtractItem(item);
                 return;
             }
             var imgInfo = images.shift();
@@ -132,7 +131,11 @@
                 return;
             }
             var img = {};
-            img.desc = imgInfo.intro;
+            img.desc = imgInfo.intro.trim();
+            if (img.desc.indexOf("感谢观看本期《看见》") != -1) {
+                loadImage();
+                return;
+            }
             img.src = Bee.makeImgJumpUrl(url, "www.sinaimg.cn");
             var imgNode = document.createElement("img");
             dom.body.appendChild(imgNode);
@@ -149,10 +152,4 @@
             }
         }
     };
-
-//    Bee.start();
-    Bee.debug("http://slide.news.sina.com.cn/x/slide_1_64237_94055.html#p=2");
-</script>
-
-</body>
-</html>
+}

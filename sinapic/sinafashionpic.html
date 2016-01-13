@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪时尚类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("时尚", "时装", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=s&num=50");
+    Bee.addChannel("时尚", "美容", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=b&num=50");
+    Bee.addChannel("时尚", "美体", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=d&num=50");
+    Bee.addChannel("时尚", "尚品", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=l&num=50");
+    Bee.addChannel("时尚", "婚嫁", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=w&num=50");
+    Bee.addChannel("时尚", "美搭", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=24&sub_ch=m&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>

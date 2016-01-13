@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪体育类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("体育", "NBA", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=k&num=50");
+    Bee.addChannel("体育", "CBA", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=cba&num=50");
+    Bee.addChannel("体育", "国足", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch={in}n,n_j,n_b,n_n,n_c,n_csldata,n_csl&num=50");
+    Bee.addChannel("体育", "国际足球", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch={in}g,g_brazil2014,g_bundesliga,g_laliga,g_pl,g_seriea,g_ucl&num=50");
+    Bee.addChannel("体育", "综合", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch={in}o,o_y,o_v,o_p,o_b,o_t,o_tc,o_s,o_k,o_sj,o_o,o_e,o_run,o_winter&num=50");
+    Bee.addChannel("体育", "网球", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=t&num=50");
+    Bee.addChannel("体育", "高尔夫", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=golf&num=50");
+    Bee.addChannel("体育", "赛车", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=f1&num=50");
+    Bee.addChannel("体育", "棋牌", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=go&num=50");
+    Bee.addChannel("体育", "鞋", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=shoe&num=50");
+    Bee.addChannel("体育", "彩票", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=2&sub_ch=l&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>
