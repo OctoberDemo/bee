@@ -27,6 +27,12 @@ function _ZjolBee() {
                             if (tag.indexOf("广告") >= 0) {
                                 continue;
                             }
+                            if (tag.indexOf("今日购") >= 0) {
+                                continue;
+                            }
+                            if (tag.indexOf("码上生活") >= 0) {
+                                continue;
+                            }
                             tag = (tag + " 浙江").trim();
 
                             console.log(tag + "|" + link.href);

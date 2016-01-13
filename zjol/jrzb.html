@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>今日早报蜜蜂</title>
+    <script src="../jndroid/jndroid.core.js"></script>
+    <script src="../bee.js"></script>
+    <script src="zjol.bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("jrzb.zjol.com.cn");
+    Bee.setImgReferer("jrzb.zjol.com.cn");
+
+    ZjolBee.openPaper("http://jrzb.zjol.com.cn/");
+    ZjolBee.setSource("今日早报");
+    ZjolBee.tagToCategory = function(tag) {
+        if (tag.indexOf("要闻") >= 0) {
+            return "要闻";
+        }
+        if (tag.indexOf("民生") >= 0) {
+            return "民生";
+        }
+        if (tag.indexOf("社会") >= 0) {
+            return "社会";
+        }
+        if (tag.indexOf("国际") >= 0) {
+            return "国际";
+        }
+        if (tag.indexOf("财经") >= 0) {
+            return "财经";
+        }
+        if (tag.indexOf("文娱") >= 0) {
+            return "娱乐";
+        }
+    };
+</script>
+</body>
+</html>
