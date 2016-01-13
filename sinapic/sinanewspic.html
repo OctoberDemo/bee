@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪新闻类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("国内", "新闻", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=c&num=50");
+    Bee.addChannel("国际", "新闻", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=w&num=50");
+    Bee.addChannel("", "社会", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=s&num=50");
+    Bee.addChannel("", "天气", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=weather&num=50");
+    Bee.addChannel("", "看见", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=z&num=50");
+    Bee.addChannel("", "天下", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=d&num=50");
+    Bee.addChannel("", "历史", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=1&sub_ch=j&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>
