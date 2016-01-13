@@ -72,6 +72,10 @@ function _YouthBee() {
             source = source.substring(3);
         }
         source = source.trim();
+        if (source.contains(" ")) {
+            source = source.substring(0, source.indexOf(" "));
+            source = source.trim();
+        }
         if (source.contains("中国青年网")) {
 
         } else {
