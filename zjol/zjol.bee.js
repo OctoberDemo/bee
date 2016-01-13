@@ -71,13 +71,16 @@ function _ZjolBee() {
     Bee.onItemLoaded = function(dom, item) {
 
         item.title = dom.byClass("main-article-title").innerText;
-        item.content = Bee.htmlToJson(dom.byClass("main-article-con"));
+        item.content = Bee.htmlToJson(dom.byClass("main_ar_pic_text"));
+        item.content = item.content.concat(Bee.htmlToJson(dom.byClass("main-article-con")));
 
         var now = new Date();
         item.created_at = Bee.convertTime(now.toLocaleDateString());
 
         var curChannel = Bee.getCurChannel();
-        item.category = self.tagToCategory(curChannel.tag);
+        if (curChannel) {
+            item.category = self.tagToCategory(curChannel.tag);
+        }
         item.source = source;
 
         Bee.finishExtractItem(item);
