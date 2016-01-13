@@ -3,6 +3,7 @@ var ZjolBee = new _ZjolBee();
 function _ZjolBee() {
 
     var self = this;
+    var dataString = "";
 
     this.openPaper = function(baseUrl) {
         liteAjax(baseUrl, function(e) {
@@ -17,6 +18,10 @@ function _ZjolBee() {
                 webView.setOnPageFinishListener(function() {
                     var dom = webView.getDom();
                     var main_ednav_nav = dom.byClass("main-ednav-nav");
+                    var main_ednav_date = dom.byClass("main-ednav-date");
+                    dataString = main_ednav_date.innerText;
+                    dataString = dataString.substring(0, dataString.indexOf(" "));
+                    console.log(dataString);
                     var links = main_ednav_nav.byTags("a", true);
                     for (var i = 0; i < links.length; i++) {
                         var link = links[i];
@@ -80,8 +85,15 @@ function _ZjolBee() {
         item.content = Bee.htmlToJson(dom.byClass("main_ar_pic_text"));
         item.content = item.content.concat(Bee.htmlToJson(dom.byClass("main-article-con")));
 
+        var contentStr = JSON.stringify(item.content);
+        if (contentStr.length < 500) {
+            console.log("内容过短：" + item.title);
+            Bee.passItem(item);
+            return;
+        }
+
         var now = new Date();
-        item.created_at = Bee.convertTime(now.toLocaleDateString());
+        item.created_at = Bee.convertTime(dataString);
 
         var curChannel = Bee.getCurChannel();
         if (curChannel) {
