@@ -151,7 +151,11 @@ function _YouthBee() {
                     subUrls.push(baseUrl + "_" + (i + 1) + appendix);
                 }
                 console.log(subUrls);
-                Bee.finishExtractSubUrls(subUrls, item);
+                if (subUrls.length == 0) {
+                    finishExtractItem(item)
+                } else {
+                    Bee.finishExtractSubUrls(subUrls, item);
+                }
             }
         }
     };
