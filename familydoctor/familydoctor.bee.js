@@ -8,6 +8,8 @@ function _FamilyDoctorBee() {
     Bee.requestNoCss();
     Bee.requestNoIframe();
 
+    var adTexts = ["家庭医生在线专稿"];
+
     Bee.onListLoaded = function(dom) {
         var items = [];
         var content = dom.byClass("content", true);
@@ -68,7 +70,7 @@ function _FamilyDoctorBee() {
 
         dom.removeClass("xgTj");
         dom.removeClass("jkHot");
-        item.content = Bee.htmlToJson(dom.byId("viewContent"));
+        item.content = Bee.htmlToJson(dom.byId("viewContent"), adTexts);
 
         Bee.finishExtractItem(item);
     };

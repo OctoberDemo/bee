@@ -323,8 +323,8 @@ function _BeeUtils() {
             var sec = Math.floor(Math.random() * 59);
             timeString += ":" + sec;
         } else if (colonCount == 0) {
-            var h = Math.floor(Math.random() * now.getHours());
-            var m = Math.floor(Math.random() * now.getMinutes());
+            var h = now.getHours();
+            var m = now.getMinutes() - Math.floor(Math.random() * Math.min(10, now.getMinutes()));
             var s = Math.floor(Math.random() * now.getSeconds());
             timeString += " " + h + ":" + m + ":" + s;
         }
