@@ -465,6 +465,9 @@ function _Bee() {
         }
         item.title = item.title.trim();
         item.source = item.source.trim();
+        if (item.source == "") {
+            item.source = type;
+        }
 
         if (item.category) {
             item.category = item.category.trim();

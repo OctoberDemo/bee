@@ -54,6 +54,9 @@
                         console.log("未知来源：" + src);
                     }
                 }
+                if (src.trim() == "") {
+                    src = "中国网";
+                }
                 item.source = src;
                 var time = dom.byId("pubtime_baidu").innerText;
                 time = time.replace("发布时间：","");
