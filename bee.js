@@ -519,6 +519,33 @@ function _Bee() {
         return parseInt(date.getTime() / 1000);
     };
 
+    this.convertSource = function(sourceString, siteSource) {
+        sourceString = sourceString.trim()
+        if (sourceString.indexOf("来源：") == 0 || sourceString.indexOf("来源:") == 0) {
+            sourceString = sourceString.substring(3);
+        }
+        sourceString = sourceString.trim();
+
+        var siteSources = [];
+        if (Utils.isArray(siteSource)) {
+            siteSources = siteSource;
+        } else {
+            siteSources.push(siteSource);
+        }
+        for (var i = 0; i < siteSources.length; i++) {
+            if (sourceString.contains(siteSources[i])) {
+                return sourceString;
+            }
+        }
+        if (Bee.existSource(sourceString)) {
+            console.log("已知来源：" + sourceString);
+            return null;
+        } else {
+            console.log("未知来源：" + sourceString);
+            return sourceString;
+        }
+    };
+
     this.convertImg = function(imgNode) {
         var img = {};
         if (imgReferer) {
