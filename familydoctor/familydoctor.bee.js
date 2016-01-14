@@ -44,7 +44,12 @@ function _FamilyDoctorBee() {
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var endContent = dom.byClass("endContent");
+        var endContent = dom.byClass("endContent", true);
+        if (endContent == null) {
+            console.log("未知格式：" + item.url);
+            Bee.passItem(item);
+            return;
+        }
         item.title = endContent.byTag("h1").innerText;
 
         var info = dom.byClass("info").innerText;
