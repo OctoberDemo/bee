@@ -338,6 +338,18 @@ function _BeeUtils() {
         }
     };
 
+    this.fullToHalf = function(str) {
+        var tmp = "";
+        for(var i = 0; i < str.length; i++) {
+            if(str.charCodeAt(i) > 65248 && str.charCodeAt(i) < 65375) {
+                tmp += String.fromCharCode(str.charCodeAt(i) - 65248);
+            } else {
+                tmp += String.fromCharCode(str.charCodeAt(i));
+            }
+        }
+        return tmp;
+    };
+
     this.htmlToJson = function(htmlNode, adTexts, adImgs, imgConverter) {
         // 测试文章：
         // 果壳网：http://www.guokr.com/article/440982/
@@ -373,7 +385,7 @@ function _BeeUtils() {
                         continue;
                     }
                     var p = {};
-                    p.p = item.content;
+                    p.p = self.fullToHalf(item.content);
                     jsonResult.push(p);
                 }
             }

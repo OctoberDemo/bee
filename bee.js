@@ -463,7 +463,7 @@ function _Bee() {
             console.log(item);
             return;
         }
-        item.title = item.title.trim();
+        item.title = BeeUtils.fullToHalf(item.title.trim());
         item.source = item.source.trim();
         if (item.source == "") {
             item.source = type;
