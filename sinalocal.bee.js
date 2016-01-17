@@ -24,6 +24,15 @@ var SinaLocalBee = (function () {
     };
 
     Bee.onItemLoaded = function(dom, item) {
+        dom.removeClasses("figureTableDiv");
+        dom.removeClasses("sdFigureWrap");
+
+        if (item.title && item.title.indexOf("组图") >= 0) {
+            console.log("跳过组图");
+            Bee.passItem(item);
+            return;
+        }
+
         var time_elem = dom.byClass("source-time", true);
         if (time_elem) {
         } else {
@@ -92,6 +101,9 @@ var SinaLocalBee = (function () {
     };
 
     Bee.onSubItemLoaded = function(dom, item) {
+        dom.removeClasses("figureTableDiv");
+        dom.removeClasses("sdFigureWrap");
+
         var content_elem = dom.byClass("article-body main-body");
         content_elem.removeClass("page");
         content_elem.removeClass("article-video");
