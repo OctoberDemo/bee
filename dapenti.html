@@ -35,6 +35,9 @@
                 var itemTitle = textItems[i].byClass("itemTitle");
                 itemTitle.removeTag("span");
                 item.title = itemTitle.innerText;
+                if (item.title.contains("喷嚏图卦周刊")) {
+                    continue;
+                }
                 item.url = itemTitle.byTag("a").attr("original");
                 item.key = Bee.hashCode(item.url);
                 items.push(item);
