@@ -61,8 +61,16 @@
                 item.created_at = Bee.convertTime(time);
                 if (dom.byId("artbody", true) != null) {
                     var content = Bee.htmlToJson(dom.byId("artbody"));
-                    item.content = JSON.stringify(content);
-                    Bee.finishExtractItem(item);
+                    item.content = content;
+
+                    var autopage = dom.byId("autopage", true);
+                    if (autopage) {
+                        console.log("需要分页，将来再爬取");
+                        Bee.passItem(item);
+                        return;
+                    } else {
+                        Bee.finishExtractItem(item);
+                    }
                 } else {
                     Bee.passItem(item);
                 }
@@ -70,7 +78,8 @@
                 Bee.passItem(item);
             }
         }, 1000)
-    }
+    };
+
     Bee.start()
 </Script>
 </body>
