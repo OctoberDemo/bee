@@ -500,6 +500,12 @@ function _Bee() {
 
     this.passItem = function(item) {
         if (item) {
+            var checkUrl = "http://jcloud.jndroid.com/request?page=http://greatlibrary.jndroid.cn/checkExist/";
+            var postData = {};
+            postData.title = item.title;
+            postData.noRecord = true;
+            liteAjax(checkUrl, function(e) {}, "post", JSON.stringify(postData), false);
+
             BeeUtils.addKey(type, item.key);
         }
         loadItem();
