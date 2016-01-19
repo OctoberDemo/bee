@@ -442,6 +442,9 @@ function _BeeUtils() {
                             image.height = size.height;
                         }, "post", image.src, false);
                     }
+                    if (image.width < 32 && image.height < 32) {
+                        continue;
+                    }
                     contentItem.bound = getBounds(node);
                     contentItem.img = image;
                     contentList.push(contentItem);
