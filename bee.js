@@ -434,7 +434,7 @@ function _Bee() {
         if (item.cover_img == undefined) {
             for (var i = 0; i < item.content.length; i++) {
                 if (item.content[i].img) {
-                    if (item.content[i].img.width > 160 && item.content[i].img.height > 160) {
+                    if (item.content[i].img.width > 150 && item.content[i].img.height > 150) {
                         var ratio = item.content[i].img.width / item.content[i].img.height;
                         if (ratio > 0.5 && ratio < 2) {
                             item.cover_img = item.content[i].img;
