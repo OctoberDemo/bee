@@ -106,7 +106,13 @@
 
         var pubTime = dom.byId("pubTime");
         if (pubTime == undefined) {
-            pubTime = dom.byClass("subtitle").byTag("time");
+            var subTitle = dom.byClass("subtitle", true);
+            if (subTitle == undefined) {
+                Bee.passItem(item);
+                console.log("unknown pubtime");
+                return;
+            }
+            pubTime = subTitle.byTag("time");
         }
         item.created_at = Bee.convertTime(pubTime.innerText);
 
