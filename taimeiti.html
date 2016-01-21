@@ -9,52 +9,61 @@
 
     Bee.setType("www.tmtpost.com");
     Bee.setImgReferer("www.tmtpost.com");
-    Bee.addChannel ("", "", "http://www.tmtpost.com/");
+    Bee.addChannel("", "", "http://www.tmtpost.com/");
     Bee.requestNoCss();
     Bee.requestNoIframe();
 
-    Bee.onListLoaded = function(dom) {
+    Bee.onListLoaded = function (dom) {
         var items = [];
-        var post = dom.byClass("recommend-post");
-        var lis = post.byTags("li", true);
-        for (var i = 0; i < lis.length; i++) {
-            var item = {};
-            var li = lis[i];
-            if (li.byClass("clear sponsor", true) != null) {
-                continue;
-            }
-
-            var img = li.byTag("img", true);
-            if (img) {
-                var image = {};
-                image.src = img.src;
-                image.height = img.clientHeight;
-                image.width = img.clientWidth;
-                item.cover_img = image;
-            }
-            var cont = li.byClass("cont", true);
-            if (cont == undefined) {
-                continue;
-            }
-
-            var tag = li.byClass("tag", true);
-            if (tag) {
-                item.tag = "";
-                var tags = tag.byTags("a", true);
-                for (var j = 0; j < tags.length; j++) {
-                    item.tag += tags[j].innerText + " ";
-                }
-            }
-            var a = cont.byTag("h4").byTag("a");
-            item.url = a.href;
-            item.source = "钛媒体";
-
-            items.push(item);
+        var button = dom.byClass("load-more", true);
+        if (button) {
+            button.click();
+            button.click();
+            button.click();
         }
-        Bee.finishExtractList(items);
+
+        setTimeout(function () {
+            var post = dom.byClass("recommend-post");
+            var lis = post.byTags("li", true);
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var li = lis[i];
+                if (li.byClass("clear sponsor", true) != null) {
+                    continue;
+                }
+
+                var img = li.byTag("img", true);
+                if (img) {
+                    var image = {};
+                    image.src = img.src;
+                    image.height = img.clientHeight;
+                    image.width = img.clientWidth;
+                    item.cover_img = image;
+                }
+                var cont = li.byClass("cont", true);
+                if (cont == undefined) {
+                    continue;
+                }
+
+                var tag = li.byClass("tag", true);
+                if (tag) {
+                    item.tag = "";
+                    var tags = tag.byTags("a", true);
+                    for (var j = 0; j < tags.length; j++) {
+                        item.tag += tags[j].innerText + " ";
+                    }
+                }
+                var a = cont.byTag("a");
+                item.url = a.href;
+                item.source = "钛媒体";
+
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }, 500);
     };
 
-    Bee.onItemDomLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function (dom, item) {
         var article = dom.byTag("article");
         item.title = article.byTag("h1").innerText;
 
@@ -72,7 +81,7 @@
         if (des && des.innerText.length > 0) {
             item.content = [];
             var desc = {};
-            desc.desc =  des.innerText;
+            desc.desc = des.innerText;
             item.content.add(desc);
         }
 
