@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>钛媒体蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<script>
+
+    Bee.setType("www.tmtpost.com");
+    Bee.setImgReferer("www.tmtpost.com");
+    Bee.addChannel ("", "", "http://www.tmtpost.com/");
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var post = dom.byClass("recommend-post");
+        var lis = post.byTags("li", true);
+        for (var i = 0; i < lis.length; i++) {
+            var item = {};
+            var li = lis[i];
+            if (li.byClass("clear sponsor", true) != null) {
+                continue;
+            }
+
+            var img = li.byTag("img", true);
+            if (img) {
+                var image = {};
+                image.src = img.src;
+                image.height = img.clientHeight;
+                image.width = img.clientWidth;
+                item.cover_img = image;
+            }
+            var cont = li.byClass("cont", true);
+            if (cont == undefined) {
+                continue;
+            }
+            var a = cont.byTag("h4").byTag("a");
+            item.title = a.innerText;
+            item.url = a.href;
+            item.source = "钛媒体";
+
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        var postInfo = dom.byClass("post-info", true);
+        if (postInfo == undefined) {
+            Bee.finishExtractItem();
+            return;
+        }
+        var a = postInfo.byTag("a");
+        item.author = a.title;
+        item.created_at = Bee.convertTime(postInfo.byClass("time").innerText);
+
+        var des = dom.byClass("post-abstract", true);
+        if (des && des.innerText.length > 0) {
+            item.content = [];
+            var desc = {};
+            desc.desc =  des.innerText;
+            item.content.add(desc);
+        }
+
+        var inner = Bee.htmlToJson(dom.byClass("inner"));
+        if (item.content) {
+            item.content = item.content.concat(inner);
+        } else {
+            item.content = inner;
+        }
+        item.status = 5;
+        Bee.finishExtractItem(item, true);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
