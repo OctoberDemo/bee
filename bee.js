@@ -226,7 +226,7 @@ function _Bee() {
         }
     }
 
-    this.finishExtractList = function(items) {
+    this.finishExtractList = function (items) {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             if (item.key == undefined) {
