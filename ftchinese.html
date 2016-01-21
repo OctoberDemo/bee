@@ -43,7 +43,12 @@
     };
 
     Bee.onItemLoaded = function(dom, item) {
-        var dateStamp = dom.byClass("dateStamp");
+        var dateStamp = dom.byClass("dateStamp", true);
+        if (dateStamp == null) {
+            console.log("未知格式");
+            Bee.passItem(item);
+            return;
+        }
         var timeString = dateStamp.innerText.toLowerCase().trim();
         if (timeString.indexOf("am") == timeString.length - 2 || timeString.indexOf("pm") == timeString.length - 2) {
             timeString = timeString.substring(0, timeString.length - 2).trim();
