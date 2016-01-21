@@ -76,7 +76,7 @@ function _XinhuaBee() {
             finishExtractItem();
             return;
         }
-        var sourceString = attrib.byId("source");
+        var sourceString = attrib.byId("source", true);
         if (sourceString) {
             sourceString = sourceString.innerText;
         } else {
