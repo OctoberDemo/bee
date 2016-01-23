@@ -575,8 +575,15 @@ function _Bee() {
         } else {
             img.src = imgNode.src;
         }
-        img.width = imgNode.width;
-        img.height = imgNode.height;
+        img.width = imgNode.clientWidth;
+        img.height = imgNode.clientHeight;
+        if (img.width == 0 || img.height == 0) {
+            liteAjax("http://jcloud.jndroid.com/request?page=http://playground.jndroid.cn/imagesize", function(e) {
+                var size = JSON.parse(e);
+                img.width = size.width;
+                img.height = size.height;
+            }, "post", img.src, false);
+        }
         return img;
     };
 
