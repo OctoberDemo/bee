@@ -413,11 +413,13 @@ function _Bee() {
             return;
         }
 
-        var timeGap = (new Date()).getTime() - item.created_at * 1000;
-        console.log("timeGap:" + (timeGap / 1000 / 60) + "min");
-        if (timeGap > 8 * 3600 * 1000) {
-            this.passItem(item);
-            return;
+        if (test != true) {
+            var timeGap = (new Date()).getTime() - item.created_at * 1000;
+            console.log("timeGap:" + (timeGap / 1000 / 60) + "min");
+            if (timeGap > 8 * 3600 * 1000) {
+                this.passItem(item);
+                return;
+            }
         }
 
         var key = item.key;
