@@ -413,7 +413,7 @@ function _Bee() {
             return;
         }
 
-        if (test != true) {
+        if (oneByone != true && test != true) {
             var timeGap = (new Date()).getTime() - item.created_at * 1000;
             console.log("timeGap:" + (timeGap / 1000 / 60) + "min");
             if (timeGap > 8 * 3600 * 1000) {
