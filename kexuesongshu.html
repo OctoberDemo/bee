@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>科学松鼠会蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<script>
+    Bee.setType("songshuhui.net");
+    Bee.setImgReferer("songshuhui.net");
+    Bee.addChannel("", "", "http://songshuhui.net/archives/tag/%E5%8E%9F%E5%88%9B");
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+    Bee.requestNoScript();
+
+    Bee.onListLoaded = function (dom) {
+        var items = [];
+        var content = dom.byClass("brright", true);
+        if (content == undefined) {
+            console.log("content == undefined");
+            return;
+        }
+        var bgf = content.byClasses("step bspacing10  bgf", true);
+        var brb = content.byClasses("step bspacing10  lbrb", true);
+
+        for (var i = 0; i < bgf.length; i++) {
+            var div = bgf[i];
+            if (div.byTag("id", true)) {
+                continue;
+            }
+            var item = {};
+            var img = div.byTag("img", true);
+            if (img) {
+                var image = {};
+                image.src = Bee.makeImgJumpUrl(img.src, "songshuhui.net");
+                image.height = img.clientWidth;
+                image.width = img.clientWidth;
+                item.cover_img = image;
+            }
+            var title = div.byClass("storytitle").byTag("a");
+            item.title = title.innerText;
+            item.url = title.href;
+            item.source = "科学松鼠会";
+
+            var metax = div.byClass("metax", true);
+            var em = metax.byTag("em", true);
+            if (em) {
+                item.tag = em.byTag("a").innerText;
+            }
+            metax.removeTag("em");
+            if (metax.byTag("a") && metax.byTag("a").innerText.length > 0) {
+                item.author = metax.byTag("a").innerText;
+            }
+            metax.removeTag("a");
+            item.created_at = Bee.convertTime(metax.innerText.replace("发表于", ""));
+
+            items.push(item);
+
+
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemDomLoaded = function (dom, item) {
+        var content = dom.byClass("entry", true);
+        if (content == undefined) {
+            Bee.finishExtractItem();
+            return;
+        }
+        content.removeTag("from");
+        content.removeTags("div");
+        var inner = Bee.htmlToJson(content, ["相关文章"]);
+        if (item.content) {
+            item.content = item.content.concat(inner);
+        } else {
+            item.content = inner;
+        }
+//        item.status = 5;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
