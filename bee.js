@@ -103,14 +103,20 @@ function _Bee() {
         noIframe = true;
     };
 
-    this.addChannel = function(category, tagOrUrl, url) {
+    this.addChannel = function(category, tagOrSourceOrUrl, sourceOrUrl, url) {
         var channel = {};
         channel.category = category;
-        if (url == undefined) {
-            channel.url = tagOrUrl;
+        if (url == undefined && sourceOrUrl == undefined) {
+            channel.url = tagOrSourceOrUrl;
         } else {
-            channel.tag = tagOrUrl;
-            channel.url = url;
+            if (url == undefined) {
+                channel.tag = tagOrSourceOrUrl;
+                channel.url = sourceOrUrl;
+            } else {
+                channel.tag = tagOrSourceOrUrl;
+                channel.source = sourceOrUrl;
+                channel.url = url;
+            }
         }
         channelList.push(channel);
     };
@@ -558,7 +564,11 @@ function _Bee() {
         }
         for (var i = 0; i < siteSources.length; i++) {
             if (sourceString.contains(siteSources[i])) {
-                return sourceString;
+                if (curChannel.source) {
+                    return curChannel.source;
+                } else {
+                    return sourceString;
+                }
             }
         }
         if (Bee.existSource(sourceString)) {
