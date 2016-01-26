@@ -1,6 +1,7 @@
 var PeopleBee = new _PeopleBee();
 function _PeopleBee() {
 
+
     Bee.setType("people.com.cn");
     Bee.setImgReferer("people.com.cn");
     Bee.requestNoScript();
