@@ -645,10 +645,10 @@ function _Bee() {
     var beeJsTotal = 0;
     var beeJsCount = 0;
 
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.core.js");
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.layout.js");
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.widget.js");
-    includeJs("http://bee.jndroid.cn/beeutils.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.core.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.layout.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.widget.js");
+    includeJs("http://bee.jndroid.com/beeutils.js");
 
     function includeJs(path) {
         beeJsTotal++;

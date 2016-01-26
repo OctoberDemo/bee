@@ -140,7 +140,7 @@ function _BeeUtils() {
     this.warning = function(msg) {
         var d = new Date();
         var log = d.toLocaleString() + " | " + msg;
-        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function() {
+        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.com/beemonitor/log.html", function() {
 
         }, "post", log);
     };
