@@ -129,6 +129,11 @@ function _PeopleBee() {
 
             var pubText = contentNode.byTag("h2").innerText;
             var time = pubText.substring(pubText.lastIndexOf(" "));
+            if (time == "") {
+                console.log("未知格式，跳过");
+                Bee.passItem(item);
+                return;
+            }
             item.created_at = Bee.convertTime(time);
 
             var source = pubText.substring(0, pubText.length - time.length).trim();
