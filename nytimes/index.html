@@ -9,6 +9,10 @@
 <script>
     Bee.addChannel("", "", "", "http://cn.nytimes.com/");
 
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
     Bee.onListLoaded = function(dom) {
         var summarys = dom.byClasses("summary");
         for (var i = 0; i < summarys.length;i++) {
