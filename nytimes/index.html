@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>纽约时报中文网测试</title>
+    <script src="../bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.addChannel("", "", "", "http://cn.nytimes.com/");
+
+    Bee.onListLoaded = function(dom) {
+        var summarys = dom.byClasses("summary");
+        for (var i = 0; i < summarys.length;i++) {
+            console.log(summarys[i].innerText);
+        }
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>
