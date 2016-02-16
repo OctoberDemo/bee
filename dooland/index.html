@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>读览天下蜜蜂管理</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="jndroid/jndroid.widget.js"></script>
+    <script src="jndroid/jndroid.layout.js"></script>
+    <script src="jndroid/jndroid.animation.js"></script>
+    <script src="jndroid/jndroid.mwidget.js"></script>
+    <script src="jndroid/ListView.js"></script>
+
+    <script src="advancedtableview.js"></script>
+    <script src="res.js"></script>
+    <script src="db.js"></script>
+    <script src="doolandmanager.js"></script>
+    <script src="listitem.js"></script>
+
+    <link rel="shortcut icon" href="dooland.jpeg" type="image/x-icon" />
+</head>
+<body>
+<script>
+    var root = new FrameLayout();
+    setContentView(root);
+
+    var tableList = new AdvancedTableView(ListItem);
+    tableList.setTitle("读览天下蜜蜂管理");
+    tableList.setLogo("dooland.jpeg");
+    tableList.addTableHeaderCol("", 44);
+    tableList.addTableHeaderCol("杂志名称", 120);
+    tableList.addTableHeaderCol("URL", 320);
+    tableList.addTableHeaderCol("分类", 80);
+    tableList.addTableHeaderCol("标签", 120);
+
+
+    tableList.addActionButton("action_add.png", function() {
+        var cnt = new LinearLayout();
+
+        var url = new MEditText();
+        url.setHint("URL");
+        cnt.addView(url);
+
+        var guess = new MButton();
+        guess.setText("自动填充");
+        guess.setDimBg(false);
+        guess.setBg(R.color.theme);
+        guess.setWaveColor(0x33ffffff);
+        guess.setTextColor(0xffffffff);
+        guess.setOnClickListener(function() {
+            var urlValue = url.getText().trim();
+            var webView = new WebView();
+            webView.setAlpha(0.1);
+            webView.loadUrl(urlValue);
+            webView.setOnPageFinishListener(function() {
+                var dom = webView.getDom();
+                var mag_title = dom.getElementById("mag_title");
+                var titles = (mag_title.value.trim()).split(" ");
+                title.setText(titles[0]);
+
+            });
+            var lp = new LP(1, 1);
+            root.addView(webView, lp);
+        });
+        var guessLp = new LP(LP.FP, 36);
+        cnt.addView(guess, guessLp);
+
+        var title = new MEditText();
+        title.setHint("杂志名称");
+        cnt.addView(title);
+
+        var category = new MEditText();
+        category.setHint("分类");
+        cnt.addView(category);
+
+        var tag = new MEditText();
+        tag.setHint("标签");
+        tag.setText("杂志");
+        cnt.addView(tag);
+
+        MDialog.setContent(cnt).setOkText("添加").setCancelText("算了").setOkAction(function() {
+
+            var name = title.getText().trim();
+            var link = url.getText().trim();
+            var categoryValue = category.getText().trim();
+            var tagValue = tag.getText().trim();
+            DoolandManager.addBee(name, link, categoryValue, tagValue);
+
+        }).show();
+    }, 40);
+    root.addView(tableList);
+
+    loadData();
+
+    function loadData() {
+        DoolandManager.loadBees(function(bees) {
+            var cols = tableList.getTableHeaderCols();
+            cols[0].setText(bees.length);
+            cols[0].setStyle("textAlign", "center");
+            cols[0].setTextColor(R.color.theme);
+
+            for (var i = 0; i < bees.length; i++) {
+                bees[i].index = i + 1;
+            }
+
+            tableList.add(bees);
+        });
+    }
+
+
+</script>
+
+<script>
+//    DoolanBee.addMagazine("女性 杂志", "小资CHIC！ELEGANCE-品味", "http://xzfashion.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "女报Seaside", "http://seaside.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "女报", "http://nvbao.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "37°女人", "http://37women.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "时尚北京", "http://ssbj.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "LADY格调", "http://lady1998.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "莫愁", "http://mczhnx.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "花样盛年", "http://huayangshengnian.dooland.com/");
+//    DoolanBee.addMagazine("女性 杂志", "女刊瘦美人", "http://smr.dooland.com/");
+//
+//    DoolanBee.addMagazine("家居 杂志", "精品家居", "http://residence.dooland.com/");
+//    DoolanBee.addMagazine("家居 杂志", "装修情报", "http://zxqb.dooland.com/");
+
+//    DoolanBee.addMagazine("家庭 杂志", "恋爱婚姻家庭", "http://lianhunjiaxia.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "恋爱婚姻家庭", "http://lianhunjia.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "恋爱婚姻家庭养生版", "http://lianaihunyinjiating.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "家庭文摘报", "http://jtwzb.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "婚姻与家庭", "http://hyyjt.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "饮食科学", "http://yinshikexue.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "心理育儿", "http://xinliyuer.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "中国孕婴童", "http://zgyyt.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "凤凰生活", "http://ifenglife.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "母子健康", "http://ifenglife.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "婚姻与家庭", "http://hyyjt.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "幸福家庭", "http://xfjt.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "家教世界", "http://jjsj.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "职业女性", "http://zynx.dooland.com/");
+//    DoolanBee.addMagazine("家庭 杂志", "mangazine精英", "http://mangazine.dooland.com/");
+
+//    DoolanBee.addMagazine("杂志", "葡萄酒", "http://wine.dooland.com/");
+//    DoolanBee.addMagazine("房产 杂志", "房地产世界", "http://fdcsj.dooland.com/");
+//    DoolanBee.addMagazine("汽车 杂志", "家用汽车", "http://auto-life.dooland.com/");
+//    DoolanBee.addMagazine("汽车 杂志", "车主之友", "http://carowners.dooland.com/");
+//    DoolanBee.addMagazine("汽车 杂志", "汽车导购", "http://qichedaogou.dooland.com/");
+//    DoolanBee.addMagazine("汽车 杂志", "汽车杂志", "http://qczz.dooland.com/");
+
+
+
+    //    Bee.start();
+
+//    DoolanBee.start();
+</script>
+</body>
+</html>
