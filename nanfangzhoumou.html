@@ -21,6 +21,7 @@
     Bee.addChannel("", "时政", "http://www.infzm.com/contents/11");
     Bee.addChannel("", "社会", "http://www.infzm.com/contents/12");
     Bee.addChannel("", "科技", "http://www.infzm.com/contents/13");
+    Bee.addChannel("", "南周知道", "http://www.infzm.com/contents/4241/1");
 
     Bee.start();
 
@@ -50,6 +51,9 @@
             item.created_at = Bee.convertTime(timeString);
             item.author = infos.join(" ").replaceAll("&nbsp;", " ");
             item.source = "南方周末";
+            if(Bee.getCurTag() == "南周知道") {
+                item.source = "南周知道";
+            }
 
             var img = article.byClass("picture", true);
             if (img && img.byTag("img", true)) {
@@ -98,8 +102,8 @@
         } else {
             item.content = inner;
         }
-//        item.status = 5;
-        Bee.finishExtractItem(item);
+        item.status = 5;
+        Bee.finishExtractItem(item, true);
     }
 
 </script>
