@@ -11,13 +11,13 @@
     clear.type = "button";
     clear.value = "清空";
     clear.onclick = function() {
-        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function(d) {
+        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.com/beemonitor/log.html", function(d) {
             clearLog();
         }, "post", "clear");
     };
     document.body.appendChild(clear);
 
-    liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function(d) {
+    liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.com/beemonitor/log.html", function(d) {
         var logs = JSON.parse(d);
         for (var i = 0; i < logs.length; i++) {
             log(logs[i]);

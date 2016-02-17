@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>橘子娱乐蜜蜂</title>
+    <script src="bee.js"></script>
+    <script src="beeutils.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("happyjuzi");
+    Bee.setImgReferer("www.happyjuzi.com");
+
+    var timestamp = parseInt((new Date()).getTime() / 1000);
+    var url = "http://www.happyjuzi.com/service/article/home.json?timestamp=" + timestamp + "&page=1";
+    Bee.addChannel("娱乐", url);
+
+    Bee.onListLoaded = function(dom) {
+        var json = JSON.parse(dom.body.innerText);
+        console.log(json);
+
+        var items = [];
+        for (var i = 0; i < json.length; i++) {
+            var data = json[i];
+            var item = {};
+            item.title = data.title;
+            if (data.category_name != null) {
+                item.category = data.category_name;
+            } else {
+                item.category = "娱乐";
+            }
+            item.url = "http://www.happyjuzi.com/article/" + data.id;
+            item.created_at = Bee.convertTime(data.public_time);
+            item.source = "橘子娱乐";
+            item.status = 2;
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var artAuthor = dom.byClass("artAuthor");
+        item.author = artAuthor.innerText.trim();
+
+        var artContent = dom.byClass("artContent");
+        item.content = Bee.htmlToJson(artContent);
+
+        Bee.finishExtractItem(item);
+    };
+
+
+    Bee.start();
+
+
+
+
+
+</script>
+</body>
+</html>

@@ -66,6 +66,10 @@ function _Bee() {
     this.onItemDomLoaded = null;
     this.onSubItemDomLoaded = null;
 
+    this.getChannelList = function() {
+        return channelList;
+    };
+
     this.getListWebView = function() {
         return listWebView;
     };
@@ -193,18 +197,18 @@ function _Bee() {
         listWebView.setBorder(2, 0xff666666);
         root.addView(listWebView, 0);
 
-        listWebView.setOnPageFinishListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListLoaded) {
+        if (self.onListLoaded) {
+            listWebView.setOnPageFinishListener(function () {
+                var dom = listWebView.getDom();
                 self.onListLoaded.call(listWebView, dom);
-            }
-        });
-        listWebView.setOnDomLoadedListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListDomLoaded) {
+            });
+        }
+        if (self.onListDomLoaded) {
+            listWebView.setOnDomLoadedListener(function () {
+                var dom = listWebView.getDom();
                 self.onListDomLoaded.call(listWebView, dom);
-            }
-        });
+            });
+        }
 
         if (noScript) {
             self.getNoScriptHtml(curChannel.url, function(html) {
@@ -266,18 +270,18 @@ function _Bee() {
         itemWebView = new BeeWebView();
         itemWebView.setBorder(2, 0xff666666);
         root.addView(itemWebView);
-        itemWebView.setOnPageFinishListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemLoaded) {
+        if (self.onItemLoaded) {
+            itemWebView.setOnPageFinishListener(function () {
+                var dom = itemWebView.getDom();
                 self.onItemLoaded.call(itemWebView, dom, item);
-            }
-        });
-        itemWebView.setOnDomLoadedListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemDomLoaded) {
+            });
+        }
+        if (self.onItemDomLoaded) {
+            itemWebView.setOnDomLoadedListener(function() {
+                var dom = itemWebView.getDom();
                 self.onItemDomLoaded.call(itemWebView, dom, item);
-            }
-        });
+            });
+        }
         if (noScript) {
             self.getNoScriptHtml(item.url, function(html) {
                 itemWebView.loadDataWithBaseURL(html.innerHTML);
