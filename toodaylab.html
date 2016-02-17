@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>理想生活实验室蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("toodaylab");
+    Bee.setImgReferer("www.toodaylab.com");
+
+    Bee.addChannel("快消", "http://www.toodaylab.com/field/308");
+    Bee.addChannel("时尚", "http://www.toodaylab.com/field/307");
+    Bee.addChannel("智能", "http://www.toodaylab.com/field/306");
+    Bee.addChannel("娱乐", "http://www.toodaylab.com/field/305");
+    Bee.addChannel("运动", "http://www.toodaylab.com/field/304");
+    Bee.addChannel("生活", "http://www.toodaylab.com/field/303");
+    Bee.addChannel("设计", "http://www.toodaylab.com/field/302");
+    Bee.addChannel("交通", "http://www.toodaylab.com/field/301");
+    Bee.addChannel("", "http://www.toodaylab.com/");
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var content = dom.byClass("content");
+        var single_posts = dom.byClasses("single-post");
+        for (var i = 0; i < Math.min(single_posts.length, 5); i++) {
+            var item = {};
+            var node = single_posts[i];
+            var link = node.byClass("title").byTag("a");
+            item.title = link.innerText;
+            item.url = link.href;
+            var excerpt = node.byClass("excerpt", true);
+            if (excerpt) {
+                item.desc = excerpt.innerText;
+            }
+            item.status = 2;
+            item.source = "理想生活实验室";
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var left_infos = dom.byClass("left-infos");
+        var authorNode = left_infos.byTag("a");
+        item.author = authorNode.innerText;
+
+        left_infos.removeTag("a");
+        var timeString = left_infos.innerText;
+        timeString = timeString.substring(timeString.indexOf("//") + 2).trim();
+        item.created_at = convertTimeString(timeString);
+
+        var post_content = dom.byClass("post-content");
+        item.content = Bee.htmlToJson(post_content);
+
+        if (item.desc) {
+            var desc = {};
+            desc.desc = item.desc;
+            item.content.add(0, desc);
+        }
+        delete item.desc;
+
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+    function convertTimeString(string) {
+        var unit = 0;
+        if (string.indexOf("分钟") > 0) {
+            unit = 1000 * 60;
+        } else if (string.indexOf("小时") > 0) {
+            unit = 1000 * 60 * 60;
+        } else if (string.indexOf("天") > 0) {
+            unit = 1000 * 60 * 60 * 24;
+        } else {
+            return Bee.convertTime(string);
+        }
+        var num = parseInt(string);
+        var now = new Date();
+        var time = new Date(now.getTime() - parseInt((num + Math.random()) * unit));
+        return parseInt(time.getTime() / 1000);
+    }
+
+</script>
+</body>
+</html>
