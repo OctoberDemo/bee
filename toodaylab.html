@@ -77,7 +77,7 @@
         } else if (string.indexOf("天") > 0) {
             unit = 1000 * 60 * 60 * 24;
         } else {
-            return self.convertTime(string);
+            return Bee.convertTime(string);
         }
         var num = parseInt(string);
         var now = new Date();
