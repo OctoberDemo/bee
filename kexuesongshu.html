@@ -13,18 +13,9 @@
     Bee.requestNoIframe();
     Bee.requestNoScript();
 
-    Bee.onListLoaded = function (dom) {
-        var items = [];
-        var content = dom.byClass("brright", true);
-        if (content == undefined) {
-            console.log("content == undefined");
-            return;
-        }
-        var bgf = content.byClasses("step bspacing10  bgf", true);
-        var brb = content.byClasses("step bspacing10  lbrb", true);
-
-        for (var i = 0; i < bgf.length; i++) {
-            var div = bgf[i];
+    function createItems(divs, items) {
+        for (var i = 0; i < divs.length; i++) {
+            var div = divs[i];
             if (div.byTag("id", true)) {
                 continue;
             }
@@ -58,6 +49,24 @@
 
 
         }
+    }
+    Bee.onListLoaded = function (dom) {
+        var items = [];
+        var content = dom.byClass("brright", true);
+        if (content == undefined) {
+            console.log("content == undefined");
+            return;
+        }
+        var bgf = content.byClasses("step bspacing10  bgf", true);
+        var brb = content.byClasses("step bspacing10  lbrb", true);
+        var divs = [];
+        if (bgf) {
+            createItems(bgf, items);
+        }
+        if (brb) {
+            createItems(brb, items);
+        }
+
         Bee.finishExtractList(items);
     };
 
