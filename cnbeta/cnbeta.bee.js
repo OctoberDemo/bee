@@ -21,7 +21,6 @@ function _cnBetaBee() {
                 item.title = item.title.substring(4);
             }
             item.url = itemNode.byTag("a").href;
-            item.status = 5;
 
             items.push(item);
         }
@@ -58,6 +57,6 @@ function _cnBetaBee() {
         p.p = intro.innerText.trim();
         item.content.add(0, p);
 
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     }
 }
