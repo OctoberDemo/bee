@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱范儿蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.ifanr.com");
+    Bee.setImgReferer("www.ifanr.com");
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+
+    Bee.addChannel("", "ifanRank", "http://www.ifanr.com/category/special/top-rank");
+    Bee.addChannel("", "评测", "http://www.ifanr.com/category/special/review");
+    Bee.addChannel("", "商业", "http://www.ifanr.com/category/special/business");
+    Bee.addChannel("", "产品", "http://www.ifanr.com/category/special/product");
+    Bee.addChannel("", "app", "http://www.ifanr.com/app");
+    Bee.addChannel("", "玩物志", "http://www.ifanr.com/coolbuy");
+    Bee.addChannel("", "图记", "http://www.ifanr.com/tuji");
+    Bee.addChannel("", "iseed", "http://www.ifanr.com/category/special/iseed");
+    Bee.addChannel("", "视频", "http://www.ifanr.com/category/special/video-special");
+    Bee.addChannel("", "范品", "http://www.ifanr.com/category/special/imuch");
+    Bee.addChannel("", "访谈", "http://www.ifanr.com/category/special/interview");
+    Bee.addChannel("", "新创", "http://www.ifanr.com/category/special/innovation");
+    Bee.addChannel("", "游戏", "http://www.ifanr.com/category/special/game-special");
+    Bee.addChannel("", "观点", "http://www.ifanr.com/category/special/opinion");
+    Bee.addChannel("", "清单", "http://www.ifanr.com/category/special/%E6%B8%85%E5%8D%95");
+    Bee.addChannel("", "观察", "http://www.ifanr.com/category/special/news");
+    Bee.addChannel("", "应用", "http://www.ifanr.com/category/special/app-special");
+    Bee.addChannel("", "故事", "http://www.ifanr.com/category/special/story");
+    Bee.addChannel("", "声音", "http://www.ifanr.com/category/special/voice");
+
+    Bee.onListDomLoaded = function (dom) {
+        var content = dom.byClass("main main-archive posts-list js-loading-posts-wrapper", true);
+        if (content == undefined) {
+            Bee.finishExtractList([]);
+            console.log("content == null");
+            return;
+        }
+        var items = [];
+        var articles = content.byClasses("new-post-item-content", true);
+        var num = -1;
+
+        function loadList() {
+            num++;
+            if (num > articles.length - 1) {
+                console.log(items);
+                Bee.finishExtractList(items);
+                return;
+            }
+            var article = articles[num];
+            var item = {};
+            var title = article.byTag("h2", true);
+            if (title) {
+                var a = title.byTag("a");
+                item.title = a.innerText;
+                item.url = a.href;
+            }
+
+            var author = article.byClass("author", true);
+            if (author) {
+                item.author = author.byTag("a").innerText;
+            }
+
+            var date = article.byClass("date", true);
+            if (date) {
+                item.created_at = new Date(date.attr("datetime")).getTime()/1000;
+            }
+
+            item.source = "爱范儿";
+            var newsPic = article.byClass("news-pic", true);
+            if (newsPic) {
+                var imgUrl = newsPic.attr("style").replace("background-image:url('", "").replace("')", "");
+                var img = {};
+                img.src = Bee.makeImgJumpUrl(imgUrl, "images.ifanr.cn");
+                var imgNode = document.createElement("img");
+                dom.body.appendChild(imgNode);
+                imgNode.src = img.src;
+                imgNode.onerror = function() {
+                    items.push(item);
+                    loadList();
+                };
+                imgNode.onload = function() {
+                    img.width = imgNode.clientWidth;
+                    img.height = imgNode.clientHeight;
+                    item.cover_img = img;
+                    items.push(item);
+                    loadList();
+                }
+            } else {
+                items.push(item);
+                loadList();
+            }
+        }
+
+        loadList();
+
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        var content = dom.byClass("entry-content", true);
+        if (content == undefined) {
+            Bee.finishExtractItem();
+            console.log("content == null");
+            return;
+        }
+
+        var desItem = dom.byClass("entry-meta-tags ", true);
+        if (desItem) {
+            var tagContents = desItem.byClasses("tagContent", true);
+            var tags = [];
+            for (var i = 0; i <　tagContents.length; i ++) {
+                var tag = tagContents[i];
+                tags.push(tag.byTag("a").innerText);
+            }
+            item.tag = tags.join(" ");
+        }
+
+        content.removeClass("entry-meta-tags");
+        var inner = Bee.htmlToJson(content);
+        if (item.content) {
+            item.content = item.content.concat(inner);
+        } else {
+            item.content = inner;
+        }
+//        item.status = 5;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+
+</script>
+
+</body>
+</html>
