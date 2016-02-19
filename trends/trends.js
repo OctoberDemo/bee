@@ -147,7 +147,7 @@ Bee.onItemDomLoaded = function (dom, item) {
             return;
         }
     }
-    Bee.finishExtractItem(item, true);
+    Bee.finishExtractItem(item);
 };
 
 Bee.onSubItemLoaded = function (dom, item) {
