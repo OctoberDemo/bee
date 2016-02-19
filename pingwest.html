@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品玩蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("www.pingwest.com");
+    Bee.setImgReferer("www.pingwest.com");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    Bee.addChannel("人物", "", "http://www.pingwest.com/category/figure/");
+    Bee.addChannel("现象", "", "http://www.pingwest.com/category/phenomenon/");
+    Bee.addChannel("真相", "", "http://www.pingwest.com/category/truth/");
+    Bee.addChannel("短新闻", "", "http://www.pingwest.com/category/news/");
+    Bee.addChannel("腔调", "", "http://www.pingwest.com/category/tune/");
+    Bee.addChannel("酷玩", "", "http://www.pingwest.com/category/coolplay/");
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var articles = dom.byClasses("item", true);
+
+        for (var i = 0; i < Math.min(5, articles.length); i++) {
+            var article = articles[i];
+            var item = {};
+
+            var h2 = article.byTag("h2");
+            var a = h2.byTag("a");
+            item.url = a.href;
+            item.title = a.innerText.trim();
+            item.source = "品玩";
+            items.push(item);
+
+            item.desc = article.byClass("des").innerText.trim();
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    var EIGHT_HOURS_IN_SEC = 8 * 60 * 60;
+
+    Bee.onItemLoaded = function(dom, item) {
+        item.author = dom.byClass("name").innerText.trim();
+        item.created_at = dom.byClass("post-article").attr("ptime") - EIGHT_HOURS_IN_SEC;
+        item.content = Bee.htmlToJson(dom.byId("sc-container"));
+
+        var desc = {};
+        desc.desc = item.desc;
+        delete item.desc;
+
+        item.content.add(0, desc);
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

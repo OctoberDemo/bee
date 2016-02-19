@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>独揽天下蜜蜂排队服务</title>
+    <script src="jndroid/jndroid.core.js"></script>
+    <script src="db.js"></script>
+    <script src="doolandmanager.js"></script>
+</head>
+<body>
+<script>
+    var queue = [];
+
+    loadBees();
+
+    function loadBees() {
+        log("load bees start");
+        DoolandManager.loadBees(function(bees) {
+            log("query all, bees length:" + bees.length);
+            for (var i = 0; i < bees.length; i++) {
+                var found = false;
+                for (var j = 0; j < queue.length; j++) {
+                    if (queue[j].name == bees[i].name) {
+                        queue[j].refresh = 120 * 60000;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found == false) {
+                    log("not found");
+                    var bee = {};
+                    bee.name = bees[i].name;
+                    bee.refresh = 120 * 60000;
+
+                    var now = (new Date()).getTime();
+                    if (queue.length == 0) {
+                        bee.queuetime = now;
+                    } else {
+                        bee.queuetime = queue[0].queuetime - 1;
+                        if (bee.queuetime > now) {
+                            bee.queuetime = now;
+                        }
+                    }
+                    queue.add(0, bee);
+                }
+            }
+            var delBees = [];
+            for (var i = 0; i < queue.length; i++) {
+                var found = false;
+                for (var j = 0; j < bees.length; j++) {
+                    if (queue[i].name == bees[j].name) {
+                        found = true;
+                    }
+                }
+                if (found == false) {
+                    delBees.push(queue[i]);
+                }
+            }
+            for (var i = 0; i < delBees.length; i++) {
+                for (var j = 0; j < queue.length; j++) {
+                    if (queue[j].name == delBees[i].name) {
+                        queue.removeAt(j);
+                        break;
+                    }
+                }
+            }
+            log("重新加载所有蜜蜂:" + JSON.stringify(queue));
+        });
+    }
+
+    function main(token, url, args) {
+        log("目前任务队列长度为：" + queue.length);
+        if (args == "request") {
+            var bee = queue[0];
+            var now = (new Date()).getTime();
+            if (now < bee.queuetime) {
+                var result = {};
+                result.err_no = 0;
+                result.name = "";
+                prompt(JSON.stringify(result), token);
+                log("暂无任务，距离下个任务还有：" + (bee.queuetime - now) / 1000 / 60 + "分钟");
+                return;
+            }
+            queue.shift();
+
+            var result = {};
+            result.err_no = 0;
+            result.name = bee.name;
+            prompt(JSON.stringify(result), token);
+
+            bee.queuetime += bee.refresh;
+            if (bee.queuetime < now) {
+                bee.queuetime = now;
+            }
+            var index;
+            for (index = 0; index < queue.length; index++) {
+                if (queue[index].queuetime > bee.queuetime) {
+                    break;
+                }
+            }
+            queue.add(index, bee);
+            log("分配任务：" + bee.name);
+        } else if (args == "update") {
+            log("update!!");
+
+            loadBees();
+
+            var result = {};
+            result.err_no = 0;
+            prompt(JSON.stringify(result), token);
+        } else {
+            var result = {};
+            result.err_no = 1;
+            prompt(JSON.stringify(result), token);
+        }
+    }
+
+    function log(msg) {
+        var now = new Date();
+        console.log(now.toLocaleString() + " | " + msg);
+    }
+</script>
+</body>
+</html>
