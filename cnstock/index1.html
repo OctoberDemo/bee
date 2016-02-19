@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中国证券网蜜蜂（一）</title>
+    <script src="../bee.js"></script>
+    <script src="cnstock.news.bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("财经", "要闻", "http://news.cnstock.com/news/sns_yw");
+    Bee.addChannel("财经", "今日观察", "http://news.cnstock.com/news/sns_jrgc");
+    Bee.addChannel("财经", "海外", "http://news.cnstock.com/news/sns_hw");
+    Bee.addChannel("财经", "金融", "http://news.cnstock.com/news/sns_jr");
+    Bee.addChannel("财经", "劵业", "http://news.cnstock.com/news/sns_qy");
+    Bee.addChannel("财经", "港股", "http://news.cnstock.com/news/sns_gg");
+    Bee.addChannel("财经", "资讯库", "http://news.cnstock.com/news/sns_zxk");
+
+    Bee.start();
+
+</script>
+</body>
+</html>
