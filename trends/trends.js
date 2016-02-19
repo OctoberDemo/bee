@@ -159,6 +159,6 @@ Bee.onSubItemLoaded = function (dom, item) {
     }
     var hasNext = Bee.continueSubItem(item);
     if (hasNext == false) {
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     }
 };
