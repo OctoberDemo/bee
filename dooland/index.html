@@ -84,7 +84,7 @@
             var categoryValue = category.getText().trim();
             var tagValue = tag.getText().trim();
             DoolandManager.addBee(name, link, categoryValue, tagValue);
-
+            DoolandManager.addSource(name);
         }).show();
     }, 40);
     root.addView(tableList);
