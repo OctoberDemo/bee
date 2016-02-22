@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vice中国蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("www.vice.cn");
+    Bee.setImgReferer("www.vice.cn");
+
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    Bee.addChannel("文章", "", "http://www.vice.cn/read");
+
+
+
+    Bee.onListDomLoaded = function(dom) {
+
+        setTimeout(function() {
+            var items = [];
+
+            var list = dom.byClass("story_list");
+
+            for (var i = 0; i < Math.min(5, list.childElementCount); i++) {
+                var article = list.children[i];
+                var item = {};
+
+                item.source = "Vice中国";
+                item.title = article.byClass("entry-title").byTag("a").innerText.trim();
+                item.url = "http://www.vice.cn" + article.byClass("entry-summary").byTag("a").attr("href");
+                item.desc = article.byClass("entry-summary").byTag("p").innerText.trim();
+                item.created_at = Bee.convertTime(article.byClass("entry-date").innerText.trim());
+
+                items.push(item);
+            }
+
+            console.log(items);
+
+            Bee.finishExtractList(items);
+        }, 1000);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        setTimeout(function() {
+            dom.removeTags("iframe");
+
+            item.content = BeeUtils.htmlToJson(dom.byClass("article_content"));
+
+            var desc = {};
+            desc.desc = item.desc;
+            item.content.add(0, desc);
+            delete item.desc;
+
+            Bee.finishExtractItem(item);
+        }, 1000);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
