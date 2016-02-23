@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FT中文网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("ftchinese");
+    Bee.setImgReferer("m.ftchinese.com");
+
+    Bee.addChannel("财经", "中国", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=china&i=2");
+    Bee.addChannel("财经", "全球", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=global&i=2");
+    Bee.addChannel("财经", "经济", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=economy&i=2");
+    Bee.addChannel("财经", "市场", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=markets&i=2");
+    Bee.addChannel("财经", "观点", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=opinion&i=2");
+    Bee.addChannel("财经", "商业", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=business&i=2");
+    Bee.addChannel("财经", "管理", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=management&i=2");
+    Bee.addChannel("财经", "时尚", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=lifestyle&i=2");
+    Bee.addChannel("财经", "热门", "http://m.ftchinese.com/index.php/ft/channel/iphonemobiletemplate.html?channel=week&i=2");
+
+
+    Bee.requestNoScript();
+    Bee.requestNoIframe();
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+        var oneStorys = dom.byClasses("oneStory");
+        for (var i = 0; i < oneStorys.length; i++) {
+            var item = {};
+            var oneStory = oneStorys[i];
+            item.title = oneStory.byClass("headline").innerText;
+            item.desc = oneStory.byClass("lead").innerText;
+            item.url = oneStory.href;
+            item.class = "news";
+//            item.status = 5;
+            item.source = "FT中文网";
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var dateStamp = dom.byClass("dateStamp", true);
+        if (dateStamp == null) {
+            console.log("未知格式");
+            Bee.passItem(item);
+            return;
+        }
+        var timeString = dateStamp.innerText.toLowerCase().trim();
+        if (timeString.indexOf("am") == timeString.length - 2 || timeString.indexOf("pm") == timeString.length - 2) {
+            timeString = timeString.substring(0, timeString.length - 2).trim();
+        }
+        item.created_at = Bee.convertTime(timeString);
+        item.content = Bee.htmlToJson(dom.byClass("cbody"));
+
+        var desc = {};
+        desc.desc = BeeUtils.fullToHalf(item.desc);
+        delete item.desc;
+        item.content.add(0, desc);
+
+        Bee.finishExtractItem(item);
+        console.log(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

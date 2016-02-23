@@ -10,30 +10,47 @@ function _HuanqiuBee() {
 
     Bee.onListLoaded = function(dom) {
         var fallsFlow = dom.byClass("fallsFlow", true);
-        if (fallsFlow == undefined) {
-            Bee.finishExtractList();
-            return;
-        }
         var items = [];
-        var itemNodes = fallsFlow.byClasses("item");
-        for (var i = 0; i < itemNodes.length; i++) {
-            var itemNode = itemNodes[i];
-            var link = itemNode.byTag("h3").byTag("a");
+        if (fallsFlow) {
+            var itemNodes = fallsFlow.byClasses("item");
+            for (var i = 0; i < itemNodes.length; i++) {
+                var itemNode = itemNodes[i];
+                var link = itemNode.byTag("h3").byTag("a");
+                var item = {};
+                item.title = link.innerText;
+                item.url = link.href;
+                item.class = "news";
+                //item.status = 5;
+
+                var descNode = itemNode.byTag("h5", true);
+                descNode.removeTag("em");
+                var desc = descNode.innerText;
+                if (desc.indexOf(item.title) < 0) {
+                    item.desc = desc;
+                }
+                items.push(item);
+            }
+        }
+
+        var paneT = dom.byClass("paneT", true);
+        if (paneT) {
+            paneT.removeTags("strong");
+            var links = paneT.byTags("a");
+            for (var i = 0; i < links.length; i++) {
+                extractLink(links[i]);
+            }
+        }
+        Bee.finishExtractList(items);
+
+        function extractLink(link) {
             var item = {};
             item.title = link.innerText;
             item.url = link.href;
             item.class = "news";
             //item.status = 5;
 
-            var descNode = itemNode.byTag("h5");
-            descNode.removeTag("em");
-            var desc = descNode.innerText;
-            if (desc.indexOf(item.title) < 0) {
-                item.desc = desc;
-            }
             items.push(item);
         }
-        Bee.finishExtractList(items);
     };
 
     Bee.onItemLoaded = function(dom, item) {
@@ -66,9 +83,13 @@ function _HuanqiuBee() {
             }
             text.removeId("pages");
             text.removeClass("editorSign");
+            text.removeClass("reTopics");
             item.content  = Bee.htmlToJson(text);
             Bee.finishExtractSubUrls(urls, item);
         } else {
+            text.removeId("pages");
+            text.removeClass("editorSign");
+            text.removeClass("reTopics");
             item.content = Bee.htmlToJson(text);
             finishExtractItem(item);
         }
@@ -79,6 +100,7 @@ function _HuanqiuBee() {
         text.removeTag("h1");
         text.removeId("pages");
         text.removeClass("editorSign");
+        text.removeClass("reTopics");
         item.content = item.content.concat(Bee.htmlToJson(text));
         var hasNext = Bee.continueSubItem(item);
         if (hasNext == false) {

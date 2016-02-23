@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>浙江日报蜜蜂</title>
+    <script src="../jndroid/jndroid.core.js"></script>
+    <script src="../bee.js"></script>
+    <script src="zjol.bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("zjrb.zjol.com.cn");
+    Bee.setImgReferer("zjrb.zjol.com.cn");
+
+    ZjolBee.openPaper("http://zjrb.zjol.com.cn/");
+    ZjolBee.setSource("浙江日报");
+    ZjolBee.tagToCategory = function(tag) {
+        if (tag.indexOf("要闻") >= 0) {
+            return "要闻";
+        }
+        if (tag.indexOf("经济") >= 0) {
+            return "财经";
+        }
+        if (tag.indexOf("文化") >= 0) {
+            return "文化";
+        }
+        if (tag.indexOf("社会") >= 0) {
+            return "社会";
+        }
+    };
+</script>
+</body>
+</html>

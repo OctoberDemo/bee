@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪其他类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("财经", "", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=9&num=50");
+    Bee.addChannel("星座", "", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=52&num=50");
+    Bee.addChannel("健康", "", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=31&num=50");
+    Bee.addChannel("教育", "", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=11&num=50");
+    Bee.addChannel("教育", "育儿", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=10&num=50");
+    Bee.addChannel("", "博客", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=54&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>

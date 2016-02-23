@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="bee.js"></script>
+    <script src="beeutils.js"></script>
+</head>
+<body>
+<script>
+    setTimeout(function() {
+        var iframe = document.createElement("iframe");
+        iframe.src = "http://www.dooland.com/magazine/article_826823.html";
+        iframe.style.width = "1000px";
+        iframe.style.height = "800px";
+        document.body.innerText = "";
+        document.body.appendChild(iframe);
+    }, 2000);
+</script>
+</body>
+</html>

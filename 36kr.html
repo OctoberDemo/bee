@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>36kr蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("36kr.com");
+    Bee.setImgReferer("36kr.com");
+
+    Bee.requestNoScript();
+
+    Bee.addChannel("科技", "互联网 创业", "http://36kr.com/#?sideActiveTab=fast");
+//    Bee.debug("http://36kr.com/p/5042625.html");
+
+    Bee.onListLoaded = function(dom) {
+        var article_list = dom.byClass("article-list");
+        dom.removeClasses("ad-wrapper");
+        var articles = article_list.byTags("article");
+        var items = [];
+
+        for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            var desc = article.byClass("desc");
+            var item = {};
+            item.title = desc.byTag("a").innerText;
+            item.url = desc.byTag("a").href;
+            //item.status = 5;
+            item.source = "36氪";
+            var brief = desc.byClass("brief", true);
+            if (brief) {
+                item.desc = brief.innerText;
+            }
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var timeago = dom.byClass("timeago", true);
+        if (timeago == null) {
+            console.log("未知格式");
+            Bee.passItem(item);
+            return;
+        }
+        item.created_at = Bee.convertTime(timeago.attr("title"));
+        item.author = dom.byClass("name").innerText;
+
+        item.content = Bee.htmlToJson(dom.byClass("article"), null, null, imgConverter);
+
+        var headPoster = dom.byClass("single-post-header__headline", true);
+        if (headPoster) {
+            var headImg = headPoster.byTag("img");
+            if (headImg) {
+                item.content.add(0, Bee.convertImg(headImg));
+            }
+        }
+
+        if (item.desc) {
+            var desc = {};
+            desc.desc = BeeUtils.fullToHalf(item.desc);
+            item.content.add(0, desc);
+            delete item.desc;
+        }
+
+        Bee.finishExtractItem(item);
+
+        function imgConverter(imgNode) {
+            var image = {};
+            image.src = imgNode.attr("data-lazyload");
+            var size = imgNode.attr("data-img-size-val");
+            var sizes = size.split(",");
+            image.width = parseInt(sizes[0]);
+            image.height = parseInt(sizes[1]);
+            return image;
+        }
+    };
+
+
+    Bee.start();
+
+</script>
+</body>
+</html>

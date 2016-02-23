@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>好奇心日报蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("www.qdaily.com");
+    Bee.setImgReferer("www.qdaily.com");
+
+    Bee.requestNoScript();
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+
+    Bee.addChannel("商业", "http://www.qdaily.com/categories/18.html");
+    Bee.addChannel("智能", "http://www.qdaily.com/categories/4.html");
+    Bee.addChannel("设计", "http://www.qdaily.com/categories/17.html");
+    Bee.addChannel("时尚", "http://www.qdaily.com/categories/19.html");
+    Bee.addChannel("娱乐", "http://www.qdaily.com/categories/3.html");
+    Bee.addChannel("城市", "http://www.qdaily.com/categories/5.html");
+    Bee.addChannel("游戏", "http://www.qdaily.com/categories/54.html");
+
+    Bee.onListLoaded = function(dom) {
+        var items = [];
+
+        var articles = dom.byClasses("article");
+        for (var i = 0; i < Math.min(5, articles.length); i++) {
+            var article = articles[i];
+            var h1 = article.byTag("h1");
+
+            var item = {};
+            item.title = h1.innerText.trim();
+            item.url = article.byTag("a").href;
+            item.source = "好奇心日报";
+            items.push(item);
+        }
+
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        item.author = dom.byClass("name").innerText.trim();
+
+        var smart_date = dom.byClass("smart-date");
+        var timeString = smart_date.attr("data-origindate");
+        item.created_at = Bee.convertTime(timeString);
+
+        var detail = dom.byClass("detail");
+
+        item.content = Bee.htmlToJson(detail);
+
+        var banner = dom.byClass("banner", true);
+        if (banner) {
+            var imgNode = Bee.convertImg(banner);
+            var img = {};
+            img.img = imgNode;
+            item.content.add(0, img);
+        }
+
+        var excerpt = dom.byClass("excerpt", true);
+        if (excerpt) {
+            var desc = {};
+            desc.desc = excerpt.innerText.trim();
+            item.content.add(0, desc);
+        }
+
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>

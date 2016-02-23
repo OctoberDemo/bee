@@ -66,7 +66,7 @@ function BeeWebView() {
             if (window.Node.prototype.attr == undefined) {
                 window.Node.prototype.attr = function (a, ignoreCheck) {
                     var node = this.getAttribute(a);
-                    if (node == undefined && ignoreCheck == true) {
+                    if (node == undefined && ignoreCheck != true) {
                         BeeUtils.warning(getUrl() + " | attr \"" + a + "\" fail!");
                     }
                     return node;
@@ -140,7 +140,7 @@ function _BeeUtils() {
     this.warning = function(msg) {
         var d = new Date();
         var log = d.toLocaleString() + " | " + msg;
-        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.cn/beemonitor/log.html", function() {
+        liteAjax("http://jcloud.jndroid.com/request?page=http://bee.jndroid.com/beemonitor/log.html", function() {
 
         }, "post", log);
     };
@@ -323,8 +323,8 @@ function _BeeUtils() {
             var sec = Math.floor(Math.random() * 59);
             timeString += ":" + sec;
         } else if (colonCount == 0) {
-            var h = Math.floor(Math.random() * now.getHours());
-            var m = Math.floor(Math.random() * now.getMinutes());
+            var h = now.getHours();
+            var m = now.getMinutes() - Math.floor(Math.random() * Math.min(10, now.getMinutes()));
             var s = Math.floor(Math.random() * now.getSeconds());
             timeString += " " + h + ":" + m + ":" + s;
         }
@@ -336,6 +336,22 @@ function _BeeUtils() {
             console.log("Error:" + timeString);
             return new Date();
         }
+    };
+
+    this.fullToHalf = function(str) {
+        var tmp = "";
+        for(var i = 0; i < str.length; i++) {
+            if (str[i] == "，" || str[i] == "。" || str[i] == "：" || str[i] == "！" || str[i] == "？") {
+                tmp += str[i];
+            } else {
+                if(str.charCodeAt(i) > 65248 && str.charCodeAt(i) < 65375) {
+                    tmp += String.fromCharCode(str.charCodeAt(i) - 65248);
+                } else {
+                    tmp += String.fromCharCode(str.charCodeAt(i));
+                }
+            }
+        }
+        return tmp;
     };
 
     this.htmlToJson = function(htmlNode, adTexts, adImgs, imgConverter) {
@@ -373,7 +389,7 @@ function _BeeUtils() {
                         continue;
                     }
                     var p = {};
-                    p.p = item.content;
+                    p.p = self.fullToHalf(item.content);
                     jsonResult.push(p);
                 }
             }
@@ -429,6 +445,9 @@ function _BeeUtils() {
                             image.width = size.width;
                             image.height = size.height;
                         }, "post", image.src, false);
+                    }
+                    if (image.width < 32 && image.height < 32) {
+                        continue;
                     }
                     contentItem.bound = getBounds(node);
                     contentItem.img = image;

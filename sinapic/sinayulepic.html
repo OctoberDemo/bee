@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪娱乐类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("娱乐", "明星", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=4&sub_ch={in}star,star/jp,star/k,star/w,star/h&num=50");
+    Bee.addChannel("娱乐", "电影", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=4&sub_ch={in}film,film/jp,film/k,film/w,film/h&num=50");
+    Bee.addChannel("娱乐", "电视", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=4&sub_ch={in}tv,tv/jp,tv/k,tv/w,tv/h&num=50");
+    Bee.addChannel("娱乐", "音乐", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=4&sub_ch={in}y,y/jp,y/k,y/w,y/h,z/y,z/y/w&num=50");
+    Bee.addChannel("娱乐", "戏剧", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=4&sub_ch=xiju&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>

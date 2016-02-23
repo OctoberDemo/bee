@@ -66,6 +66,10 @@ function _Bee() {
     this.onItemDomLoaded = null;
     this.onSubItemDomLoaded = null;
 
+    this.getChannelList = function() {
+        return channelList;
+    };
+
     this.getListWebView = function() {
         return listWebView;
     };
@@ -103,14 +107,20 @@ function _Bee() {
         noIframe = true;
     };
 
-    this.addChannel = function(category, tagOrUrl, url) {
+    this.addChannel = function(category, tagOrSourceOrUrl, sourceOrUrl, url) {
         var channel = {};
         channel.category = category;
-        if (url == undefined) {
-            channel.url = tagOrUrl;
+        if (url == undefined && sourceOrUrl == undefined) {
+            channel.url = tagOrSourceOrUrl;
         } else {
-            channel.tag = tagOrUrl;
-            channel.url = url;
+            if (url == undefined) {
+                channel.tag = tagOrSourceOrUrl;
+                channel.url = sourceOrUrl;
+            } else {
+                channel.tag = tagOrSourceOrUrl;
+                channel.source = sourceOrUrl;
+                channel.url = url;
+            }
         }
         channelList.push(channel);
     };
@@ -187,18 +197,18 @@ function _Bee() {
         listWebView.setBorder(2, 0xff666666);
         root.addView(listWebView, 0);
 
-        listWebView.setOnPageFinishListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListLoaded) {
+        if (self.onListLoaded) {
+            listWebView.setOnPageFinishListener(function () {
+                var dom = listWebView.getDom();
                 self.onListLoaded.call(listWebView, dom);
-            }
-        });
-        listWebView.setOnDomLoadedListener(function() {
-            var dom = listWebView.getDom();
-            if (self.onListDomLoaded) {
+            });
+        }
+        if (self.onListDomLoaded) {
+            listWebView.setOnDomLoadedListener(function () {
+                var dom = listWebView.getDom();
                 self.onListDomLoaded.call(listWebView, dom);
-            }
-        });
+            });
+        }
 
         if (noScript) {
             self.getNoScriptHtml(curChannel.url, function(html) {
@@ -226,7 +236,7 @@ function _Bee() {
         }
     }
 
-    this.finishExtractList = function(items) {
+    this.finishExtractList = function (items) {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             if (item.key == undefined) {
@@ -260,18 +270,18 @@ function _Bee() {
         itemWebView = new BeeWebView();
         itemWebView.setBorder(2, 0xff666666);
         root.addView(itemWebView);
-        itemWebView.setOnPageFinishListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemLoaded) {
+        if (self.onItemLoaded) {
+            itemWebView.setOnPageFinishListener(function () {
+                var dom = itemWebView.getDom();
                 self.onItemLoaded.call(itemWebView, dom, item);
-            }
-        });
-        itemWebView.setOnDomLoadedListener(function() {
-            var dom = itemWebView.getDom();
-            if (self.onItemDomLoaded) {
+            });
+        }
+        if (self.onItemDomLoaded) {
+            itemWebView.setOnDomLoadedListener(function() {
+                var dom = itemWebView.getDom();
                 self.onItemDomLoaded.call(itemWebView, dom, item);
-            }
-        });
+            });
+        }
         if (noScript) {
             self.getNoScriptHtml(item.url, function(html) {
                 itemWebView.loadDataWithBaseURL(html.innerHTML);
@@ -412,6 +422,16 @@ function _Bee() {
             loadItem();
             return;
         }
+
+        if (oneByone != true && test != true) {
+            var timeGap = (new Date()).getTime() - item.created_at * 1000;
+            console.log("timeGap:" + (timeGap / 1000 / 60) + "min");
+            if (timeGap > 8 * 3600 * 1000) {
+                this.passItem(item);
+                return;
+            }
+        }
+
         var key = item.key;
         delete item.key;
 
@@ -434,8 +454,13 @@ function _Bee() {
         if (item.cover_img == undefined) {
             for (var i = 0; i < item.content.length; i++) {
                 if (item.content[i].img) {
-                    item.cover_img = item.content[i].img;
-                    break;
+                    if (item.content[i].img.width > 150 && item.content[i].img.height > 150) {
+                        var ratio = item.content[i].img.width / item.content[i].img.height;
+                        if (ratio > 0.5 && ratio < 2) {
+                            item.cover_img = item.content[i].img;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -463,8 +488,11 @@ function _Bee() {
             console.log(item);
             return;
         }
-        item.title = item.title.trim();
+        item.title = BeeUtils.fullToHalf(item.title.trim());
         item.source = item.source.trim();
+        if (item.source == "") {
+            item.source = type;
+        }
 
         if (item.category) {
             item.category = item.category.trim();
@@ -492,6 +520,12 @@ function _Bee() {
 
     this.passItem = function(item) {
         if (item) {
+            var checkUrl = "http://jcloud.jndroid.com/request?page=http://greatlibrary.jndroid.cn/checkExist/";
+            var postData = {};
+            postData.title = item.title;
+            postData.noRecord = true;
+            liteAjax(checkUrl, function(e) {}, "post", JSON.stringify(postData), false);
+
             BeeUtils.addKey(type, item.key);
         }
         loadItem();
@@ -519,6 +553,37 @@ function _Bee() {
         return parseInt(date.getTime() / 1000);
     };
 
+    this.convertSource = function(sourceString, siteSource) {
+        sourceString = sourceString.trim()
+        if (sourceString.indexOf("来源：") == 0 || sourceString.indexOf("来源:") == 0) {
+            sourceString = sourceString.substring(3);
+        }
+        sourceString = sourceString.trim();
+
+        var siteSources = [];
+        if (Utils.isArray(siteSource)) {
+            siteSources = siteSource;
+        } else {
+            siteSources.push(siteSource);
+        }
+        for (var i = 0; i < siteSources.length; i++) {
+            if (sourceString.contains(siteSources[i])) {
+                if (curChannel.source) {
+                    return curChannel.source;
+                } else {
+                    return sourceString;
+                }
+            }
+        }
+        if (Bee.existSource(sourceString)) {
+            console.log("已知来源：" + sourceString);
+            return null;
+        } else {
+            console.log("未知来源：" + sourceString);
+            return sourceString;
+        }
+    };
+
     this.convertImg = function(imgNode) {
         var img = {};
         if (imgReferer) {
@@ -526,8 +591,15 @@ function _Bee() {
         } else {
             img.src = imgNode.src;
         }
-        img.width = imgNode.width;
-        img.height = imgNode.height;
+        img.width = imgNode.clientWidth;
+        img.height = imgNode.clientHeight;
+        if (img.width == 0 || img.height == 0) {
+            liteAjax("http://jcloud.jndroid.com/request?page=http://playground.jndroid.cn/imagesize", function(e) {
+                var size = JSON.parse(e);
+                img.width = size.width;
+                img.height = size.height;
+            }, "post", img.src, false);
+        }
         return img;
     };
 
@@ -577,10 +649,10 @@ function _Bee() {
     var beeJsTotal = 0;
     var beeJsCount = 0;
 
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.core.js");
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.layout.js");
-    includeJs("http://bee.jndroid.cn/jndroid/jndroid.widget.js");
-    includeJs("http://bee.jndroid.cn/beeutils.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.core.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.layout.js");
+    includeJs("http://bee.jndroid.com/jndroid/jndroid.widget.js");
+    includeJs("http://bee.jndroid.com/beeutils.js");
 
     function includeJs(path) {
         beeJsTotal++;

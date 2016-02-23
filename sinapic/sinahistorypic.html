@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新浪历史类图片</title>
+    <script src="../bee.js"></script>
+    <script src="sinapic.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("历史", "影像志", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=61&sub_ch=y&num=50");
+    Bee.addChannel("历史", "战争实录", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=61&sub_ch=z&num=50");
+    Bee.addChannel("历史", "人物特写", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=61&sub_ch=r&num=50");
+    Bee.addChannel("历史", "文化图景", "http://api.slide.news.sina.com.cn/interface/api_album.php?activity_size=198_132&size=img&ch_id=61&sub_ch=w&num=50");
+
+    Bee.start();
+</script>
+
+</body>
+</html>

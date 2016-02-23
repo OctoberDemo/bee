@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>煎蛋蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<script>
+    Bee.setType("jandan.net");
+    Bee.setImgReferer("http://jandan.net/");
+    Bee.addChannel("", "", "http://jandan.net/");
+    Bee.requestNoCss();
+    Bee.requestNoIframe();
+    Bee.requestNoScript();
+
+    function imgConverter(node) {
+        var image = {};
+        var src = "";
+        if (node.src) {
+            src = node.src;
+        } else {
+            src = node.attr("data-original");
+        }
+        if (src.startsWith("//")) {
+            src = "http:" + src;
+        }
+        if (src.indexOf("//jandan.net") >= 0) {
+            src = src.replace("//jandan.net", "");
+        }
+        image.src = src;
+        return image;
+    }
+
+    Bee.onListLoaded = function (dom) {
+        var items = [];
+            var post = dom.byId("content");
+            var lis = post.byClasses("post f list-post", true);
+            for (var i = 0; i < lis.length; i++) {
+                var item = {};
+                var li = lis[i];
+                var img = li.byTag("img", true);
+                if (img) {
+                    var image = imgConverter(img);
+                    image.height = img.clientHeight;
+                    image.width = img.clientWidth;
+                    item.cover_img = image;
+                }
+                var indexs = li.byClass("indexs", true);
+                if (indexs == undefined) {
+                    continue;
+                }
+
+                var a = indexs.byTag("h2").byTag("a");
+                item.url = a.href;
+                item.title = a.innerText;
+                item.source = "煎蛋";
+
+                var times = indexs.byClass("time_s", true).byTags("a");
+                if (times.length == 2) {
+                    item.author = times[0].innerText;
+                    item.tag = times[1].innerText;
+                }
+                indexs.removeClass("comment-link");
+                indexs.removeClass("time_s");
+                indexs.removeTag("h2");
+                indexs.removeClass("jandan-zan");
+                var des = indexs.innerText;
+                if (des != undefined && des.length > 0) {
+                    item.content = [];
+                    var desc = {};
+                    desc.desc = des;
+                    item.content.add(desc);
+                }
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+    };
+
+    Bee.onItemDomLoaded = function (dom, item) {
+        var content = dom.byClass("post f", true);
+        if (content == undefined) {
+            Bee.finishExtractItem();
+            return;
+        }
+        var times = content.byClass("time_s");
+        times.removeTag("a");
+        var timeString = times.innerText.replace("@", "").replace(",", "");
+        if (timeString.length > 0) {
+            item.created_at = Bee.convertTime(timeString);
+            console.log(item.created_at);
+        }
+        content.removeTags("script");
+        content.removeTags("div");
+        content.removeTags("em");
+        content.removeTag("h3");
+        content.removeClass("time_s");
+        content.removeClass("comment-big");
+        content.removeClass("jandan-zan");
+        var inner = Bee.htmlToJson(content, [], [], imgConverter);
+        if (item.content) {
+            item.content = item.content.concat(inner);
+        } else {
+            item.content = inner;
+        }
+//        item.status = 5;
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
