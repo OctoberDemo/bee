@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>中国证券网蜜蜂（二）</title>
+    <script src="../bee.js"></script>
+    <script src="cnstock.industry.bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("财经", "产业聚焦", "http://news.cnstock.com/industry/sid_rdjj");
+    Bee.addChannel("财经", "产业情报", "http://news.cnstock.com/industry/sid_cyqb");
+    Bee.addChannel("财经", "商品期货", "http://news.cnstock.com/industry/sid_spqh");
+    Bee.addChannel("财经", "资讯库", "http://news.cnstock.com/industry/sid_zxk");
+
+    Bee.start();
+
+</script>
+</body>
+</html>
