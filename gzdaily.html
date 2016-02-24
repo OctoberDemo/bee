@@ -105,7 +105,7 @@
             item.content = Bee.htmlToJson(dom.byClass("text"));
             var contentStr = JSON.stringify(item.content);
             if (contentStr.length < 500) {
-                console.log("内容过短：" + contentStr.length);
+                console.log("内容过短： " + contentStr.length);
                 Bee.passItem(item);
                 return;
             }
