@@ -554,7 +554,7 @@ function _Bee() {
     };
 
     this.convertSource = function(sourceString, siteSource) {
-        sourceString = sourceString.trim()
+        sourceString = sourceString.trim();
         if (sourceString.indexOf("来源：") == 0 || sourceString.indexOf("来源:") == 0) {
             sourceString = sourceString.substring(3);
         }
@@ -567,7 +567,7 @@ function _Bee() {
             siteSources.push(siteSource);
         }
         for (var i = 0; i < siteSources.length; i++) {
-            if (sourceString.contains(siteSources[i])) {
+            if (sourceString.indexOf(siteSources[i]) >= 0) {
                 if (curChannel.source) {
                     return curChannel.source;
                 } else {
