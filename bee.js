@@ -237,7 +237,7 @@ function _Bee() {
     }
 
     this.finishExtractList = function (items) {
-        for (var i = 0; i < items.length; i++) {
+        for (var i = 0; i < Math.min(5, items.length); i++) {
             var item = items[i];
             if (item.key == undefined) {
                 item.key = self.hashCode(item.url);
