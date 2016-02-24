@@ -96,13 +96,13 @@
                 item.content = JSON.stringify(content);
                 items.push(item);
             }
-        })
+        }, "get", "", false);
         Bee.finishExtractList(items);
-    }
+    };
 
     Bee.onItemLoaded = function(dom, item) {
         Bee.finishExtractItem(item);
-    }
+    };
     Bee.start();
 </script>
 </body>
