@@ -11,8 +11,8 @@
     Bee.addChannel("房产", "上海", "http://sh.house.qq.com/l/shloushi/list_80.htm");
     Bee.setType("house.qq.com");
     Bee.setImgReferer("house.qq.com");
-    Bee.requestNoScript();
-    Bee.requestNoCss();
+//    Bee.requestNoScript();
+//    Bee.requestNoCss();
     Bee.onListLoaded = function (dom) {
         var items = [];
         var contList = dom.byClass("mod newslist");
@@ -61,37 +61,41 @@
             item.content.add(desc);
         }
 
-        article.removeClass("titdd-Article");
-        article.removeTag("table");
+//        article.removeClass("titdd-Article");
+//        article.removeTag("table");
 
         var hasRec = false;
-        var articleNew = [];
-        for (var i=0; i < article.childNodes.length; i++) {
-            var p = article.childNodes[i];
-            if (p.innerText && p.innerText.indexOf("》》特别推荐：") >= 0 ) {
-                console.log("has");
-                hasRec = true;
-            }
-//            if (p.byTag("a", true) && p.byTag("a").title.indexOf("返回腾讯")>=0) {
+        var articleNew = document.createElement("new-article");
+        var articles = article.byTags("p");
+        for (var i=0; i < articles.length; i++) {
+            var p = articles[i];
+            console.log(p);
+//            if (p.innerText && p.innerText.indexOf("》》特别推荐：") >= 0 ) {
+//                console.log("has");
+//                hasRec = true;
+//            }
+//            if (p.byTag("a") && p.byTag("a").title.indexOf("返回腾讯")>=0) {
 //                hasRec = true;
 //                console.log("has");
-//                continue;
+//                break;
 //            }
-            if (hasRec) {
-                console.log(p);
-                article.removeChild(p);
-            }
+//            articleNew.appendChild(p);
+
+//            if (hasRec) {
+//                console.log(p);
+//                article.removeChild(p);
+//            }
         }
-        console.log(article);
-        var content = Bee.htmlToJson(article);
+//        console.log(articleNew);
+//        var content = Bee.htmlToJson(articleNew);
         if (item.content == undefined) {
             item.content = content;
         } else {
-            item.content = item.content.concat(content);
+//            item.content = item.content.concat(content);
         }
         item.class = "";
         item.status = 5;
-        Bee.finishExtractItem(item, true, true);
+//        Bee.finishExtractItem(item, true, true);
     }
 
     Bee.onItemDomLoaded = function (dom, item) {
@@ -101,14 +105,16 @@
             pageAll.click();
             setTimeout(function() {
                 loadItem(dom, item);
-            }, 500);
+            }, 1000);
             return;
         }
-        loadItem(dom, item);
+        setTimeout(function() {
+            loadItem(dom, item);
+        }, 500);
     };
 
 //    Bee.start();
-    Bee.debug("http://sh.house.qq.com/a/20160220/023335.htm");
+    Bee.debug("http://sh.house.qq.com/a/20140613/009582.htm");
 </script>
 </body>
 </html>
