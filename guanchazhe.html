@@ -11,7 +11,7 @@
     var adText = ["来源：观察者网", "本文系观察者网独家稿件"];
 
     Bee.addChannel("要闻", "http://m.guancha.cn/home-news");
-    Bee.addChannel("时评", "http://m.guancha.cn/home-comment");
+//    Bee.addChannel("时评", "http://m.guancha.cn/home-comment");
     Bee.setType("m.guancha.cn");
     Bee.setImgReferer("m.guancha.cn");
     Bee.setRefreshTime(1000 * 60 * 10);
@@ -48,6 +48,10 @@
         var timeString = article.byTag("time").innerText;
         item.created_at = Bee.convertTime(timeString);
         var section = article.byTag("section");
+        if ( section.byClass("author") == undefined) {
+            Bee.finishExtractItem();
+            return;
+        }
         var source = section.byClass("author").innerText.split("|");
         var sourceString = source[0].replace("来源：", "");
         if (sourceString.indexOf("观察者网") < 0) {
@@ -60,7 +64,6 @@
             }
         }
         item.source = sourceString;
-        item.category = Bee.getCurCategory();
         section.removeClass("bdsharebuttonbox m_share bdshare-button-style0-16");
         section.removeClass("details-author");
         item.content = Bee.htmlToJson(section, adText);
