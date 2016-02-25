@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>无界新闻蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("watching");
+    Bee.setImgReferer("www.watching.cn");
+
+    Bee.addChannel("", "", "http://app.watching.cn/wookmark/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/6/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/41/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/11/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/77/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/34/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/119/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/8/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/70/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/104/?page=1&limit=20");
+    Bee.addChannel("", "", "http://app.watching.cn/category/107/?page=1&limit=20");
+
+    Bee.onListLoaded = function(dom) {
+        var datas = JSON.parse(dom.body.innerText);
+
+        var items = [];
+        var list = datas.list;
+        for (var i = 0; i < list.length; i++) {
+            var data = list[i];
+            var item = {};
+            item.title = data.title;
+            item.url = data.url;
+            item.desc = data.desc;
+            item.tag = data.cname;
+            item.created_at = data.time;
+            items.push(item);
+        }
+        Bee.finishExtractList(items);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var time = dom.byClass("time");
+        var timespan = time.byTag("span");
+        var source = timespan.innerText.trim();
+        if (source.indexOf("来自：") == 0 || source.indexOf("来自:") == 0) {
+            source = source.substring(3).trim();
+        }
+        if (source.indexOf("无界") >= 0) {
+
+        } else {
+            if (Bee.existSource(source)) {
+                console.log("跳过已知来源：" + source);
+                Bee.passItem(item);
+            } else {
+                console.log("未知来源：" + source);
+            }
+        }
+        item.source = source;
+        dom.removeClass("content-desc");
+
+        item.content = Bee.htmlToJson(dom.byClass("content-txt"));
+
+        if (item.desc) {
+            var desc = {};
+            desc.desc = item.desc;
+            item.content.add(0, desc);
+
+            delete item.desc;
+        }
+
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+</script>
+</body>
+</html>
