@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>九派蜜蜂（一）</title>
+    <script src="../bee.js"></script>
+    <script src="jiupaicn.bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.addChannel("新闻", "要闻", "http://www.jiupaicn.com/news/trend/");
+    Bee.addChannel("新闻", "独家", "http://www.jiupaicn.com/news/sole/");
+    Bee.addChannel("新闻", "热点", "http://www.jiupaicn.com/news/hot/");
+    Bee.addChannel("舆论", "解读", "http://www.jiupaicn.com/comment/lvzheng/");
+    Bee.addChannel("舆论", "洞见", "http://www.jiupaicn.com/comment/lvdong/");
+    Bee.addChannel("舆论", "时评", "http://www.jiupaicn.com/comment/shiping/");
+    Bee.addChannel("舆论", "网语", "http://www.jiupaicn.com/comment/weblanguage/");
+
+    Bee.start();
+</script>
+</body>
+</html>
