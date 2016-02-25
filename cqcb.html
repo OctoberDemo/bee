@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上游新闻蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.setType("www.cqcb.com");
+    Bee.setType("www.cqcb.com");
+
+    Bee.onListDomLoaded = function(dom) {
+        setTimeout(function() {
+            var items = [];
+
+            var list = dom.byId("titlelist");
+            for (var i = 0; i < list.childElementCount; i++) {
+                var article = list.children[i];
+                var item = {};
+
+                item.title = article.byTag("h2").innerText.trim();
+                item.url = "http://www.cqcb.com" + article.byTag("a").attr("href");
+
+                items.push(item);
+            }
+
+            Bee.finishExtractList(items);
+        }, 1000);
+    };
+
+    Bee.onItemDomLoaded = function(dom, item) {
+        setTimeout(function() {
+            var src = dom.byClass("src");
+            var string = src.innerText.trim();
+
+            var date = new Date();
+
+            item.created_at = Bee.convertTime(date.getFullYear() + "-" + string.substr(0, 11) + ":00");
+            string = string.substr(12);
+            if (string.indexOf(" ") >= 0) {
+                item.source = string.substr(0, string.indexOf(" "));
+                item.author = string.substr(string.indexOf(" ") + 1);
+            } else {
+                item.source = string;
+            }
+
+            item.content = Bee.htmlToJson(dom.byId("content"));
+
+            Bee.finishExtractItem(item, true);
+        }, 1000);
+    };
+
+
+    Bee.addChannel("新闻", "头条", "http://www.cqcb.com/headline/index_m.html");
+    Bee.addChannel("新闻", "热点", "http://www.cqcb.com/hot/index_m.html");
+    Bee.addChannel("新闻", "政情", "http://www.cqcb.com/political-situation/index_m.html");
+    Bee.addChannel("新闻", "财富", "http://www.cqcb.com/wealth/index_m.html");
+    Bee.addChannel("新闻", "生活", "http://www.cqcb.com/life/index_m.html");
+    Bee.addChannel("新闻", "娱乐", "http://www.cqcb.com/entertainment/index_m.html");
+    Bee.addChannel("新闻", "体育", "http://www.cqcb.com/sports/index_m.html");
+
+    Bee.start();
+
+</script>
+</body>
+</html>
