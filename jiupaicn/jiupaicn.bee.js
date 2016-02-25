@@ -21,7 +21,6 @@ function jiuPaiCn() {
                 var article = list[i];
                 var item = {};
 
-                item.status = 5;
                 item.source = "九派";
                 item.title = article.byTag("h3").byTag("a").innerText.trim();
                 item.url = article.byTag("h3").byTag("a").attr("href").trim();
@@ -75,6 +74,6 @@ function jiuPaiCn() {
         }
         delete item.desc;
 
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     };
 };
