@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>站长之家蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("chinaz");
+    Bee.setImgReferer("http://chinaz.com/");
+
+    Bee.addChannel("", "", "http://www.chinaz.com/news/");
+    Bee.addChannel("", "", "http://www.chinaz.com/web/exp/");
+    Bee.addChannel("", "", "http://www.chinaz.com/web/plan/");
+    Bee.addChannel("", "", "http://www.chinaz.com/web/seo/");
+    Bee.addChannel("", "", "http://www.chinaz.com/start/");
+    Bee.addChannel("", "", "http://www.chinaz.com/biz/");
+    Bee.addChannel("", "", "http://www.chinaz.com/manage/");
+    Bee.addChannel("", "", "http://www.chinaz.com/website/");
+    Bee.addChannel("", "", "http://www.chinaz.com/mobile/");
+    Bee.addChannel("", "", "http://www.chinaz.com/design/");
+
+    Bee.onListLoaded = function(dom) {
+        var list = dom.byClass('newsListBar');
+        var listItem = list.byTags('li');
+        var resultList = [];
+        for(var i = 0, l = Math.min(5, listItem.length); i < l; ++i){
+            var item = listItem[i];
+            var result = {};
+
+            var itemTitleArea = item.byClass('YaHei fbold');
+            result.title = itemTitleArea.textContent;
+            result.url = itemTitleArea.byTag('a').href;
+
+            var itemDescArea = item.byClass('txtBox');
+            var itemTags = itemDescArea.byClass('tags');
+            var rawTimeString = itemTags.byTag('span').innerText.trim();
+            result.created_at = getTimeStamp(rawTimeString);
+            result.desc = itemTags.nextElementSibling.innerHTML;
+            console.log(result.title);
+            console.log(result.url);
+
+            resultList.push(result);
+        }
+        Bee.finishExtractList(resultList);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        var titleArea = dom.byClass('newsTitleBox');
+        if(!titleArea){
+            Bee.passItem(item);
+        }else{
+            var info = titleArea.byClass('info');
+            var source = info.children[1].textContent.trim();
+            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+                source = source.substring(3).trim();
+            }
+            if (source.indexOf("站长之家") >= 0) {
+
+            } else {
+                if (Bee.existSource(source)) {
+                    console.log("跳过已知来源：" + source);
+                    Bee.passItem(item);
+                } else {
+                    console.log("未知来源：" + source);
+                }
+            }
+            item.source = source;
+            item.content = Bee.htmlToJson(dom.byClass("newsMainBox"));
+
+            var desc = {};
+            desc.desc = item.desc;
+            item.content.add(0, desc);
+
+            delete item.desc;
+        }
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+
+    function getTimeStamp(timeString){
+        var currentTime = new Date();
+        var resultTimestamp = currentTime.getTime() / 1000;
+        var minuteRegex = new RegExp('(.*)分钟前');
+        var timeRegex = new RegExp('(.*):(.*)');
+        var dateRegex = new RegExp('(.*)-(.*)');
+        var completeRegex = new RegExp('(.*)年(.*)月(.*)日');
+        var match;
+        if(match = minuteRegex.exec(timeString)){
+            resultTimestamp -= match[1] * 60;
+        }else {
+            resultTimestamp = new Date();
+            if(match = timeRegex.exec(timeString)){
+                resultTimestamp.setHours(match[1]);
+                resultTimestamp.setMinutes(match[2]);
+            }else if(match = dateRegex.exec(timeString)){
+                resultTimestamp.setMonth(match[1]);
+                resultTimestamp.setDate(match[2]);
+            }else if(match = completeRegex.exec(timeString)){
+                resultTimestamp.setFullYear(match[1]);
+                resultTimestamp.setMonth(match[2] - 1);
+                resultTimestamp.setDate(match[3]);
+            }
+            resultTimestamp = resultTimestamp.getTime() / 1000;
+        }
+        return parseInt(resultTimestamp);
+    }
+
+</script>
+</body>
+</html>
