@@ -258,7 +258,9 @@ function _Bee() {
 
     function loadItem() {
         if (detailItems.length <= 0) {
-            BeeUtils.log(curChannel.category + "全部处理完成");
+            if (debug == false) {
+                BeeUtils.log(curChannel.category + "全部处理完成");
+            }
             self.start();
             return;
         }
