@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>腾讯房产蜜蜂</title>
+    <script src="../bee.js"></script>
+</head>
+<body>
+<script>
+
+    Bee.addChannel("房产", "上海", "http://sh.house.qq.com/l/shloushi/list.htm");
+    Bee.addChannel("房产", "", "http://roll.house.qq.com/");
+    Bee.addChannel("房产", "广东", "http://gz.house.qq.com/l/gdxw/more.htm");
+    Bee.addChannel("房产", "重庆", "http://cq.house.qq.com/2007qp/btyj/CQ.htm");
+    //TODO成都和其他腾讯站还没爬
+    Bee.addChannel("房产", "成都", "http://cd.house.qq.com/newslist/firstnews.htm");
+
+    Bee.getContentList = function(dom) {
+
+    };
+    Bee.start();
+    //multi page test
+    //        Bee.debug("http://gz.house.qq.com/a/20160227/024211.htm");
+    // multi page 今日推荐截止
+    //            Bee.debug("http://cd.house.qq.com/a/20160227/015762.htm");
+</script>
+</body>
+</html>
