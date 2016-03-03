@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>手机中国网蜜蜂</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("m.china.com.cn");
+    Bee.setImgReferer("http://m.china.com.cn/");
+
+    Bee.addChannel("", "", "http://h5.china.com.cn/1/wm/1/list_1_1_30.html");
+    Bee.addChannel("", "", "http://h5.china.com.cn//1/wm/2/list_2_1_30.html");
+    Bee.addChannel("", "", "http://h5.china.com.cn/1/wm/4/list_4_1_30.html");
+    Bee.addChannel("", "", "http://m.china.com.cn/1/wm/5/list_5_1_30.html");
+    Bee.addChannel("", "", "http://m.china.com.cn/1/wm/10/list_10_1_30.html");
+    Bee.addChannel("", "", "http://m.china.com.cn/1/wm/9/list_9_1_30.html");
+    Bee.addChannel("", "", "http://m.china.com.cn/1/wm/80087/list_80087_1_30.html");
+
+    Bee.onListLoaded = function(dom) {
+        var list = dom.byClass('node_list');
+        var listItem = list.byTags('li');
+        var resultList = [];
+        for(var i = 0, l = listItem.length; i < l; ++i){
+            var item = listItem[i];
+            var result = {};
+
+            result.title = item.textContent.substring(1).trim();
+            result.url = item.byTag('a').href;
+            result.created_at = parseInt(Date.now() / 1000);
+            resultList.push(result);
+            console.log(result);
+        }
+        Bee.finishExtractList(resultList);
+    };
+
+    Bee.onItemLoaded = function(dom, item) {
+        if(!dom.byTag('body')){
+            //page redirect
+            return;
+        }
+        var titleArea = dom.byClass('author').innerHTML.trim().replace(new RegExp('&nbsp;', 'g'), '');
+        if(!titleArea){
+            console.log('跳过item');
+            Bee.passItem(item);
+        }else{
+            var info = titleArea.split('|');
+            var source = info[0].trim();
+            if (source.indexOf("来源：") == 0 || source.indexOf("来源:") == 0) {
+                source = source.substring(3).trim();
+            }
+            if(source.length == 0){
+                source = '手机中国网';
+            }else if (source != '手机中国网') {
+                if (Bee.existSource(source)) {
+                    console.log("跳过已知来源：" + source);
+                    Bee.passItem(item);
+                } else {
+                    console.log("未知来源：" + source);
+                }
+            }
+            item.source = source;
+            item.status = 2;
+            item.content = Bee.htmlToJson(dom.byId("doc_content"));
+        }
+        Bee.finishExtractItem(item);
+    };
+
+    Bee.start();
+</script>
+</body>
+</html>
