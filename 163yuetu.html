@@ -26,7 +26,7 @@
         {"id":"0087", "name":"房产"},
         {"id":"0006", "name":"旅游"}
     ];
-    
+
 
     Bee.onListDomLoaded = function(dom) {
         var win = this.getWindow();
@@ -63,7 +63,7 @@
                 return;
             }
             var topic = topics.shift();
-            var url = "http://pic.news.163.com/photocenter/api/alllist/" + topic.id.substring(topic.id.length - 4) + "/" + topic.id + "/0/10/yuetu_show_topic.json?callback=yuetu_show_topic"
+            var url = "http://pic.news.163.com/photocenter/api/alllist/" + topic.id.substring(topic.id.length - 4) + "/" + topic.id + "/0/5/yuetu_show_topic.json?callback=yuetu_show_topic"
             liteAjax(url, function(e) {
                 var dataString = e.substring("yuetu_show_topic".length + 1, e.length - 1);
                 var datas = JSON.parse(dataString);
