@@ -47,7 +47,7 @@
         var content = Bee.htmlToJson(dom.byClass("article-content"));
         item.content = JSON.stringify(content);
         item.tag = Bee.getCurTag();
-        Bee.finishExtractItem(item, true);
+        Bee.finishExtractItem(item);
     }
     Bee.start();
 </script>
