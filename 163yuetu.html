@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <title>网易悦图蜜蜂</title>
     <script src="bee.js"></script>
+    <script src="beeutils.js"></script>
 </head>
 <body>
 <script>
-    Bee.setType("163.com");
+    var TYPE = "163.com";
+    Bee.setType(TYPE);
     Bee.setImgReferer("163.com");
     Bee.setRefreshTime(1000 * 60 * 20);
 
@@ -60,7 +62,7 @@
                 return;
             }
             var topic = topics.shift();
-            var url = "http://pic.news.163.com/photocenter/api/alllist/" + topic.id.substring(topic.id.length - 4) + "/" + topic.id + "/0/80/yuetu_show_topic.json?callback=yuetu_show_topic"
+            var url = "http://pic.news.163.com/photocenter/api/alllist/" + topic.id.substring(topic.id.length - 4) + "/" + topic.id + "/0/10/yuetu_show_topic.json?callback=yuetu_show_topic"
             liteAjax(url, function(e) {
                 var dataString = e.substring("yuetu_show_topic".length + 1, e.length - 1);
                 var datas = JSON.parse(dataString);
@@ -68,6 +70,11 @@
                     var item = createItem(datas[i]);
                     item.category = topic.category;
                     item.tag = topic.tag;
+
+                    if (BeeUtils.exist(TYPE, Bee.hashCode(item.url))) {
+                        continue;
+                    }
+
                     items.push(item);
                 }
                 console.log("完成对" + topic.tag + "的数据拉取");
@@ -85,7 +92,7 @@
         }
     };
 
-    Bee.onItemLoaded = function(dom, item) {
+    Bee.onItemDomLoaded = function(dom, item) {
         var info;
         var textAreas = dom.byTags("textarea");
         for (var i = 0; i < textAreas.length; i++) {
