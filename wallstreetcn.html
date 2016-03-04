@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>华尔街见闻</title>
+    <script src="bee.js"></script>
+</head>
+<body>
+<script>
+    Bee.setType("http://wallstreetcn.com/");
+    Bee.addChannel("新闻", "最新", "http://wallstreetcn.com/");
+    Bee.setImgReferer("http://wallstreetcn.com/");
+    Bee.onListLoaded = function(dom) {
+        BeeUtils.scrollToBottom(dom);
+        setTimeout(function() {
+            var items = [];
+            var itemDivs = dom.byClass("tab-content").byClasses("news");
+            console.log(itemDivs.length);
+            for (var i = 0; i < itemDivs.length; i++) {
+                var item = {};
+                item.title = itemDivs[i].byClass("content").byClass("title").innerText;
+                item.url = itemDivs[i].byClass("content").byClass("title").href;
+                item.key = Bee.hashCode(item.url);
+                item.class = "news";
+                item.source = "华尔街日报";
+                var image = itemDivs[i].byTag("img").attr("data-original");
+                if (image.search(".gif") < 0) {
+                    var img = {};
+                    img.src = Bee.makeImgJumpUrl(image, "http://wallstreetcn.com/");
+                    item.cover_img = img;
+                }
+                items.push(item);
+            }
+            Bee.finishExtractList(items);
+        }, 2000);
+    }
+
+    Bee.onItemLoaded = function(dom, item) {
+        var con = dom.byClass("article-content");
+        if (con == null) {
+            console.log("格式不正确");
+            item.passItem(item);
+            return;
+        }
+        var time = dom.byClass("item time");
+        item.created_at = Bee.convertTime(time.innerText);
+        var content = Bee.htmlToJson(dom.byClass("article-content"));
+        item.content = JSON.stringify(content);
+        item.tag = Bee.getCurTag();
+        Bee.finishExtractItem(item, true);
+    }
+    Bee.start();
+</script>
+</body>
+</html>
